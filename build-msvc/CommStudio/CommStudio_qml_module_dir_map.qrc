@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="/qt/qml/CommStudio">J:/mine/code/QT/com_studio/build-msvc/CommStudio</file>
+
+  </qresource>
+</RCC>

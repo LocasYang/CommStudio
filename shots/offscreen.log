@@ -1,0 +1,23 @@
+DEBUG: checking directory path "J:/mine/code/QT/com_studio/build-msvc/platforms" ...
+DEBUG: looking at "J:/mine/code/QT/com_studio/build-msvc/platforms/qwindows.dll"
+DEBUG: Found metadata in lib J:/mine/code/QT/com_studio/build-msvc/platforms/qwindows.dll, metadata=
+{
+    "IID": "org.qt-project.Qt.QPA.QPlatformIntegrationFactoryInterface.5.3",
+    "MetaData": {
+        "Keys": [
+            "windows"
+        ]
+    },
+    "archlevel": 0,
+    "className": "QWindowsIntegrationPlugin",
+    "debug": false,
+    "version": 394752
+}
+
+
+DEBUG: Got keys from plugin meta data QList("windows")
+WARN: Could not find the Qt platform plugin "offscreen" in ""
+FATAL: This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
+
+Available platform plugins are: windows.
+

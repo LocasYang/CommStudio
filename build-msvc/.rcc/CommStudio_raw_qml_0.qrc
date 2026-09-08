@@ -1,0 +1,27 @@
+<RCC>
+  <qresource prefix="/qt/qml/CommStudio/">
+    <file alias="qml/Main.qml">J:/mine/code/QT/com_studio/qml/Main.qml</file>
+    <file alias="qml/Theme.qml">J:/mine/code/QT/com_studio/qml/Theme.qml</file>
+    <file alias="qml/components/AppButton.qml">J:/mine/code/QT/com_studio/qml/components/AppButton.qml</file>
+    <file alias="qml/components/AppCard.qml">J:/mine/code/QT/com_studio/qml/components/AppCard.qml</file>
+    <file alias="qml/components/AppComboBox.qml">J:/mine/code/QT/com_studio/qml/components/AppComboBox.qml</file>
+    <file alias="qml/components/NavItem.qml">J:/mine/code/QT/com_studio/qml/components/NavItem.qml</file>
+    <file alias="qml/components/StatusPill.qml">J:/mine/code/QT/com_studio/qml/components/StatusPill.qml</file>
+    <file alias="qml/components/DataUnavailableState.qml">J:/mine/code/QT/com_studio/qml/components/DataUnavailableState.qml</file>
+    <file alias="qml/components/AppTextField.qml">J:/mine/code/QT/com_studio/qml/components/AppTextField.qml</file>
+    <file alias="qml/components/AppCheckBox.qml">J:/mine/code/QT/com_studio/qml/components/AppCheckBox.qml</file>
+    <file alias="qml/components/FormRow.qml">J:/mine/code/QT/com_studio/qml/components/FormRow.qml</file>
+    <file alias="qml/components/TerminalView.qml">J:/mine/code/QT/com_studio/qml/components/TerminalView.qml</file>
+    <file alias="qml/components/SendPanel.qml">J:/mine/code/QT/com_studio/qml/components/SendPanel.qml</file>
+    <file alias="qml/dialogs/ConfirmDialog.qml">J:/mine/code/QT/com_studio/qml/dialogs/ConfirmDialog.qml</file>
+    <file alias="qml/pages/SerialPage.qml">J:/mine/code/QT/com_studio/qml/pages/SerialPage.qml</file>
+    <file alias="qml/pages/ModbusPage.qml">J:/mine/code/QT/com_studio/qml/pages/ModbusPage.qml</file>
+    <file alias="qml/pages/BluetoothPage.qml">J:/mine/code/QT/com_studio/qml/pages/BluetoothPage.qml</file>
+    <file alias="qml/pages/NetworkPage.qml">J:/mine/code/QT/com_studio/qml/pages/NetworkPage.qml</file>
+    <file alias="qml/pages/ToolboxPage.qml">J:/mine/code/QT/com_studio/qml/pages/ToolboxPage.qml</file>
+    <file alias="qml/pages/LogPage.qml">J:/mine/code/QT/com_studio/qml/pages/LogPage.qml</file>
+    <file alias="qml/pages/SettingsPage.qml">J:/mine/code/QT/com_studio/qml/pages/SettingsPage.qml</file>
+    <file alias="qml/assets/commstudio-mark.svg">J:/mine/code/QT/com_studio/qml/assets/commstudio-mark.svg</file>
+  </qresource>
+</RCC>
+

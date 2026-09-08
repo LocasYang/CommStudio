@@ -1,0 +1,10 @@
+-I
+J:/mine/code/QT/com_studio/build-msvc
+-I
+I:/QT/6.6.3/msvc2019_64/./qml
+--resource
+J:/mine/code/QT/com_studio/build-msvc/.rcc/qmake_CommStudio.qrc
+--resource
+J:/mine/code/QT/com_studio/build-msvc/.rcc/CommStudio_raw_qml_0.qrc
+--module
+CommStudio

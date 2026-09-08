@@ -1,0 +1,8 @@
+J:/mine/code/QT/com_studio/build-msvc/CommStudio_autogen/include/../I5UM235HFU/moc_bluetoothmanager.cpp.json
+J:/mine/code/QT/com_studio/build-msvc/CommStudio_autogen/include/../I5UM235HFU/moc_modbusmanager.cpp.json
+J:/mine/code/QT/com_studio/build-msvc/CommStudio_autogen/include/../I5UM235HFU/moc_networkmanager.cpp.json
+J:/mine/code/QT/com_studio/build-msvc/CommStudio_autogen/include/../I5UM235HFU/moc_serialmanager.cpp.json
+J:/mine/code/QT/com_studio/build-msvc/CommStudio_autogen/include/../I5UM235HFU/moc_studio.cpp.json
+J:/mine/code/QT/com_studio/build-msvc/CommStudio_autogen/include/../I5UM235HFU/moc_toolboxmanager.cpp.json
+J:/mine/code/QT/com_studio/build-msvc/CommStudio_autogen/include/../PRMOGMWJPH/moc_trafficmodel.cpp.json
+J:/mine/code/QT/com_studio/build-msvc/CommStudio_autogen/include/../UVLADIE3JM/moc_windowchrome.cpp.json

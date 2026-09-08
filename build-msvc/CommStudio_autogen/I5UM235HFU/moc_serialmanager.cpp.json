@@ -1,0 +1,678 @@
+{
+    "classes": [
+        {
+            "className": "SerialManager",
+            "methods": [
+                {
+                    "access": "public",
+                    "name": "refreshPorts",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "open",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "close",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "text",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "send",
+                    "returnType": "QString"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "text",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "intervalMs",
+                            "type": "int"
+                        },
+                        {
+                            "name": "repeatCount",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "startTimerSend",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "stopTimerSend",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "path",
+                            "type": "QUrl"
+                        },
+                        {
+                            "name": "chunkSize",
+                            "type": "int"
+                        },
+                        {
+                            "name": "intervalMs",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "sendFile",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "cancelFileSend",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "durationMs",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "sendBreak",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "isCloned": true,
+                    "name": "sendBreak",
+                    "returnType": "void"
+                }
+            ],
+            "object": true,
+            "properties": [
+                {
+                    "constant": true,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "name": "traffic",
+                    "read": "traffic",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "TrafficModel*",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 1,
+                    "name": "portInfos",
+                    "notify": "portInfosChanged",
+                    "read": "portInfos",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QVariantList",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 2,
+                    "name": "portName",
+                    "notify": "portNameChanged",
+                    "read": "portName",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setPortName"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 3,
+                    "name": "baudRate",
+                    "notify": "baudRateChanged",
+                    "read": "baudRate",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setBaudRate"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 4,
+                    "name": "dataBits",
+                    "notify": "dataBitsChanged",
+                    "read": "dataBits",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "setDataBits"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 5,
+                    "name": "parity",
+                    "notify": "parityChanged",
+                    "read": "parity",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setParity"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 6,
+                    "name": "stopBits",
+                    "notify": "stopBitsChanged",
+                    "read": "stopBits",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "double",
+                    "user": false,
+                    "write": "setStopBits"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 7,
+                    "name": "flowControl",
+                    "notify": "flowControlChanged",
+                    "read": "flowControl",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setFlowControl"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 8,
+                    "name": "open",
+                    "notify": "openChanged",
+                    "read": "isOpen",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 9,
+                    "name": "connecting",
+                    "notify": "openChanged",
+                    "read": "isConnecting",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 10,
+                    "name": "configLocked",
+                    "notify": "openChanged",
+                    "read": "configLocked",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 11,
+                    "name": "reconnecting",
+                    "notify": "reconnectingChanged",
+                    "read": "reconnecting",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 12,
+                    "name": "configSummary",
+                    "notify": "configChanged",
+                    "read": "configSummary",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 13,
+                    "name": "autoReconnect",
+                    "notify": "autoReconnectChanged",
+                    "read": "autoReconnect",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "write": "setAutoReconnect"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 14,
+                    "name": "hexSend",
+                    "notify": "hexSendChanged",
+                    "read": "hexSend",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "write": "setHexSend"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 15,
+                    "name": "escapeEnabled",
+                    "notify": "escapeEnabledChanged",
+                    "read": "escapeEnabled",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "write": "setEscapeEnabled"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 16,
+                    "name": "lineEnding",
+                    "notify": "lineEndingChanged",
+                    "read": "lineEnding",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setLineEnding"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 17,
+                    "name": "dtr",
+                    "notify": "pinsChanged",
+                    "read": "dtr",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "write": "setDtr"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 18,
+                    "name": "rts",
+                    "notify": "pinsChanged",
+                    "read": "rts",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "write": "setRts"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 19,
+                    "name": "pinCts",
+                    "notify": "pinsChanged",
+                    "read": "pinCts",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 20,
+                    "name": "pinDsr",
+                    "notify": "pinsChanged",
+                    "read": "pinDsr",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 21,
+                    "name": "pinDcd",
+                    "notify": "pinsChanged",
+                    "read": "pinDcd",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 22,
+                    "name": "pinRi",
+                    "notify": "pinsChanged",
+                    "read": "pinRi",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 23,
+                    "name": "rxBytes",
+                    "notify": "statsChanged",
+                    "read": "rxBytes",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "qint64",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 24,
+                    "name": "txBytes",
+                    "notify": "statsChanged",
+                    "read": "txBytes",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "qint64",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 25,
+                    "name": "rxRate",
+                    "notify": "statsChanged",
+                    "read": "rxRate",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "qint64",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 26,
+                    "name": "peakRate",
+                    "notify": "statsChanged",
+                    "read": "peakRate",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "qint64",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 27,
+                    "name": "timerActive",
+                    "notify": "timerChanged",
+                    "read": "timerActive",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 28,
+                    "name": "timerRemaining",
+                    "notify": "timerChanged",
+                    "read": "timerRemaining",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 29,
+                    "name": "fileActive",
+                    "notify": "fileChanged",
+                    "read": "fileActive",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 30,
+                    "name": "fileProgress",
+                    "notify": "fileChanged",
+                    "read": "fileProgress",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 31,
+                    "name": "fileRate",
+                    "notify": "fileChanged",
+                    "read": "fileRate",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false
+                }
+            ],
+            "qualifiedClassName": "SerialManager",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "portInfosChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "portNameChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "baudRateChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "dataBitsChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "parityChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "stopBitsChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "flowControlChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "openChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "reconnectingChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "configChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "autoReconnectChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "hexSendChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "escapeEnabledChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "lineEndingChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "pinsChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "statsChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "timerChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "fileChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "text",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "ok",
+                            "type": "bool"
+                        }
+                    ],
+                    "name": "toastRequested",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "serialmanager.h",
+    "outputRevision": 68
+}

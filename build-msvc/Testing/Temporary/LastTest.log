@@ -1,0 +1,18 @@
+Start testing: Sep 07 23:53 中国标准时间
+----------------------------------------------------------
+1/1 Testing: CommStudioCoreTest
+1/1 Test: CommStudioCoreTest
+Command: "J:/mine/code/QT/com_studio/build-msvc/CommStudioCoreTest.exe"
+Directory: J:/mine/code/QT/com_studio/build-msvc
+"CommStudioCoreTest" start time: Sep 07 23:53 中国标准时间
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.17 sec
+----------------------------------------------------------
+Test Passed.
+"CommStudioCoreTest" end time: Sep 07 23:53 中国标准时间
+"CommStudioCoreTest" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Sep 07 23:53 中国标准时间
