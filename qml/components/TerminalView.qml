@@ -10,11 +10,27 @@ Item {
     id: root
 
     property var model
-    property string emptyHint: "等待数据 · 连接后收发的数据会显示在这里"
+    property string emptyHint: I18n.t("Waiting for data · received and transmitted traffic appears here after connecting", "等待数据 · 连接后收发的数据会显示在这里")
     property int displayMode: 2 // 0 TEXT / 1 HEX / 2 HEX+ASCII
     property bool autoScroll: true
     property bool followTail: true
     property int unseenCount: 0
+    property bool tailScrollQueued: false
+
+    // rowsInserted 时 ListView 的 contentHeight 可能尚未完成重算；延迟到下一轮
+    // 布局后再定位，才能稳定贴住最新一行而不是停留在旧的滚动位置。
+    function scheduleTailScroll() {
+        if (tailScrollQueued || !followTail || !autoScroll)
+            return
+        tailScrollQueued = true
+        Qt.callLater(function() {
+            tailScrollQueued = false
+            if (!followTail || !autoScroll)
+                return
+            trafficList.forceLayout()
+            trafficList.positionViewAtEnd()
+        })
+    }
 
     function dirAccent(dir) {
         if (dir === 0) return Theme.rx
@@ -43,7 +59,7 @@ Item {
             spacing: 8
 
             Text {
-                text: "MESSAGE"
+                text: I18n.t("MESSAGE", "消息")
                 color: Theme.textPrimary
                 font.family: "Consolas"
                 font.pixelSize: 13
@@ -59,7 +75,7 @@ Item {
             }
 
             StatusPill {
-                text: root.model ? root.model.count + " items" : "0 items"
+                text: root.model ? I18n.count(root.model.count, "items", " 条") : I18n.t("0 items", "0 条")
                 accent: Theme.primary
                 dot: false
                 scaleFactor: 0.82
@@ -67,7 +83,7 @@ Item {
 
             Text {
                 visible: root.model && root.model.paused
-                text: "PAUSED · RECEIVING IN BACKGROUND"
+                text: I18n.t("PAUSED · RECEIVING IN BACKGROUND", "已暂停 · 后台仍在接收")
                 color: Theme.warning
                 font.family: "Consolas"
                 font.pixelSize: 10
@@ -88,7 +104,7 @@ Item {
             AppButton {
                 compact: true
                 textPixelSize: 11
-                text: root.model && root.model.paused ? "继续" : "暂停"
+                text: root.model && root.model.paused ? I18n.t("Resume", "继续") : I18n.t("Pause", "暂停")
                 accent: root.model && root.model.paused ? Theme.warning : Theme.primary
                 variant: "text"
                 onClicked: if (root.model) root.model.paused = !root.model.paused
@@ -97,7 +113,7 @@ Item {
             AppButton {
                 compact: true
                 textPixelSize: 11
-                text: "清屏"
+                text: I18n.t("Clear", "清屏")
                 variant: "text"
                 onClicked: if (root.model) root.model.clear()
             }
@@ -105,7 +121,7 @@ Item {
             AppButton {
                 compact: true
                 textPixelSize: 11
-                text: "导出"
+                text: I18n.t("Export", "导出")
                 variant: "text"
                 onClicked: exportDialog.open()
             }
@@ -113,14 +129,14 @@ Item {
             AppButton {
                 compact: true
                 textPixelSize: 11
-                text: root.followTail ? "自动跟随" : "手动浏览"
+                text: root.followTail ? I18n.t("Follow tail", "自动跟随") : I18n.t("Manual browse", "手动浏览")
                 accent: root.followTail ? Theme.success : Theme.warning
                 variant: "text"
                 onClicked: {
                     root.followTail = !root.followTail
                     if (root.followTail) {
                         root.unseenCount = 0
-                        trafficList.positionViewAtEnd()
+                        root.scheduleTailScroll()
                     }
                 }
             }
@@ -140,10 +156,14 @@ Item {
             ScrollBar.vertical: ScrollBar { }
 
             onCountChanged: {
-                if (root.followTail && root.autoScroll && !moving)
-                    positionViewAtEnd()
+                if (root.followTail && root.autoScroll)
+                    root.scheduleTailScroll()
                 else if (!atYEnd)
                     root.unseenCount = Math.min(999, root.unseenCount + 1)
+            }
+            onContentHeightChanged: {
+                if (count > 0)
+                    root.scheduleTailScroll()
             }
             onMovementStarted: if (!atYEnd) root.followTail = false
             onMovementEnded: if (atYEnd) { root.followTail = true; root.unseenCount = 0 }
@@ -233,7 +253,7 @@ Item {
             Text {
                 anchors.centerIn: parent
                 visible: root.model && root.model.count === 0
-                text: root.emptyHint + "\n\nCtrl+Enter 发送 · ↑/↓ 浏览历史 · F1 查看快捷键"
+                text: root.emptyHint + "\n\n" + I18n.t("Ctrl+Enter send · ↑/↓ history · F1 shortcuts", "Ctrl+Enter 发送 · ↑/↓ 浏览历史 · F1 查看快捷键")
                 color: Theme.textTertiary
                 font.family: "Consolas"
                 font.pixelSize: 12
@@ -256,7 +276,8 @@ Item {
                 Text {
                     id: newMessagesText
                     anchors.centerIn: parent
-                    text: "↓ " + (root.unseenCount >= 999 ? "999+" : root.unseenCount) + " new messages"
+                    text: "↓ " + (root.unseenCount >= 999 ? "999+" : root.unseenCount)
+                          + I18n.t(" new messages", " 条新消息")
                     color: Theme.textPrimary
                     font.family: "Consolas"
                     font.pixelSize: 11
@@ -278,12 +299,13 @@ Item {
 
     FileDialog {
         id: exportDialog
-        title: "导出收发记录"
-        nameFilters: ["文本文件 (*.txt *.log *.csv)", "所有文件 (*)"]
+        title: I18n.t("Export traffic log", "导出收发记录")
+        nameFilters: [I18n.t("Text files (*.txt *.log *.csv)", "文本文件 (*.txt *.log *.csv)"),
+                      I18n.t("All files (*)", "所有文件 (*)")]
         fileMode: FileDialog.SaveFile
         onAccepted: {
             if (root.model && root.model.exportToFile(selectedFile))
-                root.toastRequested("收发记录已导出", true)
+                root.toastRequested(I18n.t("Traffic log exported", "收发记录已导出"), true)
         }
     }
 

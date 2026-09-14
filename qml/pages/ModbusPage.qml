@@ -43,7 +43,7 @@ Item {
 
             StatusPill {
                 visible: ModbusManager.polling
-                text: "轮询中 · " + ModbusManager.tasks.length + " 任务"
+                text: I18n.t("Polling · ", "轮询中 · ") + I18n.count(ModbusManager.tasks.length, "tasks", " 任务")
                 accent: Theme.warning
                 dot: false
                 scaleFactor: 0.9
@@ -78,7 +78,7 @@ Item {
                     spacing: 9
 
                     Text {
-                        text: "连接配置"
+                        text: I18n.t("Connection configuration", "连接配置")
                         color: Theme.textPrimary
                         font.family: Theme.fontFamily
                         font.pixelSize: 14
@@ -86,7 +86,7 @@ Item {
                     }
 
                     FormRow {
-                        label: "模式"
+                        label: I18n.t("Mode", "模式")
                         AppComboBox {
                             Layout.fillWidth: true
                             model: ["RTU 主站", "TCP 主站", "RTU 从站模拟", "TCP 从站模拟"]
@@ -99,7 +99,7 @@ Item {
 
                     FormRow {
                         visible: root.isRtu
-                        label: "端口"
+                        label: I18n.t("Port", "端口")
                         AppComboBox {
                             id: modbusPortCombo
                             Layout.fillWidth: true
@@ -116,14 +116,14 @@ Item {
                                 for (let i = 0; i < infos.length; ++i)
                                     if (infos[i].name === name)
                                         return i
-                                return infos.length > 0 ? 0 : -1
+                                return -1
                             }
                         }
                     }
 
                     FormRow {
                         visible: root.isRtu
-                        label: "波特率"
+                        label: I18n.t("Baud rate", "波特率")
                         AppComboBox {
                             Layout.fillWidth: true
                             model: ["1200", "2400", "4800", "9600", "19200", "38400", "57600", "115200"]
@@ -134,7 +134,7 @@ Item {
 
                     FormRow {
                         visible: root.isRtu
-                        label: "校验位"
+                        label: I18n.t("Parity", "校验位")
                         AppComboBox {
                             Layout.fillWidth: true
                             model: ["无 (None)", "偶 (Even)", "奇 (Odd)"]
@@ -146,7 +146,7 @@ Item {
 
                     FormRow {
                         visible: !root.isRtu
-                        label: "主机"
+                        label: I18n.t("Host", "主机")
                         AppTextField {
                             Layout.fillWidth: true
                             mono: true
@@ -157,7 +157,7 @@ Item {
 
                     FormRow {
                         visible: !root.isRtu
-                        label: root.isMaster ? "远端口" : "监听端口"
+                        label: root.isMaster ? I18n.t("Remote port", "远端口") : I18n.t("Listen port", "监听端口")
                         AppTextField {
                             Layout.fillWidth: true
                             mono: true
@@ -167,7 +167,7 @@ Item {
                     }
 
                     FormRow {
-                        label: root.isMaster ? "Unit ID" : "从站地址"
+                        label: root.isMaster ? "Unit ID" : I18n.t("Slave address", "从站地址")
                         AppTextField {
                             Layout.fillWidth: true
                             mono: true
@@ -184,7 +184,7 @@ Item {
 
                     FormRow {
                         visible: root.isMaster
-                        label: "超时/重试"
+                        label: I18n.t("Timeout / retry", "超时/重试")
                         RowLayout {
                             Layout.fillWidth: true
                             spacing: 6
@@ -207,10 +207,10 @@ Item {
 
                     AppButton {
                         Layout.fillWidth: true
-                        text: root.connected ? "断开 / 停止模拟"
+                        text: root.connected ? I18n.t("Disconnect / stop simulation", "断开 / 停止模拟")
                                              : (root.isMaster ? "连接主站" : "启动从站模拟")
                         variant: root.connected ? "danger" : "primary"
-                        onClicked: ModbusManager.open()
+                        onClicked: ModbusManager.openConnection()
                     }
 
                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.divider }
@@ -222,7 +222,7 @@ Item {
                         spacing: 7
 
                         Text {
-                            text: "寄存器区数据来源"
+                            text: I18n.t("Register area data sources", "寄存器区数据来源")
                             color: Theme.textPrimary
                             font.family: Theme.fontFamily
                             font.pixelSize: 13
@@ -280,7 +280,7 @@ Item {
 
                         Text {
                             Layout.fillWidth: true
-                            text: "各区的 value = base ± amplitude，按来源每秒刷新；static 区可用下方寄存器表手改。"
+                            text: I18n.t("For each area, value = base ± amplitude and is refreshed by source every second; static areas can be edited in the register table below.", "各区的 value = base ± amplitude，按来源每秒刷新；static 区可用下方寄存器表手改。")
                             color: Theme.textTertiary
                             font.family: Theme.fontFamily
                             font.pixelSize: 10
@@ -345,7 +345,7 @@ Item {
                                     spacing: 8
 
                                     Text {
-                                        text: "轮询任务"
+                                        text: I18n.t("Polling tasks", "轮询任务")
                                         color: Theme.textPrimary
                                         font.family: Theme.fontFamily
                                         font.pixelSize: 14
@@ -353,7 +353,7 @@ Item {
                                     }
 
                                     StatusPill {
-                                        text: ModbusManager.tasks.length + " 个"
+                                        text: I18n.count(ModbusManager.tasks.length, "tasks", " 个")
                                         accent: Theme.primary
                                         dot: false
                                         scaleFactor: 0.85
@@ -361,20 +361,20 @@ Item {
 
                                     Item { Layout.fillWidth: true }
 
-                                    AppButton { compact: true; textPixelSize: 12; text: "新增任务"; onClicked: taskEditor.openFor(-1) }
+                                    AppButton { compact: true; textPixelSize: 12; text: I18n.t("New task", "新增任务"); onClicked: taskEditor.openFor(-1) }
                                     AppButton {
-                                        compact: true; textPixelSize: 12; text: "导入 CSV"
+                                        compact: true; textPixelSize: 12; text: I18n.t("Import CSV", "导入 CSV")
                                         onClicked: taskCsvDialog.open()
                                     }
                                     AppButton {
-                                        compact: true; textPixelSize: 12; text: "启动轮询"
+                                        compact: true; textPixelSize: 12; text: I18n.t("Start polling", "启动轮询")
                                         variant: "primary"
                                         enabled: root.isMaster && !ModbusManager.polling
                                                  && ModbusManager.tasks.length > 0
                                         onClicked: ModbusManager.startPolling()
                                     }
                                     AppButton {
-                                        compact: true; textPixelSize: 12; text: "停止轮询"
+                                        compact: true; textPixelSize: 12; text: I18n.t("Stop polling", "停止轮询")
                                         variant: "danger"
                                         enabled: ModbusManager.polling
                                         onClicked: ModbusManager.stopPolling()
@@ -468,7 +468,7 @@ Item {
                                     visible: ModbusManager.tasks.length === 0
                                     Layout.fillWidth: true
                                     horizontalAlignment: Text.AlignHCenter
-                                    text: "暂无轮询任务 · 点击「新增任务」创建，或从 CSV 寄存器表导入"
+                                    text: I18n.t("No polling tasks · select New task or import a CSV register table", "暂无轮询任务 · 点击「新增任务」创建，或从 CSV 寄存器表导入")
                                     color: Theme.textTertiary
                                     font.family: Theme.fontFamily
                                     font.pixelSize: 12
@@ -493,7 +493,7 @@ Item {
                                 spacing: 10
 
                                 Text {
-                                    text: "手动读写"
+                                    text: I18n.t("Manual read / write", "手动读写")
                                     color: Theme.textPrimary
                                     font.family: Theme.fontFamily
                                     font.pixelSize: 14
@@ -508,13 +508,13 @@ Item {
 
                                     FormRow {
                                         Layout.fillWidth: true
-                                        label: "从站"
+                                        label: I18n.t("Slave", "从站")
                                         AppTextField { id: manualSlave; Layout.fillWidth: true; mono: true; text: "1" }
                                     }
 
                                     FormRow {
                                         Layout.fillWidth: true
-                                        label: "功能码"
+                                        label: I18n.t("Function code", "功能码")
                                         AppComboBox {
                                             id: manualFc
                                             Layout.fillWidth: true
@@ -526,13 +526,13 @@ Item {
 
                                     FormRow {
                                         Layout.fillWidth: true
-                                        label: "起始地址"
+                                        label: I18n.t("Start address", "起始地址")
                                         AppTextField { id: manualAddress; Layout.fillWidth: true; mono: true; text: "0" }
                                     }
 
                                     FormRow {
                                         Layout.fillWidth: true
-                                        label: "数量 / 值"
+                                        label: I18n.t("Quantity / value", "数量 / 值")
                                         AppTextField { id: manualValues; Layout.fillWidth: true; mono: true; text: "1" }
                                     }
                                 }
@@ -542,7 +542,7 @@ Item {
                                     spacing: 8
 
                                     AppButton {
-                                        text: "读取"
+                                        text: I18n.t("Read", "读取")
                                         variant: "primary"
                                         accent: Theme.cyan
                                         enabled: root.isMaster
@@ -555,7 +555,7 @@ Item {
                                     }
 
                                     AppButton {
-                                        text: "写入"
+                                        text: I18n.t("Write", "写入")
                                         variant: "primary"
                                         enabled: root.isMaster && manualFc.currentIndex >= 4
                                         onClicked: {
@@ -649,7 +649,7 @@ Item {
                                     Layout.fillWidth: true
 
                                     Text {
-                                        text: "寄存器表（最近一次读取值）"
+                                        text: I18n.t("Register table (latest read values)", "寄存器表（最近一次读取值）")
                                         color: Theme.textPrimary
                                         font.family: Theme.fontFamily
                                         font.pixelSize: 14
@@ -706,7 +706,7 @@ Item {
                                     Text {
                                         anchors.centerIn: parent
                                         visible: ModbusManager.registerMap.length === 0
-                                        text: "暂无数据 · 执行读取或轮询后，解码结果会显示在这里"
+                                        text: I18n.t("No data · decoded results appear here after reading or polling", "暂无数据 · 执行读取或轮询后，解码结果会显示在这里")
                                         color: Theme.textTertiary
                                         font.family: Theme.fontFamily
                                         font.pixelSize: 12
@@ -784,7 +784,7 @@ Item {
                                         spacing: 6
 
                                         Text {
-                                            text: "响应解析"
+                                            text: I18n.t("Response parser", "响应解析")
                                             color: Theme.textPrimary
                                             font.family: Theme.fontFamily
                                             font.pixelSize: 12
@@ -795,7 +795,7 @@ Item {
                                             Layout.fillWidth: true
                                             visible: !ModbusManager.rawResult
                                                      || Object.keys(ModbusManager.rawResult).length === 0
-                                            text: "尚未发送 Raw 请求"
+                                            text: I18n.t("No raw request sent", "尚未发送 Raw 请求")
                                             color: Theme.textTertiary
                                             font.family: Theme.fontFamily
                                             font.pixelSize: 11
@@ -867,7 +867,7 @@ Item {
                     TerminalView {
                         anchors.fill: parent
                         model: ModbusManager.traffic
-                        emptyHint: "Modbus 事务流量（重建 ADU）会显示在这里"
+                        emptyHint: I18n.t("Modbus transaction traffic (reconstructed ADU) appears here", "Modbus 事务流量（重建 ADU）会显示在这里")
                         onToastRequested: (text, ok) => root.toastRequested(text, ok)
                     }
                 }
@@ -933,7 +933,7 @@ Item {
             spacing: 10
 
             Text {
-                text: taskEditor.editIndex >= 0 ? "编辑轮询任务" : "新增轮询任务"
+                text: taskEditor.editIndex >= 0 ? I18n.t("Edit polling task", "编辑轮询任务") : I18n.t("New polling task", "新增轮询任务")
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily
                 font.pixelSize: 16
@@ -948,19 +948,19 @@ Item {
 
                 FormRow {
                     Layout.fillWidth: true
-                    label: "名称"
+                    label: I18n.t("Name", "名称")
                     AppTextField { id: nameField; Layout.fillWidth: true; placeholder: "如 DC Bus 电压" }
                 }
 
                 FormRow {
                     Layout.fillWidth: true
-                    label: "从站"
+                    label: I18n.t("Slave", "从站")
                     AppTextField { id: slaveField; Layout.fillWidth: true; mono: true; text: "1" }
                 }
 
                 FormRow {
                     Layout.fillWidth: true
-                    label: "功能码"
+                    label: I18n.t("Function code", "功能码")
                     AppComboBox {
                         id: fcCombo
                         Layout.fillWidth: true
@@ -970,25 +970,25 @@ Item {
 
                 FormRow {
                     Layout.fillWidth: true
-                    label: "起始地址"
+                    label: I18n.t("Start address", "起始地址")
                     AppTextField { id: addrField; Layout.fillWidth: true; mono: true; text: "0" }
                 }
 
                 FormRow {
                     Layout.fillWidth: true
-                    label: "数量"
+                    label: I18n.t("Quantity", "数量")
                     AppTextField { id: countField; Layout.fillWidth: true; mono: true; text: "1" }
                 }
 
                 FormRow {
                     Layout.fillWidth: true
-                    label: "周期 ms"
+                    label: I18n.t("Period ms", "周期 ms")
                     AppTextField { id: periodField; Layout.fillWidth: true; mono: true; text: "1000" }
                 }
 
                 FormRow {
                     Layout.fillWidth: true
-                    label: "类型"
+                    label: I18n.t("Type", "类型")
                     AppComboBox {
                         id: typeCombo
                         Layout.fillWidth: true
@@ -998,7 +998,7 @@ Item {
 
                 FormRow {
                     Layout.fillWidth: true
-                    label: "字序"
+                    label: I18n.t("Byte order", "字序")
                     AppComboBox {
                         id: orderCombo
                         Layout.fillWidth: true
@@ -1008,20 +1008,20 @@ Item {
 
                 FormRow {
                     Layout.fillWidth: true
-                    label: "比例"
+                    label: I18n.t("Scale", "比例")
                     AppTextField { id: scaleField; Layout.fillWidth: true; mono: true; text: "1" }
                 }
 
                 FormRow {
                     Layout.fillWidth: true
-                    label: "单位"
+                    label: I18n.t("Unit", "单位")
                     AppTextField { id: unitField; Layout.fillWidth: true; text: "" ; placeholder: "V / A / ℃" }
                 }
             }
 
             AppCheckBox {
                 id: enableCheck
-                text: "启用该任务"
+                text: I18n.t("Enable this task", "启用该任务")
                 checked: true
             }
 
@@ -1033,7 +1033,7 @@ Item {
 
                 AppButton {
                     visible: taskEditor.editIndex >= 0
-                    text: "删除"
+                    text: I18n.t("Delete", "删除")
                     variant: "danger"
                     onClicked: {
                         ModbusManager.removeTask(taskEditor.editIndex)
@@ -1044,14 +1044,14 @@ Item {
                 Item { Layout.fillWidth: true }
 
                 AppButton {
-                    text: "取消"
+                    text: I18n.t("Cancel", "取消")
                     variant: "outlined"
                     accent: Theme.textSecondary
                     onClicked: taskEditor.close()
                 }
 
                 AppButton {
-                    text: "保存"
+                    text: I18n.t("Save", "保存")
                     variant: "primary"
                     onClicked: {
                         const task = {
@@ -1081,7 +1081,7 @@ Item {
 
     FileDialog {
         id: taskCsvDialog
-        title: "导入寄存器表 CSV"
+        title: I18n.t("Import register table CSV", "导入寄存器表 CSV")
         nameFilters: ["CSV 文件 (*.csv)", "所有文件 (*)"]
         onAccepted: ModbusManager.importTasksFromCsv(selectedFile)
     }

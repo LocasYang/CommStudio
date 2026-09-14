@@ -86,7 +86,7 @@ public:
     int timerRemaining() const { return m_timerRemaining; }
     QString stateText() const;
 
-    Q_INVOKABLE void open();
+    Q_INVOKABLE void openConnection();
     Q_INVOKABLE void close();
     Q_INVOKABLE QString send(const QString &text, qint64 targetClientId = -1);
     Q_INVOKABLE void sendTo(const QString &host, int port, const QString &text);

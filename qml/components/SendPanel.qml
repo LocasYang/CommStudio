@@ -12,8 +12,8 @@ Item {
     property var manager            // 须提供 send(text) / hexSend / lineEnding / escapeEnabled /
                                     // timerActive / startTimerSend / stopTimerSend
     property bool showFile: false
-    property string sendLabel: "发送"
-    property string hint: "Ctrl+Enter 快速发送"
+    property string sendLabel: I18n.t("Send", "发送")
+    property string hint: I18n.t("Ctrl+Enter quick send", "Ctrl+Enter 快速发送")
 
     signal toastRequested(string text, bool ok)
 
@@ -153,7 +153,8 @@ Item {
             }
 
             AppButton {
-                text: root.sendLabel === "发送" ? "SEND" : "SEND (OFFLINE)"
+                text: manager && manager.open !== undefined && !manager.open
+                      ? I18n.t("SEND (OFFLINE)", "发送（未连接）") : root.sendLabel
                 variant: "primary"
                 enabled: manager ? (manager.open === undefined ? true : manager.open) : false
                 onClicked: root.doSend()
@@ -178,7 +179,7 @@ Item {
 
             AppCheckBox {
                 id: clearAfterCheck
-                text: "发送后清空"
+                text: I18n.t("Clear after send", "发送后清空")
             }
 
             Item { Layout.fillWidth: true }
@@ -204,12 +205,12 @@ Item {
                 compact: true
                 textPixelSize: 12
                 visible: root.hasTimer ? !manager.timerActive : false
-                text: "定时发送"
+                text: I18n.t("Timed send", "定时发送")
                 variant: "outlined"
                 onClicked: {
                     const interval = parseInt(intervalField.text)
                     if (isNaN(interval) || interval < 10) {
-                        root.toastRequested("定时间隔至少 10 ms", false)
+                        root.toastRequested(I18n.t("Timer interval must be at least 10 ms", "定时间隔至少 10 ms"), false)
                         return
                     }
                     const repeat = parseInt(repeatField.text) || 0
@@ -222,8 +223,8 @@ Item {
                 textPixelSize: 12
                 visible: root.hasTimer && manager.timerActive
                 text: manager && manager.timerRemaining > 0
-                      ? "停止 (" + manager.timerRemaining + ")"
-                      : "停止定时"
+                      ? I18n.t("Stop (", "停止 (") + manager.timerRemaining + ")"
+                      : I18n.t("Stop timer", "停止定时")
                 variant: "danger"
                 onClicked: manager.stopTimerSend()
             }
@@ -242,13 +243,13 @@ Item {
                 id: filePathField
                 Layout.fillWidth: true
                 readOnly: true
-                placeholder: "选择要发送的文件（原始分块发送）"
+                placeholder: I18n.t("Choose a file to send (raw chunks)", "选择要发送的文件（原始分块发送）")
             }
 
             AppButton {
                 compact: true
                 textPixelSize: 12
-                text: "浏览…"
+                text: I18n.t("Browse…", "浏览…")
                 enabled: root.hasFile ? !manager.fileActive : false
                 onClicked: fileDialog.open()
             }
@@ -257,7 +258,7 @@ Item {
                 id: sendFileButton
                 compact: true
                 textPixelSize: 12
-                text: "发送文件"
+                text: I18n.t("Send file", "发送文件")
                 variant: "outlined"
                 accent: Theme.cyan
                 enabled: root.hasFile ? (filePathField.text.length > 0 && !manager.fileActive) : false
@@ -269,7 +270,7 @@ Item {
                 compact: true
                 textPixelSize: 12
                 visible: root.hasFile && manager.fileActive
-                text: "取消"
+                text: I18n.t("Cancel", "取消")
                 variant: "danger"
                 onClicked: manager.cancelFileSend()
             }
@@ -277,7 +278,7 @@ Item {
             StatusPill {
                 visible: root.hasFile && manager.fileActive
                 text: manager && manager.fileActive
-                      ? "发送中 " + manager.fileProgress + "% · " + manager.fileRate : ""
+                      ? I18n.t("Sending ", "发送中 ") + manager.fileProgress + "% · " + manager.fileRate : ""
                 accent: Theme.primary
                 dot: false
                 scaleFactor: 0.85
@@ -287,8 +288,8 @@ Item {
 
     FileDialog {
         id: fileDialog
-        title: "选择要发送的文件"
-        nameFilters: ["所有文件 (*)"]
+        title: I18n.t("Choose a file to send", "选择要发送的文件")
+        nameFilters: [I18n.t("All files (*)", "所有文件 (*)")]
         onAccepted: {
             filePathField.text = selectedFile.toString().replace(/^file:\/\//, "")
             sendFileButton.fileUrl = selectedFile

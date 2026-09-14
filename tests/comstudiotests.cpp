@@ -154,7 +154,8 @@ void CommStudioCoreTest::trafficModelRingBuffer()
     TrafficModel model;
     model.setMaxRows(10);
     for (int i = 0; i < 25; ++i)
-        model.append(TrafficModel::Rx, QByteArrayLiteral("\x01\x02"), QStringLiteral("TEST"));
+        // 连续 RX 片段会按短时间窗口合帧；用 TX 行验证环形缓冲的逐行裁剪。
+        model.append(TrafficModel::Tx, QByteArrayLiteral("\x01\x02"), QStringLiteral("TEST"));
     model.flushPending();
     QCOMPARE(model.count(), 10);
     QCOMPARE(model.data(model.index(0, 0), TrafficModel::SizeRole), QVariant(2));

@@ -13,7 +13,7 @@ ApplicationWindow {
     minimumWidth: 1100
     minimumHeight: 680
     visible: true
-    title: "CommStudio · 一体化通信调试平台"
+    title: I18n.t("CommStudio · Integrated Communication Workbench", "CommStudio · 一体化通信调试平台")
     color: Theme.background
     font.family: Theme.fontFamily
 
@@ -198,8 +198,8 @@ ApplicationWindow {
 
                         StatusPill {
                             text: root.anyConnected()
-                                  ? Studio.activeConnections + " 个连接活动"
-                                  : "未建立连接"
+                                  ? I18n.count(Studio.activeConnections, "active", " 个连接活动")
+                                  : I18n.t("No connection", "未建立连接")
                             accent: root.anyConnected() ? Theme.success : Theme.textTertiary
                         }
 
@@ -207,7 +207,7 @@ ApplicationWindow {
                             compact: true
                             textPixelSize: 12
                             leadingSymbol: "⏻"
-                            text: "全部断开"
+                            text: I18n.t("Disconnect all", "全部断开")
                             variant: "primary"
                             enabled: root.anyConnected()
                             onClicked: {
@@ -218,14 +218,14 @@ ApplicationWindow {
                                     BluetoothManager.disconnectDevice()
                                 if (NetworkManager.open)
                                     NetworkManager.close()
-                                root.showToast("已断开全部连接", Theme.warning)
+                                root.showToast(I18n.t("All connections disconnected", "已断开全部连接"), Theme.warning)
                             }
                         }
 
                         AppButton {
                             compact: true
                             textPixelSize: 12
-                            text: Theme.dark ? "浅色" : "深色"
+                            text: Theme.dark ? I18n.t("Light", "浅色") : I18n.t("Dark", "深色")
                             variant: "text"
                             onClicked: Theme.dark = !Theme.dark
                         }
@@ -276,7 +276,7 @@ ApplicationWindow {
                                         Item { Layout.fillWidth: true }
 
                                         Text {
-                                            text: Studio.activeConnections + " 活动"
+                                            text: I18n.count(Studio.activeConnections, "active", " 活动")
                                             color: Theme.textTertiary
                                             font.family: Theme.fontFamily
                                             font.pixelSize: 11
@@ -325,10 +325,10 @@ ApplicationWindow {
 
                                 Repeater {
                                     model: [
-                                        { label: "串口调试", symbol: "⌁", page: 0 },
+                                        { label: I18n.t("Serial", "串口调试"), symbol: "⌁", page: 0 },
                                         { label: "Modbus", symbol: "▦", page: 1 },
-                                        { label: "蓝牙", symbol: "◈", page: 2 },
-                                        { label: "网络", symbol: "⇌", page: 3 }
+                                        { label: I18n.t("Bluetooth", "蓝牙"), symbol: "◈", page: 2 },
+                                        { label: I18n.t("Network", "网络"), symbol: "⇌", page: 3 }
                                     ]
 
                                     delegate: NavItem {
@@ -360,9 +360,9 @@ ApplicationWindow {
 
                                 Repeater {
                                     model: [
-                                        { label: "工具箱", symbol: "⚒", page: 4 },
-                                        { label: "运行日志", symbol: "▤", page: 5 },
-                                        { label: "设置", symbol: "⚙", page: 6 }
+                                        { label: I18n.t("Tools", "工具箱"), symbol: "⚒", page: 4 },
+                                        { label: I18n.t("Run log", "运行日志"), symbol: "▤", page: 5 },
+                                        { label: I18n.t("Settings", "设置"), symbol: "⚙", page: 6 }
                                     ]
 
                                     delegate: NavItem {
@@ -462,7 +462,8 @@ ApplicationWindow {
 
                         Text {
                             text: "RX " + Studio.totalRx + " B · TX " + Studio.totalTx
-                                  + " B · 连接 " + Studio.activeConnections + " 个"
+                                  + " B · " + I18n.t("Connections ", "连接 ")
+                                  + I18n.count(Studio.activeConnections, "", " 个")
                             color: Theme.textTertiary
                             font.family: "Consolas"
                             font.pixelSize: 11

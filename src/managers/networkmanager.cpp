@@ -47,7 +47,7 @@ NetworkManager::NetworkManager(QObject *parent)
     m_reconnectTimer.setInterval(2000);
     connect(&m_reconnectTimer, &QTimer::timeout, this, [this] {
         if (!isOpen() && !m_userClose && m_mode == QLatin1String("tcpClient"))
-            open();
+            openConnection();
     });
 
     connect(&m_timerSend, &QTimer::timeout, this, [this] {
@@ -240,7 +240,7 @@ QHostAddress bindAddressOf(const QString &name)
     return QHostAddress(name);
 }
 
-void NetworkManager::open()
+void NetworkManager::openConnection()
 {
     if (isOpen()) {
         close();

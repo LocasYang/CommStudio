@@ -10,8 +10,20 @@
 Studio::Studio(QObject *parent)
     : QObject(parent)
 {
+    QSettings settings;
+    const QString savedLanguage = settings.value(QStringLiteral("ui/language"),
+                                                  QStringLiteral("en")).toString();
+    m_language = savedLanguage == QLatin1String("zh-CN")
+                     ? QStringLiteral("zh-CN") : QStringLiteral("en");
+    m_statusMessage = localize(QStringLiteral("Ready"), QStringLiteral("就绪"));
     appendLog(QDateTime::currentDateTime().toString(QStringLiteral("HH:mm:ss")),
-              QStringLiteral("info"), QStringLiteral("CommStudio 已启动"));
+              QStringLiteral("info"), localize(QStringLiteral("CommStudio started"),
+                                                 QStringLiteral("CommStudio 已启动")));
+}
+
+QString Studio::localize(const QString &english, const QString &chinese) const
+{
+    return m_language == QLatin1String("zh-CN") ? chinese : english;
 }
 
 bool Studio::startDark() const
@@ -100,4 +112,18 @@ void Studio::setStatusMessage(const QString &message)
         return;
     m_statusMessage = message;
     emit statusMessageChanged();
+}
+
+void Studio::setLanguage(const QString &language)
+{
+    const QString normalized = language == QLatin1String("zh-CN")
+                                 ? QStringLiteral("zh-CN") : QStringLiteral("en");
+    if (m_language == normalized)
+        return;
+    m_language = normalized;
+    QSettings settings;
+    settings.setValue(QStringLiteral("ui/language"), m_language);
+    if (m_statusMessage == QLatin1String("Ready") || m_statusMessage == QStringLiteral("就绪"))
+        setStatusMessage(localize(QStringLiteral("Ready"), QStringLiteral("就绪")));
+    emit languageChanged();
 }

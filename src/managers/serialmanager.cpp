@@ -73,7 +73,10 @@ SerialManager::SerialManager(QObject *parent)
     m_fileTimer.setSingleShot(true);
     connect(&m_fileTimer, &QTimer::timeout, this, &SerialManager::onFileChunk);
 
-    m_traffic->appendInfo(QStringLiteral("串口助手就绪 · 刷新端口后选择设备并打开连接"));
+    m_traffic->appendInfo(g_studio
+                              ? g_studio->localize(QStringLiteral("Serial assistant ready · refresh ports, choose a device, and open a connection"),
+                                                   QStringLiteral("串口助手就绪 · 刷新端口后选择设备并打开连接"))
+                              : QStringLiteral("Serial assistant ready"));
     refreshPorts();
     loadSettings();
 }
@@ -88,7 +91,11 @@ QString SerialManager::configSummary() const
                          : m_flowControl == QLatin1String("rtscts") ? QStringLiteral("RTS/CTS")
                          : QStringLiteral("XON/XOFF");
     return QStringLiteral("%1 · %2 · %3-%4-%5 · %6")
-        .arg(m_portName.isEmpty() ? QStringLiteral("未选择端口") : m_portName)
+        .arg(m_portName.isEmpty()
+                 ? (g_studio ? g_studio->localize(QStringLiteral("No port selected"),
+                                                   QStringLiteral("未选择端口"))
+                             : QStringLiteral("No port selected"))
+                 : m_portName)
         .arg(m_baudRate)
         .arg(m_dataBits).arg(parity).arg(QString::number(m_stopBits))
         .arg(flow);
@@ -328,7 +335,7 @@ void SerialManager::applyConfig()
     m_port->setFlowControl(flow);
 }
 
-void SerialManager::open()
+void SerialManager::openConnection()
 {
     if (isOpen()) {
         close();
@@ -398,10 +405,17 @@ void SerialManager::handlePortError(QSerialPort::SerialPortError error)
 {
     if (error == QSerialPort::NoError)
         return;
-    // 从未选择端口的句柄噪声（枚举/构造阶段）不作为异常展示。
-    if (!m_port->isOpen() && !m_reconnectTimer.isActive() && m_portName.isEmpty())
+    // 手动关闭会撤销底层 Win32 串口句柄；驱动在此期间上报的错误不应被
+    // 误判为意外断线，也不应再次触发“串口异常”提示。
+    if (m_userClose)
         return;
-    // 资源类错误（拔线 / 被占用 / 设备消失）触发重连；打开前静默忽略。
+    // 没有处于已打开状态的端口，就不是运行中的链路掉线。启动时恢复的
+    // 端口名称、打开失败后的残留回调以及 close() 后的第二个回调都忽略，
+    // 避免在没有用户操作时显示“句柄无效”。打开失败由 openConnection()
+    // 自己给出明确的失败提示。
+    if (!m_port->isOpen())
+        return;
+    // 资源类错误（拔线 / 被占用 / 设备消失）触发重连。
     const bool fatal = error == QSerialPort::ResourceError
                        || error == QSerialPort::DeviceNotFoundError
                        || error == QSerialPort::PermissionError
@@ -419,7 +433,9 @@ void SerialManager::handlePortError(QSerialPort::SerialPortError error)
     if (g_studio) {
         g_studio->log(QStringLiteral("error"), message);
         g_studio->addTraffic(0, 0, -1);
+        g_studio->setStatusMessage(message);
     }
+    emit toastRequested(message, false);
     emit openChanged();
     if (m_autoReconnect && !m_userClose && !m_portName.isEmpty())
         scheduleReconnect();

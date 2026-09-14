@@ -6,7 +6,8 @@
 #include <QUrl>
 
 namespace {
-constexpr int FlushIntervalMs = 30;
+constexpr int FlushIntervalMs = 15;
+constexpr qint64 RxMergeWindowMs = 15;
 constexpr int MaxPayloadDisplay = 512;
 } // namespace
 
@@ -14,8 +15,8 @@ TrafficModel::TrafficModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     m_flushTimer.setInterval(FlushIntervalMs);
+    m_flushTimer.setSingleShot(true);
     connect(&m_flushTimer, &QTimer::timeout, this, &TrafficModel::flushPending);
-    m_flushTimer.start();
 }
 
 int TrafficModel::rowCount(const QModelIndex &parent) const
@@ -71,8 +72,11 @@ void TrafficModel::setPaused(bool paused)
         return;
     m_paused = paused;
     emit pausedChanged();
-    if (!m_paused)
+    if (m_paused) {
+        m_flushTimer.stop();
+    } else {
         flushPending();
+    }
 }
 
 void TrafficModel::setMaxRows(int rows)
@@ -95,6 +99,7 @@ void TrafficModel::setMaxBytes(qint64 bytes)
 
 void TrafficModel::clear()
 {
+    m_flushTimer.stop();
     beginResetModel();
     m_rows.clear();
     m_pending.clear();
@@ -114,12 +119,31 @@ void TrafficModel::append(int direction, const QByteArray &payload, const QStrin
     row.plain = false;
     row.payload = payload;
     row.peer = peer;
+    // 同一端口在 15 ms 内连续到达的 RX 片段通常属于同一帧。合并发生在
+    // 已有的模型待刷新队列中，界面只等待一个刷新窗口，不再叠加串口层定时器。
+    if (direction == Rx && !m_pending.isEmpty()) {
+        Row &last = m_pending.last();
+        if (last.direction == Rx && !last.plain && last.peer == peer
+            && row.timestampMs - last.timestampMs <= RxMergeWindowMs) {
+            last.payload += payload;
+            m_pendingBytes += payload.size();
+            while (m_pending.size() > m_maxRows || m_pendingBytes > m_maxBytes) {
+                m_pendingBytes -= m_pending.constFirst().payload.size();
+                m_pending.removeFirst();
+            }
+            if (!m_paused && !m_flushTimer.isActive())
+                m_flushTimer.start();
+            return;
+        }
+    }
     m_pending.append(row);
     m_pendingBytes += payload.size();
     while (m_pending.size() > m_maxRows || m_pendingBytes > m_maxBytes) {
         m_pendingBytes -= m_pending.constFirst().payload.size();
         m_pending.removeFirst();
     }
+    if (!m_paused && !m_flushTimer.isActive())
+        m_flushTimer.start();
 }
 
 void TrafficModel::appendInfo(const QString &text, bool isError)
@@ -135,6 +159,8 @@ void TrafficModel::appendInfo(const QString &text, bool isError)
         m_pendingBytes -= m_pending.constFirst().payload.size();
         m_pending.removeFirst();
     }
+    if (!m_paused && !m_flushTimer.isActive())
+        m_flushTimer.start();
 }
 
 QString TrafficModel::rowText(int row) const

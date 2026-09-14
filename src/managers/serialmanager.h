@@ -96,7 +96,8 @@ public:
     QString fileRate() const { return m_fileRate; }
 
     Q_INVOKABLE void refreshPorts();
-    Q_INVOKABLE void open();
+    // QML 中 open 是连接状态属性，动作使用独立名称避免属性遮蔽方法。
+    Q_INVOKABLE void openConnection();
     Q_INVOKABLE void close();
     Q_INVOKABLE QString send(const QString &text);
     Q_INVOKABLE void startTimerSend(const QString &text, int intervalMs, int repeatCount);

@@ -6,7 +6,7 @@
 #include <QVector>
 
 // 统一收发流量模型：所有调试助手（串口 / Modbus / 蓝牙 / 网络）的接收区
-// 都绑定一个 TrafficModel 实例。行数据先进入 pending 缓冲，由 30 ms 定时器
+// 都绑定一个 TrafficModel 实例。行数据先进入 pending 缓冲，并在短刷新窗口后
 // 批量刷入视图，避免高速数据流下逐行刷新拖垮 UI（设计手册 2.3 / 6.9）。
 // 模型只保留最近 maxRows 行（环形缓冲），全量数据可经 exportToFile 落盘。
 class TrafficModel : public QAbstractListModel

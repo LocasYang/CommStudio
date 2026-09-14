@@ -87,7 +87,7 @@ public:
     int lastResponseMs() const { return m_lastResponseMs; }
 
     Q_INVOKABLE void refreshPorts();
-    Q_INVOKABLE void open();
+    Q_INVOKABLE void openConnection();
     Q_INVOKABLE void close();
     // 主站手动请求：fc 为 1/2/3/4 读；写用 writeValues。
     Q_INVOKABLE void manualRead(int slave, int functionCode, int address, int count);

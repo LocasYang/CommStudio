@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(CommStudio VERSION 0.1.0 LANGUAGES CXX)
+project(CommStudio VERSION 0.1.0 LANGUAGES CXX RC)
 
 include(CTest)
 
@@ -24,6 +24,7 @@ qt_add_executable(CommStudio
     src/main.cpp
     src/windowchrome.cpp
     src/windowchrome.h
+    resources/commstudio.rc
 
     src/core/trafficmodel.cpp
     src/core/trafficmodel.h
@@ -49,6 +50,7 @@ qt_add_executable(CommStudio
 )
 
 set_source_files_properties(qml/Theme.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
+set_source_files_properties(qml/I18n.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 
 qt_add_qml_module(CommStudio
     URI CommStudio
@@ -58,6 +60,7 @@ qt_add_qml_module(CommStudio
     QML_FILES
         qml/Main.qml
         qml/Theme.qml
+        qml/I18n.qml
         qml/components/AppButton.qml
         qml/components/AppCard.qml
         qml/components/AppComboBox.qml
@@ -125,6 +128,9 @@ add_custom_command(TARGET CommStudio POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_CURRENT_SOURCE_DIR}/README.md"
             "${COMM_STUDIO_DIST_DIR}/README.md"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/README.zh-CN.md"
+            "${COMM_STUDIO_DIST_DIR}/README.zh-CN.md"
     COMMENT "Synchronizing CommStudio.exe to dist"
     VERBATIM
 )

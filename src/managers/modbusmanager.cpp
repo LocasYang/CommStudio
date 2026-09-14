@@ -303,7 +303,7 @@ void ModbusManager::closeLink(LinkRole role)
     }
 }
 
-void ModbusManager::open()
+void ModbusManager::openConnection()
 {
     if (isOpen() || simulatorRunning()) {
         close();
