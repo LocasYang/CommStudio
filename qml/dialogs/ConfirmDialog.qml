@@ -16,6 +16,7 @@ Dialog {
     property string riskText: "常规操作"
     property string confirmText: "确认"
     property var infoRows: []
+    readonly property bool errorTone: control.accent === Theme.error
     signal operationConfirmed()
 
     width: 520
@@ -33,7 +34,7 @@ Dialog {
         color: Theme.surface
         radius: Theme.radiusLarge
         border.width: 1
-        border.color: Theme.alpha(control.accent, 0.42)
+        border.color: Theme.alpha(control.accent, control.errorTone ? 0.55 : 0.42)
 
         Behavior on color { ColorAnimation { duration: Theme.durationNormal } }
     }
@@ -56,7 +57,10 @@ Dialog {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 64
-            color: Theme.alpha(control.accent, Theme.dark ? 0.18 : 0.10)
+            // Error confirmations keep the surface neutral; the accent is
+            // carried by the pill, border, indicator line and action button.
+            color: control.errorTone ? Theme.surfaceRaised
+                                     : Theme.alpha(control.accent, Theme.dark ? 0.18 : 0.10)
             radius: Theme.radiusLarge
 
             Rectangle {
@@ -65,6 +69,14 @@ Dialog {
                 anchors.bottom: parent.bottom
                 height: Theme.radiusLarge
                 color: parent.color
+            }
+
+            Rectangle {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                height: 2
+                color: Theme.alpha(control.accent, control.errorTone ? 0.72 : 0.42)
             }
 
             RowLayout {
@@ -129,7 +141,7 @@ Dialog {
         ColumnLayout {
             Layout.fillWidth: true
             Layout.margins: 20
-            spacing: 14
+            spacing: 10
 
             Text {
                 Layout.fillWidth: true
@@ -215,7 +227,8 @@ Dialog {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 72
-            color: Theme.alpha(control.accent, Theme.dark ? 0.18 : 0.10)
+            color: control.errorTone ? Theme.surfaceRaised
+                                     : Theme.alpha(control.accent, Theme.dark ? 0.18 : 0.10)
             radius: Theme.radiusLarge
 
             Rectangle {
@@ -231,7 +244,7 @@ Dialog {
                 anchors.right: parent.right
                 anchors.top: parent.top
                 height: 1
-                color: Theme.alpha(control.accent, 0.20)
+                color: Theme.alpha(control.accent, control.errorTone ? 0.42 : 0.20)
             }
 
             RowLayout {

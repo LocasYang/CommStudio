@@ -10,7 +10,7 @@
                 },
                 {
                     "access": "public",
-                    "name": "open",
+                    "name": "openConnection",
                     "returnType": "void"
                 },
                 {

@@ -1,0 +1,29 @@
+module CommStudio
+typeinfo CommStudio.qmltypes
+prefer :/qt/qml/CommStudio/
+Main 1.0 qml/Main.qml
+singleton Theme 1.0 qml/Theme.qml
+singleton I18n 1.0 qml/I18n.qml
+AppButton 1.0 qml/components/AppButton.qml
+AppCard 1.0 qml/components/AppCard.qml
+AppComboBox 1.0 qml/components/AppComboBox.qml
+NavItem 1.0 qml/components/NavItem.qml
+StatusPill 1.0 qml/components/StatusPill.qml
+DataUnavailableState 1.0 qml/components/DataUnavailableState.qml
+AppTextField 1.0 qml/components/AppTextField.qml
+AppCheckBox 1.0 qml/components/AppCheckBox.qml
+FormRow 1.0 qml/components/FormRow.qml
+ModbusDataMonitor 1.0 qml/components/ModbusDataMonitor.qml
+TerminalView 1.0 qml/components/TerminalView.qml
+SendPanel 1.0 qml/components/SendPanel.qml
+ConfirmDialog 1.0 qml/dialogs/ConfirmDialog.qml
+ModbusDiagnosticsDrawer 1.0 qml/dialogs/ModbusDiagnosticsDrawer.qml
+ModbusTrendWindow 1.0 qml/dialogs/ModbusTrendWindow.qml
+SerialPage 1.0 qml/pages/SerialPage.qml
+ModbusPage 1.0 qml/pages/ModbusPage.qml
+BluetoothPage 1.0 qml/pages/BluetoothPage.qml
+NetworkPage 1.0 qml/pages/NetworkPage.qml
+ToolboxPage 1.0 qml/pages/ToolboxPage.qml
+LogPage 1.0 qml/pages/LogPage.qml
+SettingsPage 1.0 qml/pages/SettingsPage.qml
+

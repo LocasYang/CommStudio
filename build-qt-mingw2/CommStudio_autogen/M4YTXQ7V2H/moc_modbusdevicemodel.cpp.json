@@ -1,0 +1,55 @@
+{
+    "classes": [
+        {
+            "className": "ModbusDeviceModel",
+            "enums": [
+                {
+                    "isClass": false,
+                    "isFlag": false,
+                    "name": "Role",
+                    "values": [
+                        "NameRole",
+                        "UnitIdRole",
+                        "OnlineRole",
+                        "LabelRole",
+                        "IdRole"
+                    ]
+                }
+            ],
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "index",
+                            "type": "int"
+                        },
+                        {
+                            "name": "name",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "renameDevice",
+                    "returnType": "bool"
+                }
+            ],
+            "object": true,
+            "qualifiedClassName": "ModbusDeviceModel",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "definitionsChanged",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QAbstractListModel"
+                }
+            ]
+        }
+    ],
+    "inputFile": "modbusdevicemodel.h",
+    "outputRevision": 68
+}

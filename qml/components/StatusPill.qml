@@ -11,7 +11,7 @@ Rectangle {
 
     implicitWidth: row.implicitWidth + Math.round(18 * scaleFactor)
     implicitHeight: Math.round(26 * scaleFactor)
-    radius: height / 2
+    radius: 4
     color: Theme.alpha(accent, Theme.dark ? 0.17 : 0.10)
     border.width: 1
     border.color: Theme.alpha(accent, 0.24)

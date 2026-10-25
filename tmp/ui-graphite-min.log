@@ -1,0 +1,3 @@
+WARN: QQmlApplicationEngine failed to load component
+WARN: qrc:/qt/qml/CommStudio/qml/Main.qml:82:21: Type AppIcon unavailable (qrc:/qt/qml/CommStudio/qml/Main.qml:82)
+WARN: qrc:/qt/qml/CommStudio/qml/components/AppIcon.qml:9:40: Invalid property assignment: "implicitHeight" is a read-only property (qrc:/qt/qml/CommStudio/qml/components/AppIcon.qml:9)

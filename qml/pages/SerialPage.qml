@@ -99,9 +99,17 @@ Item {
                 padding: 12
                 cornerRadius: 7
 
-                ColumnLayout {
+                ScrollView {
+                    id: configurationScroll
                     anchors.fill: parent
-                        spacing: 7
+                    clip: true
+                    contentWidth: availableWidth
+                    contentHeight: configurationColumn.implicitHeight
+
+                ColumnLayout {
+                    id: configurationColumn
+                    width: configurationScroll.availableWidth
+                    spacing: 7
 
                     Text {
                         text: I18n.t("Serial configuration", "串口配置")
@@ -175,7 +183,7 @@ Item {
                                     "230400", "460800", "921600", I18n.t("Custom", "自定义")]
                             currentIndex: baudCombo.indexForRate(SerialManager.baudRate)
                             onActivated: (index) => {
-                                if (index === 9)
+                                if (index === 8)
                                     return
                                 SerialManager.baudRate = baudCombo.model[index]
                             }
@@ -183,13 +191,13 @@ Item {
                                 const list = ["9600", "19200", "38400", "57600", "115200",
                                               "230400", "460800", "921600"]
                                 const idx = list.indexOf(rate)
-                                return idx >= 0 ? idx : 9
+                                return idx >= 0 ? idx : 8
                             }
                         }
                     }
 
                     FormRow {
-                        visible: baudCombo.currentIndex === 9
+                        visible: baudCombo.currentIndex === 8
                         label: I18n.t("Custom", "自定义")
                         AppTextField {
                             Layout.fillWidth: true
@@ -216,9 +224,9 @@ Item {
                         AppComboBox {
                             enabled: !root.configLocked
                             Layout.fillWidth: true
-                            model: [I18n.t("None", "无 (None)"), I18n.t("Even", "偶 (Even)"),
-                                    I18n.t("Odd", "奇 (Odd)"), I18n.t("Mark", "标记 (Mark)"),
-                                    I18n.t("Space", "空格 (Space)")]
+                            model: [I18n.t("None", "无"), I18n.t("Even", "偶校验"),
+                                    I18n.t("Odd", "奇校验"), I18n.t("Mark", "标记校验"),
+                                    I18n.t("Space", "空格校验")]
                             currentIndex: ["none", "even", "odd", "mark", "space"]
                                             .indexOf(SerialManager.parity)
                             onActivated: (index) => SerialManager.parity =
@@ -312,7 +320,7 @@ Item {
                             Layout.preferredHeight: 30
                             compact: true
                             textPixelSize: 12
-                            text: "Break"
+                            text: I18n.t("Break", "中断信号")
                             enabled: root.connected
                             onClicked: SerialManager.sendBreak(100)
                         }
@@ -328,7 +336,7 @@ Item {
                         StatusPill { text: "RI"; accent: SerialManager.pinRi ? Theme.success : Theme.textTertiary; dot: false; scaleFactor: 0.82 }
                     }
 
-                    Item { Layout.fillHeight: true }
+                    Item { Layout.preferredHeight: 12 }
 
                     Text {
                         Layout.fillWidth: true
@@ -339,6 +347,7 @@ Item {
                         wrapMode: Text.WordWrap
                         lineHeight: 1.3
                     }
+                }
                 }
             }
 
@@ -355,8 +364,12 @@ Item {
                     cornerRadius: 7
 
                     TerminalView {
+                        objectName: "serialTerminal"
                         anchors.fill: parent
                         model: SerialManager.traffic
+                        displayMode: 0
+                        allowHideSent: true
+                        showSentMessages: true
                         emptyHint: root.connected
                                    ? SerialManager.configSummary + "\n\n等待串口数据 · RX 0 B"
                                    : I18n.t("Serial port is not connected\n\nChoose a port and select Open serial port.", "尚未连接串口\n\n请选择端口并点击“打开串口”")

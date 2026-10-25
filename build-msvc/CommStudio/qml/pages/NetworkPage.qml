@@ -38,7 +38,7 @@ Item {
             spacing: 10
 
             Text {
-                text: "网络"
+                text: I18n.t("Network", "网络")
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily
                 font.pixelSize: 22
@@ -79,7 +79,7 @@ Item {
                     spacing: 9
 
                     Text {
-                        text: "连接模式"
+                        text: I18n.t("Connection mode", "连接模式")
                         color: Theme.textPrimary
                         font.family: Theme.fontFamily
                         font.pixelSize: 14
@@ -111,7 +111,7 @@ Item {
                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.divider }
 
                     Text {
-                        text: root.isTcpClient ? "TCP 客户端"
+                        text: root.isTcpClient ? I18n.t("TCP client", "TCP 客户端")
                               : root.isTcpServer ? "TCP 服务端" : "UDP"
                         color: Theme.textPrimary
                         font.family: Theme.fontFamily
@@ -121,7 +121,7 @@ Item {
 
                     FormRow {
                         visible: root.isTcpClient
-                        label: "远端"
+                        label: I18n.t("Remote", "远端")
                         RowLayout {
                             spacing: 6
 
@@ -145,7 +145,7 @@ Item {
 
                     FormRow {
                         visible: !root.isTcpClient
-                        label: "本地端口"
+                        label: I18n.t("Local port", "本地端口")
                         AppTextField {
                             Layout.fillWidth: true
                             mono: true
@@ -155,7 +155,7 @@ Item {
                     }
 
                     FormRow {
-                        label: "绑定网卡"
+                        label: I18n.t("Bind interface", "绑定网卡")
                         AppComboBox {
                             id: bindCombo
                             Layout.fillWidth: true
@@ -178,14 +178,14 @@ Item {
 
                     AppCheckBox {
                         visible: root.isTcpClient
-                        text: "断线自动重连（2 s）"
+                        text: I18n.t("Auto reconnect after disconnect (2 s)", "断线自动重连（2 s）")
                         checked: NetworkManager.autoReconnect
                         onToggled: NetworkManager.autoReconnect = checked
                     }
 
                     AppCheckBox {
                         visible: root.isUdp
-                        text: "发送到广播地址 (255.255.255.255)"
+                        text: I18n.t("Send to broadcast address (255.255.255.255)", "发送到广播地址 (255.255.255.255)")
                         checked: NetworkManager.broadcast
                         onToggled: NetworkManager.broadcast = checked
                     }
@@ -206,14 +206,14 @@ Item {
                         AppButton {
                             compact: true
                             textPixelSize: 11
-                            text: "加入组播"
+                            text: I18n.t("Join multicast", "加入组播")
                             onClicked: NetworkManager.joinMulticast(multicastField.text)
                         }
 
                         AppButton {
                             compact: true
                             textPixelSize: 11
-                            text: "退出"
+                            text: I18n.t("Leave", "退出")
                             variant: "text"
                             onClicked: NetworkManager.leaveMulticast()
                         }
@@ -222,10 +222,10 @@ Item {
                     AppButton {
                         Layout.fillWidth: true
                         text: root.connected
-                              ? (root.isTcpServer ? "停止监听" : root.isUdp ? "解绑端口" : "断开连接")
-                              : (root.isTcpServer ? "开始监听" : root.isUdp ? "绑定端口" : "连接")
+                              ? (root.isTcpServer ? I18n.t("Stop listening", "停止监听") : root.isUdp ? I18n.t("Unbind port", "解绑端口") : I18n.t("Disconnect", "断开连接"))
+                              : (root.isTcpServer ? I18n.t("Start listening", "开始监听") : root.isUdp ? I18n.t("Bind port", "绑定端口") : I18n.t("Connect", "连接"))
                         variant: root.connected ? "danger" : "primary"
-                        onClicked: NetworkManager.open()
+                        onClicked: NetworkManager.openConnection()
                     }
 
                     // TCP 服务端客户端列表
@@ -240,7 +240,7 @@ Item {
                             Layout.fillWidth: true
 
                             Text {
-                                text: "客户端会话"
+                                text: I18n.t("Client sessions", "客户端会话")
                                 color: Theme.textPrimary
                                 font.family: Theme.fontFamily
                                 font.pixelSize: 13
@@ -252,7 +252,7 @@ Item {
                             AppButton {
                                 compact: true
                                 textPixelSize: 11
-                                text: "断开选中"
+                                text: I18n.t("Disconnect selected", "断开选中")
                                 variant: "danger"
                                 onClicked: NetworkManager.disconnectClient(
                                                clientList.currentId)
@@ -319,7 +319,7 @@ Item {
                             Text {
                                 anchors.centerIn: parent
                                 visible: NetworkManager.clients.length === 0
-                                text: "暂无客户端接入"
+                                text: I18n.t("No clients connected", "暂无客户端接入")
                                 color: Theme.textTertiary
                                 font.family: Theme.fontFamily
                                 font.pixelSize: 11
@@ -330,7 +330,7 @@ Item {
                     // TCP 分帧（粘包处理）
                     FormRow {
                         visible: root.isTcpClient || root.isTcpServer
-                        label: "应用分帧"
+                        label: I18n.t("Application framing", "应用分帧")
                         AppComboBox {
                             Layout.fillWidth: true
                             model: ["原始流", "按行 \\n", "固定长度", "空闲间隔 50ms"]
@@ -344,7 +344,7 @@ Item {
                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.divider }
 
                     Text {
-                        text: "自动回复规则"
+                        text: I18n.t("Auto-reply rules", "自动回复规则")
                         color: Theme.textPrimary
                         font.family: Theme.fontFamily
                         font.pixelSize: 13
@@ -353,7 +353,7 @@ Item {
 
                     Text {
                         Layout.fillWidth: true
-                        text: "收到的数据匹配规则时自动回复（可用于模拟服务器应答）。"
+                        text: I18n.t("Reply automatically when received data matches a rule (useful for server-response simulation).", "收到的数据匹配规则时自动回复（可用于模拟服务器应答）。")
                         color: Theme.textTertiary
                         font.family: Theme.fontFamily
                         font.pixelSize: 10
@@ -375,7 +375,7 @@ Item {
 
                                 AppCheckBox {
                                     id: ruleEnable
-                                    text: "规则 " + (ruleCard.index + 1)
+                                    text: I18n.t("Rule ", "规则 ") + (ruleCard.index + 1)
                                     checked: false
                                     onToggled: ruleCard.pushRule()
                                 }
@@ -466,7 +466,7 @@ Item {
                     TerminalView {
                         anchors.fill: parent
                         model: NetworkManager.traffic
-                        emptyHint: "等待网络数据 · TCP 保留来源地址，UDP 保留对端地址与端口"
+                        emptyHint: I18n.t("Waiting for network data · TCP retains the source address; UDP retains peer address and port", "等待网络数据 · TCP 保留来源地址，UDP 保留对端地址与端口")
                         onToastRequested: (text, ok) => root.toastRequested(text, ok)
                     }
                 }
@@ -480,8 +480,8 @@ Item {
                         anchors.fill: parent
                         manager: NetworkManager
                         showFile: false
-                        sendLabel: root.isTcpServer ? "发送到选中 / 全部" : "发送"
-                        hint: root.isUdp ? "UDP 按远端地址发送" : "TCP Client 单播 · Server 可多播"
+                        sendLabel: root.isTcpServer ? I18n.t("Send to selected / all", "发送到选中 / 全部") : I18n.t("Send", "发送")
+                        hint: root.isUdp ? I18n.t("UDP sends to the remote address", "UDP 按远端地址发送") : I18n.t("TCP client unicast · server can multicast", "TCP Client 单播 · Server 可多播")
                         onToastRequested: (text, ok) => root.toastRequested(text, ok)
                     }
                 }

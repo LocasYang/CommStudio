@@ -1,0 +1,98 @@
+[
+  {
+    "name": "dark-collapsed",
+    "width": 1840,
+    "height": 1120,
+    "navigationWidth": 72,
+    "navigationCollapsed": true,
+    "passed": true
+  },
+  {
+    "name": "dark-expanded-minimum",
+    "width": 1100,
+    "height": 700,
+    "navigationWidth": 210,
+    "navigationCollapsed": false,
+    "passed": true
+  },
+  {
+    "name": "light-collapsed",
+    "width": 1460,
+    "height": 900,
+    "navigationWidth": 72,
+    "navigationCollapsed": true,
+    "passed": true
+  },
+  {
+    "name": "tree-details-minimum",
+    "width": 1100,
+    "height": 700,
+    "navigationWidth": 210,
+    "navigationCollapsed": false,
+    "passed": true
+  },
+  {
+    "name": "traffic-hidden-minimum",
+    "width": 1100,
+    "height": 700,
+    "navigationWidth": 210,
+    "navigationCollapsed": false,
+    "passed": true
+  },
+  {
+    "name": "traffic-expanded",
+    "width": 1100,
+    "height": 700,
+    "navigationWidth": 72,
+    "navigationCollapsed": true,
+    "passed": true
+  },
+  {
+    "name": "statistics",
+    "width": 1100,
+    "height": 700,
+    "navigationWidth": 72,
+    "navigationCollapsed": true,
+    "passed": true
+  },
+  {
+    "name": "nested-channel-configuration",
+    "width": 1100,
+    "height": 700,
+    "navigationWidth": 72,
+    "navigationCollapsed": true,
+    "passed": true
+  },
+  {
+    "name": "advanced-parameters",
+    "width": 1100,
+    "height": 700,
+    "navigationWidth": 72,
+    "navigationCollapsed": true,
+    "passed": true
+  },
+  {
+    "name": "navigation-toggle",
+    "width": 1100,
+    "height": 700,
+    "navigationWidth": 210,
+    "navigationCollapsed": false,
+    "passed": true
+  },
+  {
+    "name": "navigation-restored",
+    "width": 1100,
+    "height": 700,
+    "navigationWidth": 210,
+    "navigationCollapsed": false,
+    "passed": true
+  },
+  {
+    "name": "serial-theme",
+    "width": 1100,
+    "height": 700,
+    "navigationWidth": 72,
+    "navigationCollapsed": true,
+    "passed": true
+  }
+]

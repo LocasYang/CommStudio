@@ -40,8 +40,12 @@ QVariant TrafficModel::data(const QModelIndex &index, int role) const
     }
     case DataTextRole: {
         const QByteArray shown = row.payload.left(MaxPayloadDisplay);
-        return row.plain ? QString::fromUtf8(shown) : toAsciiText(shown);
+        return row.plain ? QString::fromUtf8(shown) : toDisplayText(shown);
     }
+    case DataAsciiRole:
+        return toAsciiText(row.payload.left(MaxPayloadDisplay));
+    case OmittedBytesRole:
+        return qMax<qsizetype>(0, row.payload.size() - MaxPayloadDisplay);
     case PeerRole:
         return row.peer;
     case SizeRole:
@@ -63,6 +67,8 @@ QHash<int, QByteArray> TrafficModel::roleNames() const
     roles[PeerRole] = "peer";
     roles[SizeRole] = "size";
     roles[PlainRole] = "plain";
+    roles[DataAsciiRole] = "dataAscii";
+    roles[OmittedBytesRole] = "omittedBytes";
     return roles;
 }
 
@@ -188,6 +194,28 @@ QString TrafficModel::rowText(int row) const
     return line;
 }
 
+QString TrafficModel::payloadText(int row) const
+{
+    if (row < 0 || row >= m_rows.size())
+        return {};
+    const Row &item = m_rows.at(row);
+    return item.plain ? QString::fromUtf8(item.payload) : toDisplayText(item.payload);
+}
+
+QString TrafficModel::payloadHex(int row) const
+{
+    if (row < 0 || row >= m_rows.size())
+        return {};
+    return toHexText(m_rows.at(row).payload);
+}
+
+QString TrafficModel::payloadAscii(int row) const
+{
+    if (row < 0 || row >= m_rows.size())
+        return {};
+    return toAsciiText(m_rows.at(row).payload);
+}
+
 bool TrafficModel::exportToFile(const QUrl &path) const
 {
     const QString local = path.toLocalFile().isEmpty() ? path.toString() : path.toLocalFile();
@@ -289,17 +317,42 @@ QString TrafficModel::toAsciiText(const QByteArray &payload)
     for (char byte : payload) {
         const char c = byte;
         if (c == '\r')
-            text += QStringLiteral("␍");
+            text += QStringLiteral("\\r");
         else if (c == '\n')
-            text += QStringLiteral("␊");
+            text += QStringLiteral("\\n");
         else if (c == '\t')
-            text += QStringLiteral("␉");
+            text += QStringLiteral("\\t");
         else if (c == '\0')
-            text += QStringLiteral("␀");
-        else if (static_cast<unsigned char>(c) < 0x20 || static_cast<unsigned char>(c) == 0x7F)
-            text += QChar(0x00B7);
+            text += QStringLiteral("\\0");
+        else if (static_cast<unsigned char>(c) < 0x20 || static_cast<unsigned char>(c) >= 0x7F)
+            text += QStringLiteral("\\x") + QString::number(static_cast<unsigned char>(c), 16).rightJustified(2, QLatin1Char('0')).toUpper();
         else
             text += QLatin1Char(c);
     }
     return text;
+}
+
+QString TrafficModel::toDisplayText(const QByteArray &payload)
+{
+    // TEXT is a readable UTF-8 view. HEX+ASCII remains byte-oriented so a
+    // carriage return is never mistaken for a missing/garbled device response.
+    const QString decoded = QString::fromUtf8(payload);
+    QString result;
+    result.reserve(decoded.size());
+    for (qsizetype i = 0; i < decoded.size(); ++i) {
+        const QChar c = decoded.at(i);
+        if (c == QLatin1Char('\r') || c == QLatin1Char('\n')) {
+            result += QLatin1Char('\n');
+            if (i + 1 < decoded.size() && decoded.at(i + 1) != c
+                && (decoded.at(i + 1) == QLatin1Char('\r') || decoded.at(i + 1) == QLatin1Char('\n')))
+                ++i;
+        } else if (c == QLatin1Char('\0'))
+            result += QStringLiteral("\\0");
+        else if ((c.unicode() < 0x20 && c != QLatin1Char('\n') && c != QLatin1Char('\t'))
+                 || c.unicode() == 0x7f)
+            result += QStringLiteral("\\x") + QString::number(c.unicode(), 16).rightJustified(2, QLatin1Char('0')).toUpper();
+        else
+            result += c;
+    }
+    return result;
 }

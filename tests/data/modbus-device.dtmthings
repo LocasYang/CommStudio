@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MThings>
+  <DEVICE ID="9" Name="模板测试" DeviceType="1" Addr="7">
+    <PORTS><port Name="COM99" /></PORTS>
+    <ATTACH Factory="Test factory" DeviceName="Meter" DeviceModel="Demo" CfgVersion="1.0" />
+    <DATA_LIST>
+      <DATA ID="1" Name="电压" BLOCK="3" Addr="0" PrtcTYPE="1" ShowType="0" sz="2" PointNum="1" Unit="V" Gain="0.1" Offset="0" BitOffset="0" BitNum="16" Range="-10-250" CmdValue="" ByteOder="0" WordOder="0" IntervalTime="1000" IsBRead="1">
+        <TIMEOUT Time="2000" ResendCount="1" />
+        <GROUPS><group Name="测量" /></GROUPS>
+      </DATA>
+      <DATA ID="2" Name="设定值" BLOCK="2" Addr="4" PrtcTYPE="2" ShowType="0" sz="4" PointNum="2" Unit="A" Gain="1" Offset="-1" BitOffset="0" BitNum="32" Range="--" CmdValue="10" ByteOder="1" WordOder="1" IntervalTime="500" IsBRead="0">
+        <TIMEOUT Time="500" ResendCount="0" />
+      </DATA>
+      <DATA ID="3" Name="状态" BLOCK="0" Addr="8" PrtcTYPE="4" ShowType="7" sz="2" PointNum="0" BitOffset="0" BitNum="1" ByteOder="0" WordOder="0" IntervalTime="1000" IsBRead="1">
+        <TIMEOUT Time="2000" ResendCount="0" />
+        <ENUMS><enum Value="0" Name="关闭" /><enum Value="1" Name="运行" /></ENUMS>
+      </DATA>
+    </DATA_LIST>
+  </DEVICE>
+</MThings>

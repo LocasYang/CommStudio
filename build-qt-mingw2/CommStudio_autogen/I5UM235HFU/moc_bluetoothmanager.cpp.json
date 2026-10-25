@@ -1,0 +1,572 @@
+{
+    "classes": [
+        {
+            "className": "BluetoothManager",
+            "methods": [
+                {
+                    "access": "public",
+                    "name": "refreshAdapters",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "startScan",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "stopScan",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "clearDevices",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "index",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "connectDevice",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "disconnectDevice",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "serviceIndex",
+                            "type": "int"
+                        },
+                        {
+                            "name": "charIndex",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "readCharacteristic",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "serviceIndex",
+                            "type": "int"
+                        },
+                        {
+                            "name": "charIndex",
+                            "type": "int"
+                        },
+                        {
+                            "name": "text",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "hexMode",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "withResponse",
+                            "type": "bool"
+                        }
+                    ],
+                    "name": "writeCharacteristic",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "serviceIndex",
+                            "type": "int"
+                        },
+                        {
+                            "name": "charIndex",
+                            "type": "int"
+                        },
+                        {
+                            "name": "enable",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "indicate",
+                            "type": "bool"
+                        }
+                    ],
+                    "name": "setNotify",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "serviceUuid",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "txUuid",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "rxUuid",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "enableUartMode",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "disableUartMode",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "text",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "send",
+                    "returnType": "QString"
+                },
+                {
+                    "access": "public",
+                    "name": "startRfcommDiscovery",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "serviceIndex",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "connectRfcomm",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "disconnectRfcomm",
+                    "returnType": "void"
+                }
+            ],
+            "object": true,
+            "properties": [
+                {
+                    "constant": true,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "name": "traffic",
+                    "read": "traffic",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "TrafficModel*",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 1,
+                    "name": "adapters",
+                    "notify": "adaptersChanged",
+                    "read": "adapters",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QVariantList",
+                    "user": false
+                },
+                {
+                    "constant": true,
+                    "designable": true,
+                    "final": false,
+                    "index": 2,
+                    "name": "backendSupported",
+                    "read": "backendSupported",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 3,
+                    "name": "scanning",
+                    "notify": "scanningChanged",
+                    "read": "scanning",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 4,
+                    "name": "devices",
+                    "notify": "devicesChanged",
+                    "read": "devices",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QVariantList",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 5,
+                    "name": "nameFilter",
+                    "notify": "nameFilterChanged",
+                    "read": "nameFilter",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setNameFilter"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 6,
+                    "name": "leOnly",
+                    "notify": "leOnlyChanged",
+                    "read": "leOnly",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "write": "setLeOnly"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 7,
+                    "name": "leState",
+                    "notify": "leStateChanged",
+                    "read": "leState",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 8,
+                    "name": "connectedDeviceName",
+                    "notify": "leStateChanged",
+                    "read": "connectedDeviceName",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 9,
+                    "name": "mtu",
+                    "notify": "leStateChanged",
+                    "read": "mtu",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 10,
+                    "name": "rssi",
+                    "notify": "leStateChanged",
+                    "read": "rssi",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 11,
+                    "name": "services",
+                    "notify": "servicesChanged",
+                    "read": "services",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QVariantList",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 12,
+                    "name": "selectedService",
+                    "notify": "selectedServiceChanged",
+                    "read": "selectedService",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "setSelectedService"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 13,
+                    "name": "rfcommConnected",
+                    "notify": "rfcommChanged",
+                    "read": "rfcommConnected",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 14,
+                    "name": "rfcommDiscovering",
+                    "notify": "rfcommChanged",
+                    "read": "rfcommDiscovering",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 15,
+                    "name": "rfcommServices",
+                    "notify": "rfcommChanged",
+                    "read": "rfcommServices",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QVariantList",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 16,
+                    "name": "hexSend",
+                    "notify": "hexSendChanged",
+                    "read": "hexSend",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "write": "setHexSend"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 17,
+                    "name": "escapeEnabled",
+                    "notify": "escapeEnabledChanged",
+                    "read": "escapeEnabled",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "write": "setEscapeEnabled"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 18,
+                    "name": "lineEnding",
+                    "notify": "lineEndingChanged",
+                    "read": "lineEnding",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setLineEnding"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 19,
+                    "name": "rxBytes",
+                    "notify": "statsChanged",
+                    "read": "rxBytes",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "qint64",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 20,
+                    "name": "txBytes",
+                    "notify": "statsChanged",
+                    "read": "txBytes",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "qint64",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 21,
+                    "name": "notifyActive",
+                    "notify": "leStateChanged",
+                    "read": "notifyActive",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false
+                }
+            ],
+            "qualifiedClassName": "BluetoothManager",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "adaptersChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "scanningChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "devicesChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "nameFilterChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "leOnlyChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "leStateChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "servicesChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "selectedServiceChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "rfcommChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "hexSendChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "escapeEnabledChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "lineEndingChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "statsChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "text",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "ok",
+                            "type": "bool"
+                        }
+                    ],
+                    "name": "toastRequested",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "bluetoothmanager.h",
+    "outputRevision": 68
+}

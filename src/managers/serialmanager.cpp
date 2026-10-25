@@ -42,8 +42,10 @@ SerialManager::SerialManager(QObject *parent)
     , m_traffic(new TrafficModel(this))
     , m_port(new QSerialPort(this))
 {
-    if (qobject_cast<Studio *>(parent))
+    if (qobject_cast<Studio *>(parent)) {
         g_studio = qobject_cast<Studio *>(parent);
+        connect(g_studio, &Studio::languageChanged, this, &SerialManager::configChanged);
+    }
 
     connect(m_port, &QSerialPort::readyRead, this, &SerialManager::onReadyRead);
     connect(m_port, &QSerialPort::errorOccurred, this, &SerialManager::handlePortError);
@@ -87,7 +89,8 @@ QString SerialManager::configSummary() const
                            : m_parity == QLatin1String("even") ? QStringLiteral("E")
                            : m_parity == QLatin1String("odd") ? QStringLiteral("O")
                            : m_parity.left(1).toUpper();
-    const QString flow = m_flowControl == QLatin1String("none") ? QStringLiteral("None")
+    const QString flow = m_flowControl == QLatin1String("none")
+                         ? (g_studio ? g_studio->localize(QStringLiteral("No flow control"), QStringLiteral("无流控")) : QStringLiteral("No flow control"))
                          : m_flowControl == QLatin1String("rtscts") ? QStringLiteral("RTS/CTS")
                          : QStringLiteral("XON/XOFF");
     return QStringLiteral("%1 · %2 · %3-%4-%5 · %6")

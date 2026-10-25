@@ -39,7 +39,7 @@ Item {
             spacing: 10
 
             Text {
-                text: "蓝牙"
+                text: I18n.t("Bluetooth", "蓝牙")
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily
                 font.pixelSize: 22
@@ -48,7 +48,7 @@ Item {
 
             StatusPill {
                 visible: !BluetoothManager.backendSupported
-                text: "蓝牙后端不可用"
+                text: I18n.t("Bluetooth backend unavailable", "蓝牙后端不可用")
                 accent: Theme.error
                 dot: false
                 scaleFactor: 0.9
@@ -63,7 +63,7 @@ Item {
 
             StatusPill {
                 visible: BluetoothManager.rfcommConnected
-                text: "RFCOMM 已连接"
+                text: I18n.t("RFCOMM connected", "RFCOMM 已连接")
                 accent: Theme.cyan
                 dot: false
                 scaleFactor: 0.9
@@ -71,7 +71,7 @@ Item {
 
             StatusPill {
                 visible: BluetoothManager.notifyActive
-                text: "Notify 订阅中"
+                text: I18n.t("Notify subscribed", "Notify 订阅中")
                 accent: Theme.purple
                 dot: false
                 scaleFactor: 0.9
@@ -112,7 +112,7 @@ Item {
                         spacing: 9
 
                     Text {
-                        text: "本地适配器"
+                        text: I18n.t("Local adapters", "本地适配器")
                         color: Theme.textPrimary
                         font.family: Theme.fontFamily
                         font.pixelSize: 14
@@ -150,7 +150,7 @@ Item {
 
                     Text {
                         visible: BluetoothManager.adapters.length === 0
-                        text: "未检测到本地蓝牙适配器（或系统蓝牙未开启）"
+                        text: I18n.t("No local Bluetooth adapter detected (or system Bluetooth is off)", "未检测到本地蓝牙适配器（或系统蓝牙未开启）")
                         color: Theme.textTertiary
                         font.family: Theme.fontFamily
                         font.pixelSize: 11
@@ -164,7 +164,7 @@ Item {
                         spacing: 8
 
                         Text {
-                            text: "设备扫描"
+                            text: I18n.t("Device scan", "设备扫描")
                             color: Theme.textPrimary
                             font.family: Theme.fontFamily
                             font.pixelSize: 14
@@ -173,7 +173,7 @@ Item {
 
                         StatusPill {
                             visible: BluetoothManager.scanning
-                            text: "扫描中 · 剩余 " + root.scanRemainingSec + " s"
+                            text: I18n.t("Scanning · remaining ", "扫描中 · 剩余 ") + root.scanRemainingSec + " s"
                             accent: Theme.warning
                             dot: true
                             scaleFactor: 0.85
@@ -183,7 +183,7 @@ Item {
 
                         Text {
                             visible: BluetoothManager.devices.length > 0
-                            text: "已发现 " + BluetoothManager.devices.length
+                            text: I18n.t("Discovered ", "已发现 ") + BluetoothManager.devices.length
                             color: Theme.textTertiary
                             font.family: Theme.fontFamily
                             font.pixelSize: 11
@@ -204,7 +204,7 @@ Item {
                         AppButton {
                             compact: true
                             textPixelSize: 12
-                            text: BluetoothManager.scanning ? "停止" : "扫描"
+                            text: BluetoothManager.scanning ? I18n.t("Stop", "停止") : I18n.t("Scan", "扫描")
                             variant: BluetoothManager.scanning ? "danger" : "primary"
                             enabled: BluetoothManager.backendSupported
                             onClicked: BluetoothManager.scanning
@@ -217,7 +217,7 @@ Item {
                         spacing: 8
 
                         AppCheckBox {
-                            text: "仅低功耗 (BLE)"
+                            text: I18n.t("Low Energy only (BLE)", "仅低功耗 (BLE)")
                             checked: BluetoothManager.leOnly
                             onToggled: BluetoothManager.leOnly = checked
                         }
@@ -227,7 +227,7 @@ Item {
                         AppButton {
                             compact: true
                             textPixelSize: 12
-                            text: "清空"
+                            text: I18n.t("Clear", "清空")
                             variant: "text"
                             onClicked: BluetoothManager.clearDevices()
                         }
@@ -336,7 +336,7 @@ Item {
                         Text {
                             anchors.centerIn: parent
                             visible: BluetoothManager.devices.length === 0
-                            text: BluetoothManager.scanning ? "正在扫描附近设备…"
+                            text: BluetoothManager.scanning ? I18n.t("Scanning nearby devices…", "正在扫描附近设备…")
                                                             : "暂无设备 · 点击「扫描」开始"
                             color: Theme.textTertiary
                             font.family: Theme.fontFamily
@@ -346,7 +346,7 @@ Item {
 
                     AppButton {
                         Layout.fillWidth: true
-                        text: "连接选中设备"
+                        text: I18n.t("Connect selected device", "连接选中设备")
                         variant: "primary"
                         enabled: deviceList.selectedIndex >= 0
                                  && deviceList.selectedIndex < BluetoothManager.devices.length
@@ -356,7 +356,7 @@ Item {
 
                     AppButton {
                         Layout.fillWidth: true
-                        text: "断开 BLE"
+                        text: I18n.t("Disconnect BLE", "断开 BLE")
                         variant: "danger"
                         enabled: BluetoothManager.leState !== "未连接"
                         onClicked: BluetoothManager.disconnectDevice()
@@ -365,7 +365,7 @@ Item {
                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.divider }
 
                     Text {
-                        text: "BLE UART 模式"
+                        text: I18n.t("BLE UART mode", "BLE UART 模式")
                         color: Theme.textPrimary
                         font.family: Theme.fontFamily
                         font.pixelSize: 13
@@ -392,7 +392,7 @@ Item {
                         AppButton {
                             compact: true
                             textPixelSize: 11
-                            text: "启用 UART"
+                            text: I18n.t("Enable UART", "启用 UART")
                             variant: "primary"
                             accent: Theme.purple
                             enabled: BluetoothManager.leState === "服务已发现"
@@ -448,7 +448,7 @@ Item {
                         AppButton {
                             compact: true
                             textPixelSize: 11
-                            text: BluetoothManager.rfcommDiscovering ? "发现中…" : "服务发现"
+                            text: BluetoothManager.rfcommDiscovering ? I18n.t("Discovering…", "发现中…") : I18n.t("Discover services", "服务发现")
                             enabled: BluetoothManager.backendSupported
                             onClicked: BluetoothManager.startRfcommDiscovery()
                         }
@@ -456,7 +456,7 @@ Item {
                         AppButton {
                             compact: true
                             textPixelSize: 11
-                            text: "连接"
+                            text: I18n.t("Connect", "连接")
                             variant: "outlined"
                             accent: Theme.cyan
                             onClicked: BluetoothManager.connectRfcomm(rfcommList.currentIndex)
@@ -531,7 +531,7 @@ Item {
                             spacing: 8
 
                             Text {
-                                text: "GATT 浏览"
+                                text: I18n.t("GATT browser", "GATT 浏览")
                                 color: Theme.textPrimary
                                 font.family: Theme.fontFamily
                                 font.pixelSize: 13
@@ -643,7 +643,7 @@ Item {
                                         AppButton {
                                             compact: true
                                             textPixelSize: 11
-                                            text: "读"
+                                            text: I18n.t("Read", "读")
                                             enabled: charRow.modelData.canRead
                                                      && gattList.selectedChar === index
                                             onClicked: BluetoothManager.readCharacteristic(
@@ -653,7 +653,7 @@ Item {
                                         AppButton {
                                             compact: true
                                             textPixelSize: 11
-                                            text: "写(应答)"
+                                            text: I18n.t("Write (response)", "写(应答)")
                                             enabled: charRow.modelData.canWrite
                                                      && gattList.selectedChar === index
                                             onClicked: charEditor.open(
@@ -663,7 +663,7 @@ Item {
                                         AppButton {
                                             compact: true
                                             textPixelSize: 11
-                                            text: "写(无应答)"
+                                            text: I18n.t("Write (no response)", "写(无应答)")
                                             enabled: charRow.modelData.canWriteNoResponse
                                                      && gattList.selectedChar === index
                                             onClicked: charEditor.open(
@@ -699,7 +699,7 @@ Item {
                                         AppButton {
                                             compact: true
                                             textPixelSize: 11
-                                            text: "停订阅"
+                                            text: I18n.t("Unsubscribe", "停订阅")
                                             variant: "text"
                                             enabled: gattList.selectedChar === index
                                             onClicked: BluetoothManager.setNotify(
@@ -739,7 +739,7 @@ Item {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
                             model: BluetoothManager.traffic
-                            emptyHint: "BLE Notify / Read / Write 事件会显示在这里"
+                            emptyHint: I18n.t("BLE Notify / Read / Write events appear here", "BLE Notify / Read / Write 事件会显示在这里")
                             onToastRequested: (text, ok) => root.toastRequested(text, ok)
                         }
 
@@ -750,8 +750,8 @@ Item {
                             Layout.preferredHeight: 152
                             manager: BluetoothManager
                             showFile: false
-                            sendLabel: "发送"
-                            hint: "BLE UART 模式按 MTU 自动分片"
+                            sendLabel: I18n.t("Send", "发送")
+                            hint: I18n.t("BLE UART mode fragments automatically by MTU", "BLE UART 模式按 MTU 自动分片")
                             onToastRequested: (text, ok) => root.toastRequested(text, ok)
                         }
                     }
@@ -794,7 +794,7 @@ Item {
             spacing: 10
 
             Text {
-                text: charEditor.withResponse ? "写入特征（带应答）" : "写入特征（无应答）"
+                text: charEditor.withResponse ? I18n.t("Write characteristic (with response)", "写入特征（带应答）") : I18n.t("Write characteristic (without response)", "写入特征（无应答）")
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily
                 font.pixelSize: 16
@@ -802,7 +802,7 @@ Item {
             }
 
             FormRow {
-                label: "格式"
+                label: I18n.t("Format", "格式")
                 AppComboBox {
                     id: charFormatCombo
                     implicitWidth: 120
@@ -811,7 +811,7 @@ Item {
             }
 
             FormRow {
-                label: "值"
+                label: I18n.t("Value", "值")
                 AppTextField {
                     id: charValueField
                     Layout.fillWidth: true
@@ -829,14 +829,14 @@ Item {
                 Item { Layout.fillWidth: true }
 
                 AppButton {
-                    text: "取消"
+                    text: I18n.t("Cancel", "取消")
                     variant: "outlined"
                     accent: Theme.textSecondary
                     onClicked: charEditor.close()
                 }
 
                 AppButton {
-                    text: "写入"
+                    text: I18n.t("Write", "写入")
                     variant: "primary"
                     onClicked: {
                         BluetoothManager.writeCharacteristic(

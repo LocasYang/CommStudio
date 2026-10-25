@@ -19,6 +19,13 @@ namespace _qt_qml_CommStudio_qml_Theme_qml {
         reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
     };
 }
+namespace _qt_qml_CommStudio_qml_I18n_qml { 
+    extern const unsigned char qmlData[];
+    extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
+    const QQmlPrivate::CachedQmlUnit unit = {
+        reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
+    };
+}
 namespace _qt_qml_CommStudio_qml_components_AppButton_qml { 
     extern const unsigned char qmlData[];
     extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
@@ -82,6 +89,13 @@ namespace _qt_qml_CommStudio_qml_components_FormRow_qml {
         reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
     };
 }
+namespace _qt_qml_CommStudio_qml_components_ModbusDataMonitor_qml { 
+    extern const unsigned char qmlData[];
+    extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
+    const QQmlPrivate::CachedQmlUnit unit = {
+        reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
+    };
+}
 namespace _qt_qml_CommStudio_qml_components_TerminalView_qml { 
     extern const unsigned char qmlData[];
     extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
@@ -97,6 +111,27 @@ namespace _qt_qml_CommStudio_qml_components_SendPanel_qml {
     };
 }
 namespace _qt_qml_CommStudio_qml_dialogs_ConfirmDialog_qml { 
+    extern const unsigned char qmlData[];
+    extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
+    const QQmlPrivate::CachedQmlUnit unit = {
+        reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
+    };
+}
+namespace _qt_qml_CommStudio_qml_dialogs_ModbusChannelManager_qml { 
+    extern const unsigned char qmlData[];
+    extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
+    const QQmlPrivate::CachedQmlUnit unit = {
+        reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
+    };
+}
+namespace _qt_qml_CommStudio_qml_dialogs_ModbusDiagnosticsDrawer_qml { 
+    extern const unsigned char qmlData[];
+    extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
+    const QQmlPrivate::CachedQmlUnit unit = {
+        reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
+    };
+}
+namespace _qt_qml_CommStudio_qml_dialogs_ModbusTrendWindow_qml { 
     extern const unsigned char qmlData[];
     extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
     const QQmlPrivate::CachedQmlUnit unit = {
@@ -168,6 +203,7 @@ Q_GLOBAL_STATIC(Registry, unitRegistry)
 Registry::Registry() {
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/Main.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_Main_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/Theme.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_Theme_qml::unit);
+    resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/I18n.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_I18n_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/components/AppButton.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_components_AppButton_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/components/AppCard.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_components_AppCard_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/components/AppComboBox.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_components_AppComboBox_qml::unit);
@@ -177,9 +213,13 @@ Registry::Registry() {
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/components/AppTextField.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_components_AppTextField_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/components/AppCheckBox.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_components_AppCheckBox_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/components/FormRow.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_components_FormRow_qml::unit);
+    resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/components/ModbusDataMonitor.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_components_ModbusDataMonitor_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/components/TerminalView.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_components_TerminalView_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/components/SendPanel.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_components_SendPanel_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/dialogs/ConfirmDialog.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_dialogs_ConfirmDialog_qml::unit);
+    resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/dialogs/ModbusChannelManager.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_dialogs_ModbusChannelManager_qml::unit);
+    resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/dialogs/ModbusDiagnosticsDrawer.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_dialogs_ModbusDiagnosticsDrawer_qml::unit);
+    resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/dialogs/ModbusTrendWindow.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_dialogs_ModbusTrendWindow_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/pages/SerialPage.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_pages_SerialPage_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/pages/ModbusPage.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_pages_ModbusPage_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/CommStudio/qml/pages/BluetoothPage.qml"), &QmlCacheGeneratedCode::_qt_qml_CommStudio_qml_pages_BluetoothPage_qml::unit);

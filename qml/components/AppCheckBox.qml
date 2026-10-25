@@ -14,6 +14,8 @@ CheckBox {
     indicator: Rectangle {
         implicitWidth: 18
         implicitHeight: 18
+        x: control.mirrored ? control.width - control.rightPadding - width : control.leftPadding
+        y: control.topPadding + (control.availableHeight - height) / 2
         radius: 5
         color: control.checked ? control.accent
                                : control.hovered ? Theme.hoverFill : Theme.inputBackground
@@ -26,7 +28,7 @@ CheckBox {
             anchors.centerIn: parent
             text: "✓"
             visible: control.checked
-            color: "#FFFFFF"
+            color: Theme.onAccent
             font.family: Theme.fontFamily
             font.pixelSize: 12
             font.weight: Font.Bold
@@ -38,9 +40,8 @@ CheckBox {
         color: control.enabled ? Theme.textSecondary : Theme.textTertiary
         font: control.font
         verticalAlignment: Text.AlignVCenter
-        // 与指示器做光学垂直居中：中文字形在行框内略靠下，向上补偿 1px。
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -6
+        // Control manages the content rectangle; center within its available
+        // height instead of shifting text away from the indicator with anchors.
         // Basic 样式约定：框架不偏移 contentItem，需自行留出指示器宽度。
         leftPadding: control.indicator && !control.mirrored
                      ? control.indicator.width + control.spacing : 0

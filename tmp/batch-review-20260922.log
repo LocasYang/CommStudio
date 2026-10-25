@@ -1,0 +1,5 @@
+WARN: qrc:/qt/qml/CommStudio/qml/pages/ModbusPage.qml:990:37: QML AppTextField: Binding loop detected for property "text" (qrc:/qt/qml/CommStudio/qml/pages/ModbusPage.qml:990)
+WARN: qrc:/qt/qml/CommStudio/qml/pages/ModbusPage.qml:990:37: QML AppTextField: Binding loop detected for property "text" (qrc:/qt/qml/CommStudio/qml/pages/ModbusPage.qml:990)
+WARN: qrc:/qt/qml/CommStudio/qml/pages/ModbusPage.qml:990:37: QML AppTextField: Binding loop detected for property "text" (qrc:/qt/qml/CommStudio/qml/pages/ModbusPage.qml:990)
+WARN: qrc:/qt/qml/CommStudio/qml/pages/ModbusPage.qml:990:37: QML AppTextField: Binding loop detected for property "text" (qrc:/qt/qml/CommStudio/qml/pages/ModbusPage.qml:990)
+WARN: qrc:/qt/qml/CommStudio/qml/pages/ModbusPage.qml:990:37: QML AppTextField: Binding loop detected for property "text" (qrc:/qt/qml/CommStudio/qml/pages/ModbusPage.qml:990)

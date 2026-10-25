@@ -1,0 +1,378 @@
+{
+    "classes": [
+        {
+            "className": "ModbusPointModel",
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "row",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "pointAt",
+                    "returnType": "QVariantMap"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "row",
+                            "type": "int"
+                        },
+                        {
+                            "name": "point",
+                            "type": "QVariantMap"
+                        }
+                    ],
+                    "name": "savePoint",
+                    "returnType": "bool"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "row",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "removePoint",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "row",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "copyPoint",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "url",
+                            "type": "QUrl"
+                        }
+                    ],
+                    "name": "exportFile",
+                    "returnType": "bool"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "url",
+                            "type": "QUrl"
+                        }
+                    ],
+                    "name": "importFile",
+                    "returnType": "bool"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "strategy",
+                            "type": "int"
+                        },
+                        {
+                            "name": "maxGap",
+                            "type": "int"
+                        },
+                        {
+                            "name": "maxRegisters",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "pollingPlans",
+                    "returnType": "QVariantList"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "strategy",
+                            "type": "int"
+                        },
+                        {
+                            "name": "maxGap",
+                            "type": "int"
+                        }
+                    ],
+                    "isCloned": true,
+                    "name": "pollingPlans",
+                    "returnType": "QVariantList"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "strategy",
+                            "type": "int"
+                        }
+                    ],
+                    "isCloned": true,
+                    "name": "pollingPlans",
+                    "returnType": "QVariantList"
+                },
+                {
+                    "access": "public",
+                    "isCloned": true,
+                    "name": "pollingPlans",
+                    "returnType": "QVariantList"
+                },
+                {
+                    "access": "public",
+                    "name": "pasteClipboard",
+                    "returnType": "bool"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "row",
+                            "type": "int"
+                        },
+                        {
+                            "name": "additive",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "range",
+                            "type": "bool"
+                        }
+                    ],
+                    "name": "selectPoint",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "changes",
+                            "type": "QVariantMap"
+                        }
+                    ],
+                    "name": "updateSelected",
+                    "returnType": "bool"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "row",
+                            "type": "int"
+                        },
+                        {
+                            "name": "value",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "setWriteValue",
+                    "returnType": "bool"
+                },
+                {
+                    "access": "public",
+                    "name": "deleteSelected",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "deviceId",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "copySelectedToDevice",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "from",
+                            "type": "int"
+                        },
+                        {
+                            "name": "to",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "movePoint",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "sortByAddress",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "windowMs",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "trendSeries",
+                    "returnType": "QVariantList"
+                },
+                {
+                    "access": "public",
+                    "isCloned": true,
+                    "name": "trendSeries",
+                    "returnType": "QVariantList"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "url",
+                            "type": "QUrl"
+                        }
+                    ],
+                    "name": "exportHistory",
+                    "returnType": "bool"
+                }
+            ],
+            "object": true,
+            "properties": [
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "name": "deviceId",
+                    "notify": "deviceIdChanged",
+                    "read": "deviceId",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setDeviceId"
+                },
+                {
+                    "constant": true,
+                    "designable": true,
+                    "final": false,
+                    "index": 1,
+                    "name": "filtered",
+                    "read": "filtered",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QAbstractItemModel*",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 2,
+                    "name": "search",
+                    "notify": "filterChanged",
+                    "read": "search",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setSearch"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 3,
+                    "name": "area",
+                    "notify": "filterChanged",
+                    "read": "area",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "setArea"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 4,
+                    "name": "groupFilter",
+                    "notify": "filterChanged",
+                    "read": "groupFilter",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setGroupFilter"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 5,
+                    "name": "groups",
+                    "notify": "groupsChanged",
+                    "read": "groups",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QVariantList",
+                    "user": false
+                }
+            ],
+            "qualifiedClassName": "ModbusPointModel",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "deviceIdChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "definitionsChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "message",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "validationError",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "filterChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "groupsChanged",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QAbstractTableModel"
+                }
+            ]
+        }
+    ],
+    "inputFile": "modbuspointmodel.h",
+    "outputRevision": 68
+}

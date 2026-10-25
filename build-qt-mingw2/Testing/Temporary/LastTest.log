@@ -1,0 +1,39 @@
+Start testing: Sep 14 19:16 中国标准时间
+----------------------------------------------------------
+1/1 Testing: CommStudioCoreTest
+1/1 Test: CommStudioCoreTest
+Command: "F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudioCoreTest.exe"
+Directory: F:/mine/code/qt/com_studio/build-qt-mingw2
+"CommStudioCoreTest" start time: Sep 14 19:16 中国标准时间
+Output:
+----------------------------------------------------------
+********* Start testing of CommStudioCoreTest *********
+Config: Using QtTest library 6.6.3, Qt 6.6.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by GCC 11.2.0), windows 11
+PASS   : CommStudioCoreTest::initTestCase()
+PASS   : CommStudioCoreTest::deviceAndPointPersistence()
+PASS   : CommStudioCoreTest::pointDecodeAndTemplate()
+PASS   : CommStudioCoreTest::queuedRequestsAgainstTcpSimulator()
+PASS   : CommStudioCoreTest::channelIsolation()
+PASS   : CommStudioCoreTest::taskValidation()
+PASS   : CommStudioCoreTest::crc16ModbusVectors()
+PASS   : CommStudioCoreTest::crcOtherVectors()
+PASS   : CommStudioCoreTest::hexCodecParsing()
+PASS   : CommStudioCoreTest::escapeSequences()
+PASS   : CommStudioCoreTest::lineEndings()
+PASS   : CommStudioCoreTest::pausedTrafficFlushesOnResume()
+PASS   : CommStudioCoreTest::modbusRequestFrames()
+PASS   : CommStudioCoreTest::modbusResponseParsing()
+PASS   : CommStudioCoreTest::wordOrder32()
+PASS   : CommStudioCoreTest::trafficModelRingBuffer()
+PASS   : CommStudioCoreTest::cleanupTestCase()
+Totals: 17 passed, 0 failed, 0 skipped, 0 blacklisted, 592ms
+********* Finished testing of CommStudioCoreTest *********
+<end of output>
+Test time =   1.02 sec
+----------------------------------------------------------
+Test Passed.
+"CommStudioCoreTest" end time: Sep 14 19:16 中国标准时间
+"CommStudioCoreTest" time elapsed: 00:00:01
+----------------------------------------------------------
+
+End testing: Sep 14 19:16 中国标准时间

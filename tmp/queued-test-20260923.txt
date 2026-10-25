@@ -1,0 +1,10 @@
+********* Start testing of CommStudioCoreTest *********
+Config: Using QtTest library 6.6.3, Qt 6.6.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2019), windows 11
+PASS   : CommStudioCoreTest::initTestCase()
+FAIL!  : CommStudioCoreTest::queuedRequestsAgainstTcpSimulator() Compared doubles are not the same (fuzzy compare)
+   Actual   (manager.statistics().value("success").toDouble()): 88
+   Expected (100.0)                                           : 100
+F:\mine\code\qt\com_studio\tests\comstudiotests.cpp(171) : failure location
+PASS   : CommStudioCoreTest::cleanupTestCase()
+Totals: 2 passed, 1 failed, 0 skipped, 0 blacklisted, 90ms
+********* Finished testing of CommStudioCoreTest *********

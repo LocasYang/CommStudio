@@ -27,6 +27,7 @@ public:
     static QByteArray buildPdu(quint8 functionCode, quint16 address,
                                const QVector<quint16> &values = {});
     static QByteArray buildRtuAdu(quint8 slaveAddress, const QByteArray &pdu);
+    static QByteArray buildAsciiAdu(quint8 slaveAddress, const QByteArray &pdu);
     static QByteArray buildTcpAdu(quint16 transactionId, quint8 unitId, const QByteArray &pdu);
 
     struct ParsedResponse {
@@ -44,6 +45,7 @@ public:
 
     // 解析 RTU 或 TCP 响应 ADU（isTcp 为真时按 MBAP 解析）。
     static ParsedResponse parseResponse(const QByteArray &adu, bool isTcp);
+    static ParsedResponse parseAsciiResponse(const QByteArray &frame);
     static QString exceptionText(quint8 code);
 
     // 32 位字序：ABCD（大端）/ BADC / CDAB / DCBA。
@@ -56,4 +58,8 @@ public:
     static QVariantMap decodeRegisters(const QVector<quint16> &registers, int offset,
                                        const QString &type, const QString &wordOrder,
                                        double scale, double offsetValue);
+    // Point commands are engineering values, not a list of raw register words.
+    // Reject unsupported/partial-register writes rather than corrupt adjacent bits.
+    static bool encodePointValue(const QVariantMap &point, const QString &text,
+                                 QVector<quint16> &words, QString &error);
 };

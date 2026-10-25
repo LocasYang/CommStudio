@@ -27,7 +27,7 @@ Item {
             spacing: 10
 
             Text {
-                text: "运行日志"
+                text: I18n.t("Run log", "运行日志")
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily
                 font.pixelSize: 22
@@ -35,7 +35,7 @@ Item {
             }
 
             StatusPill {
-                text: Studio.logs.length + " 条"
+                text: I18n.count(Studio.logs.length, "entries", " 条")
                 accent: Theme.primary
                 dot: false
             }
@@ -45,7 +45,7 @@ Item {
             AppButton {
                 compact: true
                 textPixelSize: 12
-                text: "导出日志"
+                text: I18n.t("Export log", "导出日志")
                 enabled: Studio.logs.length > 0
                 onClicked: logExportDialog.open()
             }
@@ -53,7 +53,7 @@ Item {
             AppButton {
                 compact: true
                 textPixelSize: 12
-                text: "清空日志"
+                text: I18n.t("Clear log", "清空日志")
                 enabled: Studio.logs.length > 0
                 onClicked: Studio.clearLogs()
             }
@@ -125,7 +125,7 @@ Item {
                 Text {
                     anchors.centerIn: parent
                     visible: Studio.logs.length === 0
-                    text: "暂无日志 · 连接 / 收发 / 异常事件会记录到这里"
+                    text: I18n.t("No log entries · connection, traffic, and errors will be recorded here", "暂无日志 · 连接 / 收发 / 异常事件会记录到这里")
                     color: Theme.textTertiary
                     font.family: Theme.fontFamily
                     font.pixelSize: 12
@@ -136,7 +136,7 @@ Item {
 
     FileDialog {
         id: logExportDialog
-        title: "导出运行日志"
+        title: I18n.t("Export run log", "导出运行日志")
         nameFilters: ["文本文件 (*.txt *.log)", "所有文件 (*)"]
         fileMode: FileDialog.SaveFile
         onAccepted: Studio.saveLogs(selectedFile)

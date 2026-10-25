@@ -47,6 +47,8 @@ $env:PATH = "E:\QT\6.6.3\msvc2019_64\bin;$env:PATH"
 
 ## 工程结构
 
+Modbus UI 修改先阅读 [UI 设计规范](docs/UI_DESIGN_SPEC.md)；功能完成情况与待办见 [实施路线图](MODBUS_ROADMAP.md)。早期适配方案已归档，不能覆盖用户后续确认的树形结构、工具栏和弹窗要求。
+
 ```text
 src/        C++ 入口、核心协议工具与各通信管理器
 qml/        主窗口、主题、语言辅助、通用组件和页面

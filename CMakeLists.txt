@@ -35,6 +35,11 @@ qt_add_executable(CommStudio
     src/core/modbuscodec.cpp
     src/core/modbuscodec.h
 
+    src/models/modbusdevicemodel.cpp
+    src/models/modbusdevicemodel.h
+    src/models/modbuspointmodel.cpp
+    src/models/modbuspointmodel.h
+
     src/managers/studio.cpp
     src/managers/studio.h
     src/managers/serialmanager.cpp
@@ -44,6 +49,10 @@ qt_add_executable(CommStudio
     src/managers/bluetoothmanager.cpp
     src/managers/bluetoothmanager.h
     src/managers/modbusmanager.cpp
+    src/managers/modbusbatch.cpp
+    src/managers/modbusdiagnostics.cpp
+    src/managers/modbusworkspace.cpp
+    src/managers/modbusworkspace.h
     src/managers/modbusmanager.h
     src/managers/toolboxmanager.cpp
     src/managers/toolboxmanager.h
@@ -62,6 +71,8 @@ qt_add_qml_module(CommStudio
         qml/Theme.qml
         qml/I18n.qml
         qml/components/AppButton.qml
+        qml/components/AppIcon.qml
+        qml/components/ModbusTrafficDock.qml
         qml/components/AppCard.qml
         qml/components/AppComboBox.qml
         qml/components/NavItem.qml
@@ -70,9 +81,13 @@ qt_add_qml_module(CommStudio
         qml/components/AppTextField.qml
         qml/components/AppCheckBox.qml
         qml/components/FormRow.qml
+        qml/components/ModbusDataMonitor.qml
         qml/components/TerminalView.qml
         qml/components/SendPanel.qml
         qml/dialogs/ConfirmDialog.qml
+        qml/dialogs/ModbusChannelManager.qml
+        qml/dialogs/ModbusDiagnosticsDrawer.qml
+        qml/dialogs/ModbusTrendWindow.qml
         qml/pages/SerialPage.qml
         qml/pages/ModbusPage.qml
         qml/pages/BluetoothPage.qml
@@ -106,6 +121,13 @@ if (BUILD_TESTING)
     find_package(Qt6 REQUIRED COMPONENTS Test)
     add_executable(CommStudioCoreTest
         tests/comstudiotests.cpp
+        src/models/modbusdevicemodel.cpp
+        src/models/modbuspointmodel.cpp
+        src/managers/modbusmanager.cpp
+        src/managers/modbusbatch.cpp
+        src/managers/modbusdiagnostics.cpp
+        src/managers/modbusworkspace.cpp
+        src/managers/studio.cpp
         src/core/trafficmodel.cpp
         src/core/checksumengine.cpp
         src/core/hexcodec.cpp
@@ -113,7 +135,7 @@ if (BUILD_TESTING)
     )
     target_include_directories(CommStudioCoreTest PRIVATE src)
     set_target_properties(CommStudioCoreTest PROPERTIES WIN32_EXECUTABLE FALSE)
-    target_link_libraries(CommStudioCoreTest PRIVATE Qt6::Core Qt6::Gui Qt6::Test)
+    target_link_libraries(CommStudioCoreTest PRIVATE Qt6::Core Qt6::Gui Qt6::Test Qt6::SerialBus Qt6::SerialPort Qt6::Network)
     add_test(NAME CommStudioCoreTest COMMAND CommStudioCoreTest)
     set_tests_properties(CommStudioCoreTest PROPERTIES
         ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:Qt6::Core>")

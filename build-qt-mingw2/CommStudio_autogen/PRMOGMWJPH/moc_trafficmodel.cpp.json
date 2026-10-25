@@ -1,0 +1,204 @@
+{
+    "classes": [
+        {
+            "className": "TrafficModel",
+            "enums": [
+                {
+                    "isClass": false,
+                    "isFlag": false,
+                    "name": "Direction",
+                    "values": [
+                        "Rx",
+                        "Tx",
+                        "Info",
+                        "Error"
+                    ]
+                }
+            ],
+            "methods": [
+                {
+                    "access": "public",
+                    "name": "clear",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "direction",
+                            "type": "int"
+                        },
+                        {
+                            "name": "payload",
+                            "type": "QByteArray"
+                        },
+                        {
+                            "name": "peer",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "append",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "direction",
+                            "type": "int"
+                        },
+                        {
+                            "name": "payload",
+                            "type": "QByteArray"
+                        }
+                    ],
+                    "isCloned": true,
+                    "name": "append",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "text",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "isError",
+                            "type": "bool"
+                        }
+                    ],
+                    "name": "appendInfo",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "text",
+                            "type": "QString"
+                        }
+                    ],
+                    "isCloned": true,
+                    "name": "appendInfo",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "row",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "rowText",
+                    "returnType": "QString"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "path",
+                            "type": "QUrl"
+                        }
+                    ],
+                    "name": "exportToFile",
+                    "returnType": "bool"
+                }
+            ],
+            "object": true,
+            "properties": [
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "name": "count",
+                    "notify": "countChanged",
+                    "read": "count",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 1,
+                    "name": "paused",
+                    "notify": "pausedChanged",
+                    "read": "paused",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "write": "setPaused"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 2,
+                    "name": "maxRows",
+                    "notify": "maxRowsChanged",
+                    "read": "maxRows",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "setMaxRows"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 3,
+                    "name": "maxBytes",
+                    "notify": "maxBytesChanged",
+                    "read": "maxBytes",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "qint64",
+                    "user": false,
+                    "write": "setMaxBytes"
+                }
+            ],
+            "qualifiedClassName": "TrafficModel",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "countChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "pausedChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "maxRowsChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "maxBytesChanged",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QAbstractListModel"
+                }
+            ]
+        }
+    ],
+    "inputFile": "trafficmodel.h",
+    "outputRevision": 68
+}

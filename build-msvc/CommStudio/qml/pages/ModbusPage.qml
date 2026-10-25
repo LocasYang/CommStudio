@@ -7,16 +7,584 @@ import CommStudio.Backend 1.0
 
 Item {
     id: root
-
+    objectName: "modbusPage"
+    property var backend: ModbusWorkspace.current
+    property var pendingDeviceRemovals: []
+    function inspectNewPoint() { pointEditor.edit(-1) }
+    function inspectNewChannel() { channelNameDialog.openFor(-1) }
+    function inspectRemoveChannel() { removeChannel.open() }
+    function inspectChannelManager() { channelManager.openManager() }
+    function inspectChannelConfiguration() {
+        channelManager.openManager()
+        Qt.callLater(function() { channelManager.openConfiguration(ModbusWorkspace.currentIndex) })
+    }
     signal toastRequested(string text, bool ok)
 
-    readonly property bool isMaster: ModbusManager.mode === "rtuMaster" || ModbusManager.mode === "tcpMaster"
+    ConfirmDialog {
+        id: removeChannel
+        titleText: I18n.t("Remove channel", "移除通道")
+        messageText: I18n.t("Stop and remove this channel from the workspace?", "停止当前通道并从工作区移除？")
+        confirmText: I18n.t("Remove", "移除")
+        riskText: I18n.t("Destructive action", "删除操作")
+        accent: Theme.error
+        onOperationConfirmed: { advanced.close(); ModbusWorkspace.remove(ModbusWorkspace.currentIndex) }
+    }
+    ModbusChannelManager {
+        id: channelManager
+        workspace: ModbusWorkspace
+    }
+    Dialog {
+        id: deviceNameDialog
+        property int editIndex: -1
+        parent: Overlay.overlay
+        anchors.centerIn: parent
+        width: Math.min(440, parent ? parent.width - 48 : 440)
+        modal: true
+        padding: 0
+        closePolicy: Popup.CloseOnEscape
+        Overlay.modal: Rectangle { color: Theme.alpha("#050716", Theme.dark ? 0.72 : 0.42) }
+        background: Rectangle {
+            color: Theme.surface
+            radius: Theme.radiusLarge
+            border.width: 1
+            border.color: Theme.alpha(Theme.primary, 0.42)
+        }
+        function openFor(index) {
+            editIndex = index
+            deviceNameField.text = index >= 0 ? String(root.backend.devices.data(root.backend.devices.index(index, 0), 257) || "") : ""
+            deviceUnitField.text = index >= 0 ? String(root.backend.devices.data(root.backend.devices.index(index, 0), 258) || "1") : "1"
+            open()
+            deviceNameField.forceActiveFocus()
+        }
+        contentItem: ColumnLayout {
+            spacing: 0
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 62
+                color: Theme.alpha(Theme.primary, Theme.dark ? 0.18 : 0.10)
+                radius: Theme.radiusLarge
+                Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: Theme.radiusLarge; color: parent.color }
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 20
+                    anchors.rightMargin: 14
+                    Text { Layout.fillWidth: true; text: deviceNameDialog.editIndex >= 0 ? I18n.t("Edit device", "编辑设备") : I18n.t("Add device", "添加设备"); color: Theme.textPrimary; font.family: Theme.fontFamily; font.pixelSize: 18; font.weight: Font.DemiBold }
+                     ToolButton {
+                         id: deviceNameClose
+                         width: 32
+                         height: 32
+                         focusPolicy: Qt.NoFocus
+                         contentItem: Text { text: "×"; color: deviceNameClose.hovered ? Theme.textPrimary : Theme.textSecondary; font.pixelSize: 20; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+                         background: Rectangle { radius: 9; color: deviceNameClose.hovered ? Theme.alpha(Theme.primary, 0.10) : "transparent" }
+                         onClicked: deviceNameDialog.reject()
+                     }
+                }
+            }
+            ColumnLayout {
+                Layout.fillWidth: true
+                Layout.margins: 22
+                spacing: 12
+                FormRow { label: I18n.t("Name", "设备名称"); AppTextField { id: deviceNameField; Layout.fillWidth: true; placeholder: I18n.t("e.g. COM8 inverter", "例如：COM8 逆变器"); onAccepted: deviceNameDialog.accept() } }
+                 FormRow {
+                     label: "Unit ID"
+                     AppTextField {
+                         id: deviceUnitField
+                         Layout.preferredWidth: 110
+                         mono: true
+                         text: "1"
+                         validator: IntValidator { bottom: 1; top: 247 }
+                         onAccepted: deviceNameDialog.accept()
+                     }
+                 }
+                Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: I18n.t("The Unit ID is the Modbus slave address used by polling tasks and points.", "Unit ID 是轮询任务和数据点使用的 Modbus 从站地址。"); color: Theme.textTertiary; font.pixelSize: 11 }
+                RowLayout {
+                    Layout.fillWidth: true
+                    Item { Layout.fillWidth: true }
+                    AppButton { compact: true; text: I18n.t("Cancel", "取消"); variant: "outlined"; accent: Theme.textSecondary; onClicked: deviceNameDialog.reject() }
+                    AppButton { compact: true; text: I18n.t("Save", "保存"); variant: "primary"; enabled: deviceNameField.text.trim().length > 0 && deviceUnitField.acceptableInput; onClicked: deviceNameDialog.accept() }
+                }
+            }
+        }
+        onAccepted: {
+            const name = deviceNameField.text.trim()
+            const unit = Math.max(1, Math.min(247, parseInt(deviceUnitField.text) || 1))
+            if (!name) return
+            if (editIndex >= 0 && root.backend.devices.renameDevice)
+                root.backend.devices.renameDevice(editIndex, name)
+            else
+                root.backend.addDevice(name, unit)
+        }
+    }
 
-    readonly property bool isRtu: ModbusManager.mode === "rtuMaster" || ModbusManager.mode === "rtuSlave"
-    readonly property bool connected: ModbusManager.open || ModbusManager.simulatorRunning
+    Dialog {
+        id: channelNameDialog
+        property int editIndex: -1
+        property string pendingMode: "rtuMaster"
+        readonly property bool editingSerialAlias: editIndex >= 0
+                                                    && editIndex < ModbusWorkspace.channels.length
+                                                    && ModbusWorkspace.channels[editIndex].transport === "serial"
 
-    property int selectedTask: -1
-    property int workspaceTab: 0   // 0 轮询任务 / 1 手动读写 / 2 寄存器表 / 3 Raw
+        parent: Overlay.overlay
+        anchors.centerIn: parent
+        width: Math.min(440, parent ? parent.width - 48 : 440)
+        modal: true
+        padding: 0
+        closePolicy: Popup.CloseOnEscape
+
+        Overlay.modal: Rectangle { color: Theme.alpha("#050716", Theme.dark ? 0.72 : 0.42) }
+        background: Rectangle {
+            color: Theme.surface
+            radius: Theme.radiusLarge
+            border.width: 1
+            border.color: Theme.alpha(Theme.primary, 0.42)
+        }
+
+        function openFor(index, mode) {
+            editIndex = index
+            pendingMode = mode === undefined || mode === "" ? "rtuMaster" : mode
+            channelNameField.text = index >= 0 && index < ModbusWorkspace.channels.length
+                                     ? (ModbusWorkspace.channels[index].alias || "")
+                                     : (pendingMode === "tcpMaster"
+                                        ? I18n.t("TCP Channel ", "TCP 通道 ") + (ModbusWorkspace.channels.length + 1)
+                                        : I18n.t("Serial Channel ", "串口通道 ") + (ModbusWorkspace.channels.length + 1))
+            open()
+            channelNameField.selectAll()
+            channelNameField.forceActiveFocus()
+        }
+
+        contentItem: ColumnLayout {
+            spacing: 0
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 62
+                color: Theme.alpha(Theme.primary, Theme.dark ? 0.18 : 0.10)
+                radius: Theme.radiusLarge
+                Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: Theme.radiusLarge; color: parent.color }
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 20
+                    anchors.rightMargin: 14
+                    Text {
+                        Layout.fillWidth: true
+                        text: channelNameDialog.editingSerialAlias
+                              ? I18n.t("Edit channel alias", "修改通道别名")
+                              : (channelNameDialog.editIndex >= 0
+                                 ? I18n.t("Rename channel", "重命名通道")
+                                 : I18n.t("New channel", "新增通道"))
+                        color: Theme.textPrimary
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 18
+                        font.weight: Font.DemiBold
+                    }
+                    ToolButton {
+                        id: channelNameClose
+                        width: 32; height: 32; focusPolicy: Qt.NoFocus
+                        contentItem: Text { text: "×"; color: channelNameClose.hovered ? Theme.textPrimary : Theme.textSecondary; font.pixelSize: 20; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+                        background: Rectangle { radius: 9; color: channelNameClose.hovered ? Theme.alpha(Theme.primary, 0.10) : Theme.alpha(Theme.surface, 0.34); border.width: 1; border.color: Theme.alpha(Theme.textSecondary, 0.20) }
+                        onClicked: channelNameDialog.reject()
+                    }
+                }
+            }
+            ColumnLayout {
+                Layout.fillWidth: true
+                Layout.margins: 22
+                spacing: 14
+                FormRow {
+                    Layout.fillWidth: true
+                    label: channelNameDialog.editingSerialAlias ? I18n.t("Alias", "别名") : I18n.t("Name", "名称")
+                    AppTextField { id: channelNameField; Layout.fillWidth: true; placeholder: channelNameDialog.editingSerialAlias ? I18n.t("Optional, e.g. Inverter line", "可选，例如：逆变器总线") : I18n.t("e.g. Inverter line", "例如：逆变器总线"); onAccepted: channelNameDialog.accept() }
+                }
+                Text {
+                    Layout.fillWidth: true
+                    text: I18n.t("Channel communication parameters can be adjusted from the context menu or Session parameters.", "通道通信参数可通过右键菜单或“会话参数”弹窗调整。")
+                    color: Theme.textTertiary
+                    font.family: Theme.fontFamily
+                    font.pixelSize: 11
+                    wrapMode: Text.WordWrap
+                }
+            }
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 72
+                color: Theme.alpha(Theme.primary, Theme.dark ? 0.18 : 0.10)
+                radius: Theme.radiusLarge
+                Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top; height: Theme.radiusLarge; color: parent.color }
+                Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top; height: 1; color: Theme.alpha(Theme.primary, 0.20) }
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 24; anchors.rightMargin: 24; anchors.topMargin: 8
+                    Item { Layout.fillWidth: true }
+                    AppButton { compact: true; text: I18n.t("Cancel", "取消"); variant: "outlined"; accent: Theme.textSecondary; onClicked: channelNameDialog.reject() }
+                    AppButton {
+                        compact: true; text: I18n.t("Save", "保存"); variant: "primary"
+                        enabled: channelNameDialog.editingSerialAlias || channelNameField.text.trim().length > 0
+                        onClicked: channelNameDialog.accept()
+                    }
+                }
+            }
+        }
+
+        onAccepted: {
+            const name = channelNameField.text.trim()
+            if (editingSerialAlias)
+                ModbusWorkspace.setAlias(editIndex, name)
+            else if (editIndex >= 0 && name)
+                ModbusWorkspace.rename(editIndex, name)
+            else {
+                if (!name) return
+                ModbusWorkspace.addChannel(name, pendingMode)
+                Qt.callLater(function() { advanced.open() })
+            }
+        }
+    }
+    ConfirmDialog {
+        id: removeDevice
+        titleText: I18n.t("Remove device", "移除设备")
+        messageText: I18n.t("Remove this device and clear its points and polling tasks?", "删除此设备并清空其数据点和轮询任务？")
+        confirmText: I18n.t("Remove", "移除")
+        accent: Theme.error
+        onOperationConfirmed: root.backend.removeDevice(root.backend.selectedDeviceIndex)
+    }
+    ConfirmDialog {
+        id: removeSelectedDevices
+        titleText: I18n.t("Delete selected devices", "删除选中设备")
+        messageText: I18n.t("Delete all selected devices? Their points and polling tasks will also be cleared.",
+                            "删除所有选中的设备？这些设备的数据点和轮询任务也会一并清空。")
+        noteText: I18n.t("This operation cannot be undone.", "此操作无法撤销。")
+        confirmText: I18n.t("Delete", "删除")
+        riskText: I18n.t("Destructive action", "删除操作")
+        accent: Theme.error
+        infoRows: [{ label: I18n.t("Selected", "已选"),
+                     value: I18n.count(root.pendingDeviceRemovals.length, "devices", " 个设备") }]
+        onOperationConfirmed: {
+            const removals = root.pendingDeviceRemovals.slice(0)
+            removals.sort(function(left, right) {
+                if (left.channelIndex !== right.channelIndex)
+                    return right.channelIndex - left.channelIndex
+                return right.deviceIndex - left.deviceIndex
+            })
+            for (let index = 0; index < removals.length; ++index) {
+                const removal = removals[index]
+                const channelBackend = ModbusWorkspace.channelBackend(removal.channelIndex)
+                if (channelBackend)
+                    channelBackend.removeDevice(removal.deviceIndex)
+            }
+            root.pendingDeviceRemovals = []
+            dataMonitor.clearCheckedDevices()
+            root.toastRequested(I18n.t("Selected devices deleted", "已删除选中设备"), true)
+        }
+    }
+    Dialog {
+        id: batchPoints
+        parent: Overlay.overlay
+        anchors.centerIn: parent
+        width: Math.min(520, parent ? parent.width - 48 : 520)
+        height: Math.min(520, parent ? parent.height - 48 : 520)
+        padding: 22
+        modal: true
+        closePolicy: Popup.CloseOnEscape
+        Overlay.modal: Rectangle { color: Theme.alpha("#050716", Theme.dark ? 0.72 : 0.42) }
+        background: Rectangle { color: Theme.surface; radius: Theme.radiusLarge; border.width: 1; border.color: Theme.alpha(Theme.primary, 0.42) }
+        contentItem: ColumnLayout {
+            Text { text: I18n.t("SELECTED POINTS", "已选数据点"); color: Theme.cyan; font.pixelSize: 18 }
+            Text { text: I18n.t("Each Apply changes only its row.", "各应用按钮仅修改对应一项。"); color: Theme.textTertiary }
+            RowLayout {
+                Layout.fillWidth: true
+                AppTextField { id: batchPeriod; text: "1000"; placeholder: "Period ms"; Layout.fillWidth: true; validator: IntValidator { bottom: 10; top: 3600000 } }
+                AppButton { text: I18n.t("Apply period", "应用周期"); enabled: batchPeriod.acceptableInput; onClicked: root.backend.points.updateSelected({periodMs: Number(batchPeriod.text)}) }
+            }
+            RowLayout {
+                Layout.fillWidth: true
+                AppTextField { id: batchGroup; placeholder: I18n.t("Group", "分组"); Layout.fillWidth: true }
+                AppButton { text: I18n.t("Apply group", "应用分组"); onClicked: root.backend.points.updateSelected({group: batchGroup.text}) }
+            }
+            RowLayout {
+                AppButton { text: I18n.t("Enable polling", "参与轮询"); onClicked: root.backend.points.updateSelected({poll: true}) }
+                AppButton { text: I18n.t("Disable polling", "取消轮询"); onClicked: root.backend.points.updateSelected({poll: false}) }
+            }
+            Text { text: I18n.t("Copy to device", "复制到设备"); color: Theme.textSecondary }
+            AppComboBox { id: pointTarget; Layout.fillWidth: true; model: root.backend.devices; textRole: "label"; valueRole: "deviceId" }
+            AppButton { text: I18n.t("Copy selected", "复制选中点"); onClicked: root.backend.points.copySelectedToDevice(pointTarget.currentValue) }
+            AppButton { text: I18n.t("Delete selected", "删除选中点"); variant: "danger"; onClicked: deletePoints.open() }
+            Item { Layout.fillHeight: true }
+            AppButton { text: I18n.t("Close", "关闭"); onClicked: batchPoints.close() }
+        }
+    }
+    ConfirmDialog {
+        id: deletePoints
+        titleText: I18n.t("Delete selected points", "删除选中数据点")
+        messageText: I18n.t("Remove the selected definitions from this device?", "从当前设备删除已选中的数据点定义？")
+        noteText: I18n.t("Existing generated tasks must be regenerated.", "现有自动生成的任务需要重新生成。")
+        accent: Theme.error
+        confirmText: I18n.t("Delete", "删除")
+        onOperationConfirmed: root.backend.points.deleteSelected()
+    }
+    FileDialog {
+        id: pointImport
+        nameFilters: ["Point template (*.json *.csv)"]
+        onAccepted: root.backend.points.importFile(selectedFile)
+    }
+    FileDialog {
+        id: pointExport
+        fileMode: FileDialog.SaveFile
+        nameFilters: ["JSON (*.json)", "CSV (*.csv)"]
+        defaultSuffix: "json"
+        onAccepted: root.toastRequested(root.backend.points.exportFile(selectedFile) ? I18n.t("Exported", "已导出") : I18n.t("Export failed", "导出失败"), true)
+    }
+    Dialog {
+        id: pointEditor
+        parent: Overlay.overlay
+        anchors.centerIn: parent
+        width: Math.min(620, parent ? parent.width - 48 : 620)
+        height: Math.min(720, parent ? parent.height - 48 : 720)
+        modal: true
+        padding: 22
+        closePolicy: Popup.CloseOnEscape
+        Overlay.modal: Rectangle { color: Theme.alpha("#050716", Theme.dark ? 0.72 : 0.42) }
+        property int editingRow: -1
+        property var draft: ({})
+        function edit(row) {
+            editingRow = row
+            draft = row < 0 ? {name: "Point", fc: 3, address: 0, type: "uint16", wordOrder: "ABCD", scale: 1, offset: 0, unit: "", periodMs: 1000, poll: true} : root.backend.points.pointAt(row)
+            pointName.text = draft.name
+            pointAddress.text = String(draft.address)
+            pointArea.currentIndex = draft.fc - 1
+            pointType.currentIndex = pointType.model.indexOf(draft.type)
+            pointOrder.currentIndex = pointOrder.model.indexOf(draft.wordOrder)
+            pointScale.text = String(draft.scale)
+            pointOffset.text = String(draft.offset)
+            pointUnit.text = draft.unit || ""
+            pointPeriod.text = String(draft.periodMs)
+            pointPoll.checked = draft.poll
+            pointCount.text = String(draft.count || 1)
+            pointDisplay.currentIndex = Math.max(0, pointDisplay.model.indexOf(draft.displayType || "DEC"))
+            pointDecimals.text = String(draft.decimals === undefined ? 3 : draft.decimals)
+            pointEnums.text = JSON.stringify(draft.enumMap || {})
+            pointBits.text = String(draft.bitCount || 0)
+            pointBitOffset.text = String(draft.bitOffset || 0)
+            pointGroup.text = draft.group || ""
+            pointNotes.text = draft.notes || ""
+            pointTimeout.text = String(draft.timeoutMs === undefined ? -1 : draft.timeoutMs)
+            pointRetries.text = String(draft.retries === undefined ? -1 : draft.retries)
+            pointMin.text = draft.minValue === undefined ? "" : String(draft.minValue)
+            pointMax.text = draft.maxValue === undefined ? "" : String(draft.maxValue)
+            open()
+        }
+        background: Rectangle { color: Theme.surface; border.color: Theme.border; radius: Theme.radiusLarge }
+        contentItem: ColumnLayout {
+            Text { text: I18n.t("DATA POINT INSPECTOR", "数据点编辑"); color: Theme.cyan; font.pixelSize: 18 }
+            ScrollView {
+                id: pointFormScroll
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                contentWidth: availableWidth
+                ColumnLayout {
+                    width: pointFormScroll.availableWidth
+                    spacing: 10
+                    FormRow { label: I18n.t("Name", "名称"); AppTextField { id: pointName; Layout.fillWidth: true } }
+                    FormRow { label: I18n.t("Area", "区域"); AppComboBox { id: pointArea; Layout.fillWidth: true; model: ["Coil", "Discrete Input", "Holding Register", "Input Register"] } }
+                    FormRow { label: I18n.t("Address", "地址"); AppTextField { id: pointAddress; Layout.fillWidth: true; placeholder: "0 / 0x0100" } }
+                    FormRow { label: I18n.t("Type", "类型"); AppComboBox { id: pointType; Layout.fillWidth: true; model: ["bit", "uint16", "int16", "uint32", "int32", "float32", "uint64", "int64", "float64", "bcd", "bytes", "string"] } }
+                    FormRow { label: I18n.t("Length", "长度"); visible: ["bcd", "bytes", "string"].indexOf(pointType.currentText) >= 0; AppTextField { id: pointCount; Layout.fillWidth: true; validator: IntValidator { bottom: 1; top: 125 } } }
+                    FormRow { label: I18n.t("Display", "显示"); AppComboBox { id: pointDisplay; Layout.fillWidth: true; model: ["DEC", "HEX", "BIN", "FLOAT", "STRING", "ENUM", "TIMESTAMP", "BIT FIELD"] } }
+                    FormRow { label: I18n.t("Decimals", "小数位"); AppTextField { id: pointDecimals; Layout.fillWidth: true; validator: IntValidator { bottom: 0; top: 12 } } }
+                    FormRow { label: I18n.t("Bit offset", "位偏移"); AppTextField { id: pointBitOffset; Layout.fillWidth: true; validator: IntValidator { bottom: 0; top: 63 } } }
+                    FormRow { label: I18n.t("Bit count", "位数"); AppTextField { id: pointBits; Layout.fillWidth: true; placeholder: "0 = full value"; validator: IntValidator { bottom: 0; top: 64 } } }
+                    FormRow { label: I18n.t("Enum JSON", "枚举 JSON"); visible: pointDisplay.currentText === "ENUM"; AppTextField { id: pointEnums; Layout.fillWidth: true; placeholder: '{"0":"STOP","1":"RUN"}' } }
+                    FormRow { label: I18n.t("Byte order", "字节序"); AppComboBox { id: pointOrder; Layout.fillWidth: true; model: ["ABCD", "BADC", "CDAB", "DCBA"] } }
+                    FormRow { label: I18n.t("Scale", "系数"); AppTextField { id: pointScale; Layout.fillWidth: true; validator: DoubleValidator {} } }
+                    FormRow { label: I18n.t("Offset", "偏移"); AppTextField { id: pointOffset; Layout.fillWidth: true; validator: DoubleValidator {} } }
+                    FormRow { label: I18n.t("Unit", "单位"); AppTextField { id: pointUnit; Layout.fillWidth: true } }
+                    FormRow { label: I18n.t("Min", "下限"); AppTextField { id: pointMin; Layout.fillWidth: true; placeholder: I18n.t("optional", "可选"); validator: DoubleValidator {} } }
+                    FormRow { label: I18n.t("Max", "上限"); AppTextField { id: pointMax; Layout.fillWidth: true; placeholder: I18n.t("optional", "可选"); validator: DoubleValidator {} } }
+                    FormRow { label: I18n.t("Period (ms)", "周期 (ms)"); AppTextField { id: pointPeriod; Layout.fillWidth: true; validator: IntValidator { bottom: 10; top: 3600000 } } }
+                    FormRow { label: "Timeout ms"; AppTextField { id: pointTimeout; Layout.fillWidth: true; placeholder: "-1 = inherit"; validator: IntValidator { bottom: -1; top: 60000 } } }
+                    FormRow { label: "Retry"; AppTextField { id: pointRetries; Layout.fillWidth: true; placeholder: "-1 = inherit"; validator: IntValidator { bottom: -1; top: 10 } } }
+                    FormRow { label: I18n.t("Group", "分组"); AppTextField { id: pointGroup; Layout.fillWidth: true } }
+                    FormRow { label: I18n.t("Notes", "备注"); AppTextField { id: pointNotes; Layout.fillWidth: true } }
+                    AppCheckBox { id: pointPoll; text: I18n.t("Include in polling", "参与轮询") }
+                }
+            }
+            RowLayout {
+                Layout.fillWidth: true
+                AppButton { compact: true; text: I18n.t("Copy", "复制"); enabled: pointEditor.editingRow >= 0; onClicked: { root.backend.points.copyPoint(pointEditor.editingRow); pointEditor.close() } }
+                AppButton { compact: true; text: I18n.t("Delete", "删除"); enabled: pointEditor.editingRow >= 0; onClicked: pointDelete.open() }
+                Item { Layout.fillWidth: true }
+                AppButton { compact: true; text: I18n.t("Cancel", "取消"); onClicked: pointEditor.close() }
+                AppButton {
+                    compact: true
+                    variant: "primary"
+                    text: I18n.t("Apply", "应用")
+                    enabled: pointScale.acceptableInput && pointOffset.acceptableInput && pointPeriod.acceptableInput
+                             && pointMin.acceptableInput && pointMax.acceptableInput
+                             && pointName.text.trim().length > 0 && isFinite(Number(pointAddress.text))
+                    onClicked: {
+                        const p = {name: pointName.text, address: Number(pointAddress.text), fc: pointArea.currentIndex + 1,
+                            type: pointType.currentText, wordOrder: pointOrder.currentText, scale: Number(pointScale.text),
+                            offset: Number(pointOffset.text), unit: pointUnit.text, periodMs: Number(pointPeriod.text), poll: pointPoll.checked,
+                            count: Number(pointCount.text), displayType: pointDisplay.currentText, decimals: Number(pointDecimals.text),
+                            bitOffset: Number(pointBitOffset.text), bitCount: Number(pointBits.text), group: pointGroup.text, notes: pointNotes.text,
+                            timeoutMs: Number(pointTimeout.text), retries: Number(pointRetries.text),
+                            minValue: pointMin.text.trim() === "" ? undefined : Number(pointMin.text),
+                            maxValue: pointMax.text.trim() === "" ? undefined : Number(pointMax.text)}
+                        try { p.enumMap = JSON.parse(pointEnums.text) } catch(e) { root.toastRequested(I18n.t("Invalid enum JSON", "枚举 JSON 无效"), false); return }
+                        if (root.backend.points.savePoint(pointEditor.editingRow, p)) pointEditor.close()
+                    }
+                }
+            }
+        }
+    }
+    ConfirmDialog {
+        id: pointDelete
+        titleText: I18n.t("Delete point", "删除数据点")
+        messageText: I18n.t("Delete this point definition?", "删除此数据点定义？")
+        noteText: pointName.text
+        confirmText: I18n.t("Delete", "删除")
+        accent: Theme.error
+        onOperationConfirmed: { root.backend.points.removePoint(pointEditor.editingRow); pointEditor.close() }
+    }
+    Dialog {
+        id: advanced
+        parent: Overlay.overlay
+        anchors.centerIn: parent
+        width: Math.min(720, parent ? parent.width - 48 : 720)
+        height: Math.min(760, parent ? parent.height - 48 : 760)
+        padding: 22
+        modal: true
+        closePolicy: Popup.CloseOnEscape
+        Overlay.modal: Rectangle { color: Theme.alpha("#050716", Theme.dark ? 0.72 : 0.42) }
+        background: Rectangle { color: Theme.surface; radius: Theme.radiusLarge; border.width: 1; border.color: Theme.alpha(Theme.primary, 0.42) }
+        contentItem: ScrollView {
+            id: advancedScroll
+            contentWidth: availableWidth
+            clip: true
+        ColumnLayout {
+            width: advancedScroll.availableWidth
+            spacing: 16
+            Text { text: I18n.t("SESSION PARAMETERS", "会话参数"); color: Theme.cyan; font.pixelSize: 18 }
+            FormRow {
+                Layout.fillWidth: true
+                label: root.isSerial ? I18n.t("Channel alias", "通道别名")
+                                     : I18n.t("Channel name", "通道名称")
+                AppTextField {
+                    id: advancedChannelName
+                    Layout.fillWidth: true
+                    text: ModbusWorkspace.channels[ModbusWorkspace.currentIndex].alias || ""
+                    placeholder: root.isSerial
+                                 ? I18n.t("Optional, COM port remains the channel identity", "可选，COM 口始终是通道标识")
+                                 : I18n.t("e.g. TCP Master", "例如：TCP 主站")
+                    onEditingFinished: {
+                        if (root.isSerial)
+                            ModbusWorkspace.setAlias(ModbusWorkspace.currentIndex, text.trim())
+                        else if (text.trim().length > 0)
+                            ModbusWorkspace.rename(ModbusWorkspace.currentIndex, text.trim())
+                    }
+                }
+            }
+            RowLayout {
+                Layout.fillWidth: true
+                Item { Layout.fillWidth: true }
+                AppButton {
+                    visible: !root.isSerial
+                    text: I18n.t("Remove channel", "移除通道")
+                    enabled: ModbusWorkspace.channels.length > 1
+                    variant: "text"
+                    accent: Theme.error
+                    onClicked: removeChannel.open()
+                }
+            }
+            Text { Layout.fillWidth: true; wrapMode: Text.WordWrap; text: I18n.t("Applied when connecting. Reconnect after changing parameters.", "连接时应用参数，修改后请重新连接。"); color: Theme.textTertiary; font.pixelSize: 12 }
+            FormRow {
+                label: I18n.t("Timeout ms", "超时 ms")
+                    AppTextField {
+                    Layout.fillWidth: true
+                    text: String(root.backend.timeoutMs)
+                    validator: IntValidator { bottom: 50; top: 60000 }
+                    onEditingFinished: if (acceptableInput) root.backend.timeoutMs = Number(text)
+                }
+            }
+            FormRow {
+                label: I18n.t("Retries", "重试次数")
+                AppTextField {
+                    Layout.fillWidth: true
+                    text: String(root.backend.retries)
+                    validator: IntValidator { bottom: 0; top: 10 }
+                    onEditingFinished: if (acceptableInput) root.backend.retries = Number(text)
+                }
+            }
+            Repeater {
+                model: [
+                    {key: "dataBits", label: I18n.t("Data bits", "数据位"), min: 5, max: 8},
+                    {key: "stopBits", label: I18n.t("Stop bits", "停止位"), min: 1, max: 2},
+                    {key: "flowControl", label: I18n.t("Flow 0/1/2", "流控 0/1/2"), min: 0, max: 2},
+                    {key: "interFrameUs", label: I18n.t("Frame gap µs", "帧间隔 µs"), min: -1, max: 1000000},
+                    {key: "turnaroundMs", label: I18n.t("Turnaround ms", "响应间隔 ms"), min: 0, max: 60000},
+                    {key: "addressOffset", label: I18n.t("Address offset", "地址偏移"), min: -65535, max: 65535},
+                    {key: "writeCacheMs", label: I18n.t("Write cache ms", "写缓存 ms"), min: 0, max: 60000},
+                    {key: "tcpConcurrency", label: I18n.t("TCP concurrency", "TCP 并发数"), min: 1, max: 16},
+                    {key: "broadcastAddress", label: I18n.t("Broadcast address", "广播地址"), min: 0, max: 247},
+                    {key: "reconnectMs", label: I18n.t("Reconnect ms", "重连 ms"), min: 100, max: 60000},
+                    {key: "minimumPollMs", label: I18n.t("Min poll ms", "最小轮询 ms"), min: 10, max: 60000},
+                    {key: "mergeGap", label: I18n.t("Merge gap", "合并空洞"), min: 0, max: 124},
+                    {key: "maxRead", label: I18n.t("Max registers", "合并上限"), min: 1, max: 125}
+                ]
+                delegate: FormRow {
+                    required property var modelData
+                    Layout.fillWidth: true
+                    label: modelData.label
+                    AppTextField {
+                        Layout.fillWidth: true
+                        text: String(root.backend.channelOptions[modelData.key])
+                        validator: IntValidator { bottom: modelData.min; top: modelData.max }
+                        onEditingFinished: if (acceptableInput) root.backend.setChannelOption(modelData.key, Number(text))
+                    }
+                }
+            }
+            FormRow {
+                Layout.fillWidth: true
+                label: I18n.t("CRC byte order", "CRC 字节序")
+                AppComboBox {
+                    Layout.fillWidth: true
+                    model: [I18n.t("Little endian", "低字节在前"), I18n.t("Big endian", "高字节在前")]
+                    currentIndex: root.backend.channelOptions.crcByteOrder === "big" ? 1 : 0
+                    onActivated: root.backend.setChannelOption("crcByteOrder", index === 1 ? "big" : "little")
+                }
+            }
+            FormRow {
+                Layout.fillWidth: true
+                label: I18n.t("Coil bit order", "Coil 位序")
+                AppComboBox {
+                    Layout.fillWidth: true
+                    model: ["LSB first", "MSB first"]
+                    currentIndex: root.backend.channelOptions.coilBitOrder === "msb" ? 1 : 0
+                    onActivated: root.backend.setChannelOption("coilBitOrder", index === 1 ? "msb" : "lsb")
+                }
+            }
+            AppCheckBox { text: I18n.t("Auto reconnect", "自动重连"); checked: root.backend.channelOptions.autoReconnect; onToggled: root.backend.setChannelOption("autoReconnect", checked) }
+            AppCheckBox { text: I18n.t("Poll after connecting", "连接后自动轮询"); checked: root.backend.channelOptions.autoPoll; onToggled: root.backend.setChannelOption("autoPoll", checked) }
+            AppCheckBox { text: "TCP Keep Alive"; checked: root.backend.channelOptions.keepAlive; onToggled: root.backend.setChannelOption("keepAlive", checked) }
+            Item { Layout.fillHeight: true }
+            AppButton { Layout.fillWidth: true; text: I18n.t("Done", "完成"); onClicked: advanced.close() }
+        }
+        }
+    }
+
+    ModbusDiagnosticsDrawer {
+        id: diagnostics
+        backend: root.backend
+    }
+
+    ModbusTrendWindow {
+        id: pointTrends
+        backend: root.backend
+    }
+
+    readonly property bool isMaster: root.backend.mode === "rtuMaster" || root.backend.mode === "asciiMaster" || root.backend.mode === "tcpMaster"
+
+    readonly property bool isSerial: root.backend.mode === "rtuMaster" || root.backend.mode === "asciiMaster"
+                                      || root.backend.mode === "rtuSlave" || root.backend.mode === "asciiSlave"
+    readonly property bool connected: root.backend.open || root.backend.simulatorRunning
+
 
     ColumnLayout {
         anchors.fill: parent
@@ -42,8 +610,8 @@ Item {
             }
 
             StatusPill {
-                visible: ModbusManager.polling
-                text: "轮询中 · " + ModbusManager.tasks.length + " 任务"
+                visible: root.backend.polling
+                text: I18n.t("Polling · ", "轮询中 · ") + I18n.count(root.backend.tasks.length, "tasks", " 任务")
                 accent: Theme.warning
                 dot: false
                 scaleFactor: 0.9
@@ -52,1037 +620,63 @@ Item {
             Item { Layout.fillWidth: true }
 
             Text {
-                text: "TX " + ModbusManager.txCount + " · RX " + ModbusManager.rxCount
-                      + " · 异常 " + ModbusManager.errorCount
-                      + " · 响应 " + ModbusManager.lastResponseMs + " ms"
+                text: "TX " + root.backend.txCount + " · RX " + root.backend.rxCount
+                      + " · 异常 " + root.backend.errorCount
+                      + " · 响应 " + root.backend.lastResponseMs + " ms"
                 color: Theme.textSecondary
                 font.family: "Consolas"
                 font.pixelSize: 11
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: { diagnostics.scanner = false; diagnostics.open() }
+                }
             }
         }
 
-        RowLayout {
+        ModbusDataMonitor {
+            id: dataMonitor
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 14
-
-            // -------- 左：连接配置 --------
-            AppCard {
-                Layout.preferredWidth: 312
-                Layout.maximumWidth: 312
-                Layout.fillHeight: true
-                padding: 16
-
-                ColumnLayout {
-                    anchors.fill: parent
-                    spacing: 9
-
-                    Text {
-                        text: "连接配置"
-                        color: Theme.textPrimary
-                        font.family: Theme.fontFamily
-                        font.pixelSize: 14
-                        font.weight: Font.DemiBold
-                    }
-
-                    FormRow {
-                        label: "模式"
-                        AppComboBox {
-                            Layout.fillWidth: true
-                            model: ["RTU 主站", "TCP 主站", "RTU 从站模拟", "TCP 从站模拟"]
-                            currentIndex: ["rtuMaster", "tcpMaster", "rtuSlave", "tcpSlave"]
-                                            .indexOf(ModbusManager.mode)
-                            onActivated: (index) => ModbusManager.mode =
-                                             ["rtuMaster", "tcpMaster", "rtuSlave", "tcpSlave"][index]
-                        }
-                    }
-
-                    FormRow {
-                        visible: root.isRtu
-                        label: "端口"
-                        AppComboBox {
-                            id: modbusPortCombo
-                            Layout.fillWidth: true
-                            model: ModbusManager.portInfos
-                            textRole: "label"
-                            currentIndex: modbusPortCombo.indexForName(ModbusManager.portName)
-                            onAboutToShowPopup: ModbusManager.refreshPorts()
-                            onActivated: (index) => {
-                                if (ModbusManager.portInfos.length > index)
-                                    ModbusManager.portName = ModbusManager.portInfos[index].name
-                            }
-                            function indexForName(name) {
-                                const infos = ModbusManager.portInfos
-                                for (let i = 0; i < infos.length; ++i)
-                                    if (infos[i].name === name)
-                                        return i
-                                return infos.length > 0 ? 0 : -1
-                            }
-                        }
-                    }
-
-                    FormRow {
-                        visible: root.isRtu
-                        label: "波特率"
-                        AppComboBox {
-                            Layout.fillWidth: true
-                            model: ["1200", "2400", "4800", "9600", "19200", "38400", "57600", "115200"]
-                            currentIndex: Math.max(0, model.indexOf(ModbusManager.baudRate))
-                            onActivated: (index) => ModbusManager.baudRate = model[index]
-                        }
-                    }
-
-                    FormRow {
-                        visible: root.isRtu
-                        label: "校验位"
-                        AppComboBox {
-                            Layout.fillWidth: true
-                            model: ["无 (None)", "偶 (Even)", "奇 (Odd)"]
-                            currentIndex: ["none", "even", "odd"].indexOf(ModbusManager.parity)
-                            onActivated: (index) => ModbusManager.parity =
-                                             ["none", "even", "odd"][index]
-                        }
-                    }
-
-                    FormRow {
-                        visible: !root.isRtu
-                        label: "主机"
-                        AppTextField {
-                            Layout.fillWidth: true
-                            mono: true
-                            text: ModbusManager.host
-                            onEditingFinished: ModbusManager.host = text
-                        }
-                    }
-
-                    FormRow {
-                        visible: !root.isRtu
-                        label: root.isMaster ? "远端口" : "监听端口"
-                        AppTextField {
-                            Layout.fillWidth: true
-                            mono: true
-                            text: ModbusManager.port
-                            onEditingFinished: ModbusManager.port = parseInt(text) || 502
-                        }
-                    }
-
-                    FormRow {
-                        label: root.isMaster ? "Unit ID" : "从站地址"
-                        AppTextField {
-                            Layout.fillWidth: true
-                            mono: true
-                            text: root.isMaster ? ModbusManager.unitId : ModbusManager.slaveAddress
-                            onEditingFinished: {
-                                const value = parseInt(text) || 1
-                                if (root.isMaster)
-                                    ModbusManager.unitId = Math.min(255, Math.max(0, value))
-                                else
-                                    ModbusManager.slaveAddress = Math.min(247, Math.max(1, value))
-                            }
-                        }
-                    }
-
-                    FormRow {
-                        visible: root.isMaster
-                        label: "超时/重试"
-                        RowLayout {
-                            Layout.fillWidth: true
-                            spacing: 6
-
-                            AppTextField {
-                                Layout.fillWidth: true
-                                mono: true
-                                text: ModbusManager.timeoutMs
-                                onEditingFinished: ModbusManager.timeoutMs = parseInt(text) || 1000
-                            }
-
-                            AppTextField {
-                                Layout.fillWidth: true
-                                mono: true
-                                text: ModbusManager.retries
-                                onEditingFinished: ModbusManager.retries = parseInt(text) || 0
-                            }
-                        }
-                    }
-
-                    AppButton {
-                        Layout.fillWidth: true
-                        text: root.connected ? "断开 / 停止模拟"
-                                             : (root.isMaster ? "连接主站" : "启动从站模拟")
-                        variant: root.connected ? "danger" : "primary"
-                        onClicked: ModbusManager.open()
-                    }
-
-                    Rectangle { Layout.fillWidth: true; height: 1; color: Theme.divider }
-
-                    // 从站模拟器配置
-                    ColumnLayout {
-                        visible: !root.isMaster
-                        Layout.fillWidth: true
-                        spacing: 7
-
-                        Text {
-                            text: "寄存器区数据来源"
-                            color: Theme.textPrimary
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 13
-                            font.weight: Font.DemiBold
-                        }
-
-                        Repeater {
-                            model: [
-                                { key: "holding", label: "保持寄存器" },
-                                { key: "input", label: "输入寄存器" },
-                                { key: "coils", label: "线圈" },
-                                { key: "discrete", label: "离散输入" }
-                            ]
-
-                            delegate: RowLayout {
-                                required property var modelData
-                                Layout.fillWidth: true
-                                spacing: 5
-
-                                Text {
-                                    Layout.preferredWidth: 62
-                                    text: modelData.label
-                                    color: Theme.textSecondary
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: 11
-                                }
-
-                                AppComboBox {
-                                    id: sourceCombo
-                                    property string areaKey: modelData.key
-                                    property int areaCount: 100
-                                    property double areaBase: 100
-                                    property double areaAmplitude: 10
-                                    Layout.preferredWidth: 86
-                                    model: ["static", "random", "counter", "ramp", "sine"]
-                                    onActivated: applyConfig()
-                                    function applyConfig() {
-                                        ModbusManager.configureSimulatorArea(
-                                            areaKey, areaCount, model[currentIndex],
-                                            areaBase, areaAmplitude)
-                                    }
-                                }
-
-                                AppTextField {
-                                    Layout.preferredWidth: 48
-                                    mono: true
-                                    text: "100"
-                                    onEditingFinished: {
-                                        sourceCombo.areaCount = parseInt(text) || 0
-                                        sourceCombo.applyConfig()
-                                    }
-                                }
-                            }
-                        }
-
-                        Text {
-                            Layout.fillWidth: true
-                            text: "各区的 value = base ± amplitude，按来源每秒刷新；static 区可用下方寄存器表手改。"
-                            color: Theme.textTertiary
-                            font.family: Theme.fontFamily
-                            font.pixelSize: 10
-                            wrapMode: Text.WordWrap
-                            lineHeight: 1.3
-                        }
-                    }
-
-                    Item { Layout.fillHeight: true }
-                }
+            backend: root.backend
+            onNewPointRequested: pointEditor.edit(-1)
+            onDeleteRequested: deletePoints.open()
+            onAddDeviceRequested: deviceNameDialog.openFor(-1)
+            onRemoveDeviceRequested: removeDevice.open()
+            onRemoveDevicesRequested: function(selections) {
+                if (!selections || selections.length === 0) return
+                root.pendingDeviceRemovals = selections
+                removeSelectedDevices.open()
             }
-
-            // -------- 右：工作区 + 终端 --------
-            ColumnLayout {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                spacing: 10
-
-                // 工作区切换
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 8
-
-                    Repeater {
-                        model: [
-                            { label: "轮询任务", tab: 0 },
-                            { label: "手动读写", tab: 1 },
-                            { label: "寄存器表", tab: 2 },
-                            { label: "Raw Test Center", tab: 3 }
-                        ]
-
-                        delegate: AppButton {
-                            required property var modelData
-                            compact: true
-                            text: modelData.label
-                            variant: root.workspaceTab === modelData.tab ? "primary" : "default"
-                            onClicked: root.workspaceTab = modelData.tab
-                        }
-                    }
-
-                    Item { Layout.fillWidth: true }
-                }
-
-                AppCard {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    padding: 0
-
-                    StackLayout {
-                        anchors.fill: parent
-                        currentIndex: root.workspaceTab
-
-                        // ---- 0 轮询任务 ----
-                        Item {
-                            ColumnLayout {
-                                anchors.fill: parent
-                                anchors.margins: 12
-                                spacing: 8
-
-                                RowLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 8
-
-                                    Text {
-                                        text: "轮询任务"
-                                        color: Theme.textPrimary
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: 14
-                                        font.weight: Font.DemiBold
-                                    }
-
-                                    StatusPill {
-                                        text: ModbusManager.tasks.length + " 个"
-                                        accent: Theme.primary
-                                        dot: false
-                                        scaleFactor: 0.85
-                                    }
-
-                                    Item { Layout.fillWidth: true }
-
-                                    AppButton { compact: true; textPixelSize: 12; text: "新增任务"; onClicked: taskEditor.openFor(-1) }
-                                    AppButton {
-                                        compact: true; textPixelSize: 12; text: "导入 CSV"
-                                        onClicked: taskCsvDialog.open()
-                                    }
-                                    AppButton {
-                                        compact: true; textPixelSize: 12; text: "启动轮询"
-                                        variant: "primary"
-                                        enabled: root.isMaster && !ModbusManager.polling
-                                                 && ModbusManager.tasks.length > 0
-                                        onClicked: ModbusManager.startPolling()
-                                    }
-                                    AppButton {
-                                        compact: true; textPixelSize: 12; text: "停止轮询"
-                                        variant: "danger"
-                                        enabled: ModbusManager.polling
-                                        onClicked: ModbusManager.stopPolling()
-                                    }
-                                }
-
-                                // 表头
-                                Rectangle {
-                                    Layout.fillWidth: true
-                                    implicitHeight: taskHeaderRow.implicitHeight + 14
-                                    color: Theme.surfaceRaised
-                                    radius: Theme.radiusSmall
-
-                                    RowLayout {
-                                        id: taskHeaderRow
-                                        anchors.fill: parent
-                                        anchors.leftMargin: 12
-                                        anchors.rightMargin: 12
-                                        spacing: 8
-
-                                        Text { Layout.preferredWidth: 30; text: "启"; color: Theme.textTertiary; font.family: Theme.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold }
-                                        Text { Layout.preferredWidth: 110; text: "名称"; color: Theme.textTertiary; font.family: Theme.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold }
-                                        Text { Layout.preferredWidth: 42; text: "从站"; color: Theme.textTertiary; font.family: Theme.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold; horizontalAlignment: Text.AlignHCenter }
-                                        Text { Layout.preferredWidth: 42; text: "FC"; color: Theme.textTertiary; font.family: Theme.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold; horizontalAlignment: Text.AlignHCenter }
-                                        Text { Layout.preferredWidth: 58; text: "地址"; color: Theme.textTertiary; font.family: Theme.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold; horizontalAlignment: Text.AlignHCenter }
-                                        Text { Layout.preferredWidth: 48; text: "数量"; color: Theme.textTertiary; font.family: Theme.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold; horizontalAlignment: Text.AlignHCenter }
-                                        Text { Layout.preferredWidth: 66; text: "周期"; color: Theme.textTertiary; font.family: Theme.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold; horizontalAlignment: Text.AlignHCenter }
-                                        Text { Layout.preferredWidth: 92; text: "类型"; color: Theme.textTertiary; font.family: Theme.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold }
-                                        Item { Layout.fillWidth: true }
-                                        Text { Layout.preferredWidth: 120; text: "状态"; color: Theme.textTertiary; font.family: Theme.fontFamily; font.pixelSize: 11; font.weight: Font.DemiBold; horizontalAlignment: Text.AlignHCenter }
-                                    }
-                                }
-
-                                ListView {
-                                    id: taskList
-                                    Layout.fillWidth: true
-                                    Layout.fillHeight: true
-                                    clip: true
-                                    spacing: 2
-                                    model: ModbusManager.tasks
-
-                                    ScrollBar.vertical: ScrollBar { }
-
-                                    delegate: Rectangle {
-                                        id: taskRow
-                                        required property var modelData
-                                        required property int index
-                                        width: taskList.width
-                                        implicitHeight: 36
-                                        radius: Theme.radiusSmall
-                                        color: root.selectedTask === index
-                                               ? Theme.selectedFill
-                                               : index % 2 === 0 ? "transparent"
-                                                 : Theme.alpha(Theme.textPrimary, Theme.dark ? 0.03 : 0.018)
-
-                                        MouseArea {
-                                            anchors.fill: parent
-                                            cursorShape: Qt.PointingHandCursor
-                                            onClicked: root.selectedTask = taskRow.index
-                                            onDoubleClicked: taskEditor.openFor(taskRow.index)
-                                        }
-
-                                        RowLayout {
-                                            anchors.fill: parent
-                                            anchors.leftMargin: 12
-                                            anchors.rightMargin: 12
-                                            spacing: 8
-
-                                            Rectangle {
-                                                Layout.preferredWidth: 14
-                                                Layout.preferredHeight: 14
-                                                radius: 4
-                                                color: taskRow.modelData.enabled !== false
-                                                       ? Theme.success : Theme.alpha(Theme.textPrimary, 0.2)
-                                            }
-
-                                            Text { Layout.preferredWidth: 110; text: taskRow.modelData.name || "未命名任务"; color: Theme.textPrimary; font.family: Theme.fontFamily; font.pixelSize: 12; elide: Text.ElideRight }
-                                            Text { Layout.preferredWidth: 42; text: taskRow.modelData.slave; color: Theme.textSecondary; font.family: "Consolas"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter }
-                                            Text { Layout.preferredWidth: 42; text: "0x" + Number(taskRow.modelData.fc).toString(16).toUpperCase().padStart(2, "0"); color: Theme.primary; font.family: "Consolas"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter }
-                                            Text { Layout.preferredWidth: 58; text: taskRow.modelData.address; color: Theme.textSecondary; font.family: "Consolas"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter }
-                                            Text { Layout.preferredWidth: 48; text: taskRow.modelData.count; color: Theme.textSecondary; font.family: "Consolas"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter }
-                                            Text { Layout.preferredWidth: 66; text: taskRow.modelData.periodMs + " ms"; color: Theme.textSecondary; font.family: "Consolas"; font.pixelSize: 12; horizontalAlignment: Text.AlignHCenter }
-                                            Text { Layout.preferredWidth: 92; text: (taskRow.modelData.type || "uint16") + (taskRow.modelData.unit ? " " + taskRow.modelData.unit : ""); color: Theme.textSecondary; font.family: Theme.fontFamily; font.pixelSize: 11; elide: Text.ElideRight }
-                                            Item { Layout.fillWidth: true }
-                                            Text { Layout.preferredWidth: 120; text: taskRow.modelData.status || "待开始"; color: taskRow.modelData.ok === true ? Theme.success : taskRow.modelData.ok === false ? Theme.error : Theme.textTertiary; font.family: "Consolas"; font.pixelSize: 11; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
-                                        }
-                                    }
-                                }
-
-                                Text {
-                                    visible: ModbusManager.tasks.length === 0
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Text.AlignHCenter
-                                    text: "暂无轮询任务 · 点击「新增任务」创建，或从 CSV 寄存器表导入"
-                                    color: Theme.textTertiary
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: 12
-                                    topPadding: 20
-                                }
-
-                                Text {
-                                    Layout.fillWidth: true
-                                    text: "单行调度：同一时刻只有一个未完成请求（RTU 严格串行）；双击行可编辑任务。"
-                                    color: Theme.textTertiary
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: 10
-                                }
-                            }
-                        }
-
-                        // ---- 1 手动读写 ----
-                        Item {
-                            ColumnLayout {
-                                anchors.fill: parent
-                                anchors.margins: 16
-                                spacing: 10
-
-                                Text {
-                                    text: "手动读写"
-                                    color: Theme.textPrimary
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: 14
-                                    font.weight: Font.DemiBold
-                                }
-
-                                GridLayout {
-                                    Layout.fillWidth: true
-                                    columns: 4
-                                    columnSpacing: 14
-                                    rowSpacing: 8
-
-                                    FormRow {
-                                        Layout.fillWidth: true
-                                        label: "从站"
-                                        AppTextField { id: manualSlave; Layout.fillWidth: true; mono: true; text: "1" }
-                                    }
-
-                                    FormRow {
-                                        Layout.fillWidth: true
-                                        label: "功能码"
-                                        AppComboBox {
-                                            id: manualFc
-                                            Layout.fillWidth: true
-                                            model: ["01 读线圈", "02 读离散输入", "03 读保持寄存器", "04 读输入寄存器",
-                                                    "05 写单线圈", "06 写单寄存器", "0F 写多线圈", "10 写多寄存器"]
-                                            currentIndex: 2
-                                        }
-                                    }
-
-                                    FormRow {
-                                        Layout.fillWidth: true
-                                        label: "起始地址"
-                                        AppTextField { id: manualAddress; Layout.fillWidth: true; mono: true; text: "0" }
-                                    }
-
-                                    FormRow {
-                                        Layout.fillWidth: true
-                                        label: "数量 / 值"
-                                        AppTextField { id: manualValues; Layout.fillWidth: true; mono: true; text: "1" }
-                                    }
-                                }
-
-                                RowLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 8
-
-                                    AppButton {
-                                        text: "读取"
-                                        variant: "primary"
-                                        accent: Theme.cyan
-                                        enabled: root.isMaster
-                                        onClicked: {
-                                            const fc = [1, 2, 3, 4][manualFc.currentIndex]
-                                            ModbusManager.manualRead(parseInt(manualSlave.text) || 1, fc,
-                                                                     parseInt(manualAddress.text) || 0,
-                                                                     parseInt(manualValues.text) || 1)
-                                        }
-                                    }
-
-                                    AppButton {
-                                        text: "写入"
-                                        variant: "primary"
-                                        enabled: root.isMaster && manualFc.currentIndex >= 4
-                                        onClicked: {
-                                            const fc = [5, 6, 15, 16][manualFc.currentIndex - 4]
-                                            ModbusManager.manualWrite(parseInt(manualSlave.text) || 1, fc,
-                                                                      parseInt(manualAddress.text) || 0,
-                                                                      manualValues.text)
-                                        }
-                                    }
-
-                                    Text {
-                                        text: "地址按 0 基协议地址发送；写值支持十进制或 0x 十六进制，多个值用逗号分隔"
-                                        color: Theme.textTertiary
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: 11
-                                        elide: Text.ElideRight
-                                    }
-
-                                    Item { Layout.fillWidth: true }
-                                }
-
-                                Rectangle {
-                                    Layout.fillWidth: true
-                                    implicitHeight: previewColumn.implicitHeight + 22
-                                    radius: Theme.radius
-                                    color: Theme.surfaceRaised
-                                    border.width: 1
-                                    border.color: Theme.divider
-
-                                    ColumnLayout {
-                                        id: previewColumn
-                                        anchors.fill: parent
-                                        anchors.margins: 11
-                                        spacing: 5
-
-                                        Text {
-                                            text: "写前预览（工程量 → 原始值 → 寄存器编码）"
-                                            color: Theme.textPrimary
-                                            font.family: Theme.fontFamily
-                                            font.pixelSize: 12
-                                            font.weight: Font.DemiBold
-                                        }
-
-                                        RowLayout {
-                                            spacing: 8
-
-                                            AppTextField { id: previewValue; Layout.preferredWidth: 110; mono: true; text: "230.5"; placeholder: "工程量" }
-                                            AppTextField { id: previewScale; Layout.preferredWidth: 80; mono: true; text: "0.1"; placeholder: "Scale" }
-                                            AppComboBox { id: previewOrder; implicitWidth: 96; model: ["ABCD", "BADC", "CDAB", "DCBA"] }
-
-                                            AppButton {
-                                                compact: true
-                                                textPixelSize: 12
-                                                text: "预览编码"
-                                                onClicked: {
-                                                    const result = ModbusManager.previewWrite(
-                                                        parseFloat(previewValue.text) || 0,
-                                                        parseFloat(previewScale.text) || 1, 0,
-                                                        "float32", previewOrder.model[previewOrder.currentIndex])
-                                                    previewResult.text = result.error
-                                                        ? result.error
-                                                        : "原始值 " + result.raw + " · 寄存器 " + result.registers
-                                                          + " (" + result.wordOrder + ")"
-                                                }
-                                            }
-
-                                            Text {
-                                                id: previewResult
-                                                Layout.fillWidth: true
-                                                color: Theme.success
-                                                font.family: "Consolas"
-                                                font.pixelSize: 12
-                                                elide: Text.ElideRight
-                                            }
-                                        }
-                                    }
-                                }
-
-                                Item { Layout.fillHeight: true }
-                            }
-                        }
-
-                        // ---- 2 寄存器表 ----
-                        Item {
-                            ColumnLayout {
-                                anchors.fill: parent
-                                anchors.margins: 12
-                                spacing: 8
-
-                                RowLayout {
-                                    Layout.fillWidth: true
-
-                                    Text {
-                                        text: "寄存器表（最近一次读取值）"
-                                        color: Theme.textPrimary
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: 14
-                                        font.weight: Font.DemiBold
-                                    }
-
-                                    Item { Layout.fillWidth: true }
-
-                                    Text {
-                                        text: "显示地址 = 协议地址 + 1（4xxxx 体系）"
-                                        color: Theme.textTertiary
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: 10
-                                    }
-                                }
-
-                                ListView {
-                                    id: registerList
-                                    Layout.fillWidth: true
-                                    Layout.fillHeight: true
-                                    clip: true
-                                    spacing: 2
-                                    model: ModbusManager.registerMap
-
-                                    ScrollBar.vertical: ScrollBar { }
-
-                                    delegate: Rectangle {
-                                        id: regRow
-                                        required property var modelData
-                                        required property int index
-                                        width: registerList.width
-                                        implicitHeight: 32
-                                        radius: Theme.radiusSmall
-                                        color: index % 2 === 0 ? "transparent"
-                                                               : Theme.alpha(Theme.textPrimary, Theme.dark ? 0.03 : 0.018)
-
-                                        RowLayout {
-                                            anchors.fill: parent
-                                            anchors.leftMargin: 10
-                                            anchors.rightMargin: 10
-                                            spacing: 10
-
-                                            Text { Layout.preferredWidth: 96; text: regRow.modelData.task; color: Theme.textPrimary; font.family: Theme.fontFamily; font.pixelSize: 12; elide: Text.ElideRight }
-                                            Text { Layout.preferredWidth: 44; text: "S" + regRow.modelData.slave; color: Theme.textTertiary; font.family: "Consolas"; font.pixelSize: 11 }
-                                            Text { Layout.preferredWidth: 78; text: regRow.modelData.protocolAddress + " / " + regRow.modelData.displayAddress; color: Theme.textSecondary; font.family: "Consolas"; font.pixelSize: 11 }
-                                            Text { Layout.preferredWidth: 64; text: regRow.modelData.type; color: Theme.textTertiary; font.family: "Consolas"; font.pixelSize: 11 }
-                                            Text { Layout.preferredWidth: 110; text: "0x" + regRow.modelData.rawHex; color: Theme.primary; font.family: "Consolas"; font.pixelSize: 12; font.weight: Font.DemiBold }
-                                            Text { Layout.fillWidth: true; text: typeof regRow.modelData.value === "number" ? Number(regRow.modelData.value).toFixed(3) : String(regRow.modelData.value); color: Theme.success; font.family: "Consolas"; font.pixelSize: 13; font.weight: Font.DemiBold }
-                                            Text { Layout.preferredWidth: 40; text: regRow.modelData.unit || ""; color: Theme.textTertiary; font.family: Theme.fontFamily; font.pixelSize: 11 }
-                                            Text { Layout.preferredWidth: 86; text: regRow.modelData.updatedAt; color: Theme.textTertiary; font.family: "Consolas"; font.pixelSize: 10 }
-                                        }
-                                    }
-
-                                    Text {
-                                        anchors.centerIn: parent
-                                        visible: ModbusManager.registerMap.length === 0
-                                        text: "暂无数据 · 执行读取或轮询后，解码结果会显示在这里"
-                                        color: Theme.textTertiary
-                                        font.family: Theme.fontFamily
-                                        font.pixelSize: 12
-                                    }
-                                }
-                            }
-                        }
-
-                        // ---- 3 Raw Test Center ----
-                        Item {
-                            ColumnLayout {
-                                anchors.fill: parent
-                                anchors.margins: 16
-                                spacing: 10
-
-                                Text {
-                                    text: "Raw Test Center"
-                                    color: Theme.textPrimary
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: 14
-                                    font.weight: Font.DemiBold
-                                }
-
-                                Text {
-                                    Layout.fillWidth: true
-                                    text: root.isRtu
-                                          ? "输入「从站地址 + PDU」，勾选自动 CRC 后发出，例如 01 03 00 00 00 02。"
-                                          : "输入「Unit ID + PDU」自动补 MBAP 头发出，例如 01 03 00 00 00 02。"
-                                    color: Theme.textSecondary
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: 11
-                                    wrapMode: Text.WordWrap
-                                }
-
-                                RowLayout {
-                                    Layout.fillWidth: true
-                                    spacing: 8
-
-                                    AppTextField {
-                                        id: rawRequest
-                                        Layout.fillWidth: true
-                                        mono: true
-                                        text: root.isRtu ? "01 03 00 00 00 02" : "01 03 00 00 00 02"
-                                        placeholder: "从站地址 + PDU"
-                                    }
-
-                                    AppCheckBox {
-                                        id: rawAutoCrc
-                                        visible: root.isRtu
-                                        text: "自动 CRC16"
-                                        checked: true
-                                    }
-
-                                    AppButton {
-                                        text: "发送原始帧"
-                                        variant: "primary"
-                                        onClicked: ModbusManager.sendRawFrame(rawRequest.text,
-                                                                              !root.isRtu,
-                                                                              rawAutoCrc.checked)
-                                    }
-                                }
-
-                                Rectangle {
-                                    Layout.fillWidth: true
-                                    implicitHeight: rawResultColumn.implicitHeight + 22
-                                    radius: Theme.radius
-                                    color: Theme.surfaceRaised
-                                    border.width: 1
-                                    border.color: Theme.divider
-
-                                    ColumnLayout {
-                                        id: rawResultColumn
-                                        anchors.fill: parent
-                                        anchors.margins: 11
-                                        spacing: 6
-
-                                        Text {
-                                            text: "响应解析"
-                                            color: Theme.textPrimary
-                                            font.family: Theme.fontFamily
-                                            font.pixelSize: 12
-                                            font.weight: Font.DemiBold
-                                        }
-
-                                        Text {
-                                            Layout.fillWidth: true
-                                            visible: !ModbusManager.rawResult
-                                                     || Object.keys(ModbusManager.rawResult).length === 0
-                                            text: "尚未发送 Raw 请求"
-                                            color: Theme.textTertiary
-                                            font.family: Theme.fontFamily
-                                            font.pixelSize: 11
-                                        }
-
-                                        Flow {
-                                            Layout.fillWidth: true
-                                            spacing: 16
-
-                                            Text {
-                                                visible: ModbusManager.rawResult.ok === true
-                                                text: "从站 " + ModbusManager.rawResult.slave
-                                                      + " · FC 0x" + Number(ModbusManager.rawResult.functionCode || 0).toString(16)
-                                                      + " · " + (ModbusManager.rawResult.elapsedMs || 0) + " ms"
-                                                color: Theme.textPrimary
-                                                font.family: "Consolas"
-                                                font.pixelSize: 12
-                                            }
-
-                                            Text {
-                                                visible: ModbusManager.rawResult.words !== undefined
-                                                text: "数据 [" + (ModbusManager.rawResult.words || []).join(" ") + "]"
-                                                color: Theme.success
-                                                font.family: "Consolas"
-                                                font.pixelSize: 12
-                                            }
-
-                                            Text {
-                                                visible: ModbusManager.rawResult.exception === true
-                                                text: ModbusManager.rawResult.exceptionText || "异常响应"
-                                                color: Theme.error
-                                                font.family: Theme.fontFamily
-                                                font.pixelSize: 12
-                                                font.weight: Font.DemiBold
-                                            }
-
-                                            Text {
-                                                visible: ModbusManager.rawResult.timeout === true
-                                                text: "超时 · 2 s 无响应"
-                                                color: Theme.error
-                                                font.family: Theme.fontFamily
-                                                font.pixelSize: 12
-                                                font.weight: Font.DemiBold
-                                            }
-
-                                            Text {
-                                                visible: ModbusManager.rawResult.crcOk === false
-                                                text: "CRC 校验失败"
-                                                color: Theme.error
-                                                font.family: Theme.fontFamily
-                                                font.pixelSize: 12
-                                                font.weight: Font.DemiBold
-                                            }
-                                        }
-                                    }
-                                }
-
-                                Item { Layout.fillHeight: true }
-                            }
-                        }
-                    }
-                }
-
-                AppCard {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 220
-                    padding: 0
-
-                    TerminalView {
-                        anchors.fill: parent
-                        model: ModbusManager.traffic
-                        emptyHint: "Modbus 事务流量（重建 ADU）会显示在这里"
-                        onToastRequested: (text, ok) => root.toastRequested(text, ok)
-                    }
-                }
+            onEditDeviceRequested: function(index) { deviceNameDialog.openFor(index) }
+            onChannelManagerRequested: channelManager.openManager()
+            onConfigureChannelRequested: {
+                channelManager.openManager()
+                Qt.callLater(function() { channelManager.openConfiguration(ModbusWorkspace.currentIndex) })
             }
+            onTrendRequested: { pointTrends.show(); pointTrends.raise() }
+            onDiagnosticsRequested: { diagnostics.scanner = false; diagnostics.open() }
+            onAdvancedRequested: advanced.open()
+            onBatchEditRequested: batchPoints.open()
+            onCopyPointsRequested: batchPoints.open()
+            onImportPointsRequested: pointImport.open()
+            onExportPointsRequested: pointExport.open()
+            onPastePointsRequested: {
+                const ok = root.backend.points.pasteClipboard()
+                root.toastRequested(ok ? I18n.t("Pasted", "已粘贴")
+                                       : I18n.t("No valid point rows in clipboard", "剪贴板中没有有效的数据点行"), ok)
+            }
+            onSortPointsRequested: {
+                root.backend.points.sortByAddress()
+                root.toastRequested(I18n.t("Sorted by area and address", "已按区块和地址排序"), true)
+            }
+            onAddChannelRequested: channelNameDialog.openFor(-1)
+            onRenameChannelRequested: channelNameDialog.openFor(ModbusWorkspace.currentIndex)
+            onRemoveChannelRequested: removeChannel.open()
+            onControlRequested: advanced.open()
+            onEditPointRequested: pointEditor.edit(row)
         }
     }
 
-    // 任务编辑弹窗（简化版风险确认骨架复用）
-    Popup {
-        id: taskEditor
-        property int editIndex: -1
 
-        parent: Overlay.overlay
-        x: (parent ? parent.width - width : 0) / 2
-        y: (parent ? parent.height - height : 0) / 2
-        width: 640
-        height: 460
-        padding: 18
-        closePolicy: Popup.CloseOnEscape
-
-        background: Rectangle {
-            color: Theme.surface
-            radius: Theme.radiusLarge
-            border.width: 1
-            border.color: Theme.alpha(Theme.primary, 0.42)
-        }
-
-        function openFor(index) {
-            editIndex = index
-            if (index >= 0) {
-                const t = ModbusManager.taskAt(index)
-                nameField.text = t.name || ""
-                slaveField.text = t.slave || 1
-                fcCombo.currentIndex = [1, 2, 3, 4].indexOf(t.fc) >= 0 ? [1, 2, 3, 4].indexOf(t.fc) : 2
-                addrField.text = t.address || 0
-                countField.text = t.count || 1
-                periodField.text = t.periodMs || 1000
-                typeCombo.currentIndex = ["uint16", "int16", "uint32", "int32", "float32", "bool", "hex"]
-                                          .indexOf(t.type) >= 0
-                                          ? ["uint16", "int16", "uint32", "int32", "float32", "bool", "hex"].indexOf(t.type) : 0
-                orderCombo.currentIndex = ["ABCD", "BADC", "CDAB", "DCBA"].indexOf(t.wordOrder) >= 0
-                                          ? ["ABCD", "BADC", "CDAB", "DCBA"].indexOf(t.wordOrder) : 0
-                scaleField.text = t.scale !== undefined ? t.scale : 1
-                unitField.text = t.unit || ""
-                enableCheck.checked = t.enabled !== false
-            } else {
-                nameField.text = ""
-                slaveField.text = "1"
-                fcCombo.currentIndex = 2
-                addrField.text = "0"
-                countField.text = "1"
-                periodField.text = "1000"
-                typeCombo.currentIndex = 0
-                orderCombo.currentIndex = 0
-                scaleField.text = "1"
-                unitField.text = ""
-                enableCheck.checked = true
-            }
-            open()
-        }
-
-        contentItem: ColumnLayout {
-            spacing: 10
-
-            Text {
-                text: taskEditor.editIndex >= 0 ? "编辑轮询任务" : "新增轮询任务"
-                color: Theme.textPrimary
-                font.family: Theme.fontFamily
-                font.pixelSize: 16
-                font.weight: Font.DemiBold
-            }
-
-            GridLayout {
-                Layout.fillWidth: true
-                columns: 2
-                columnSpacing: 14
-                rowSpacing: 7
-
-                FormRow {
-                    Layout.fillWidth: true
-                    label: "名称"
-                    AppTextField { id: nameField; Layout.fillWidth: true; placeholder: "如 DC Bus 电压" }
-                }
-
-                FormRow {
-                    Layout.fillWidth: true
-                    label: "从站"
-                    AppTextField { id: slaveField; Layout.fillWidth: true; mono: true; text: "1" }
-                }
-
-                FormRow {
-                    Layout.fillWidth: true
-                    label: "功能码"
-                    AppComboBox {
-                        id: fcCombo
-                        Layout.fillWidth: true
-                        model: ["01 读线圈", "02 读离散输入", "03 读保持寄存器", "04 读输入寄存器"]
-                    }
-                }
-
-                FormRow {
-                    Layout.fillWidth: true
-                    label: "起始地址"
-                    AppTextField { id: addrField; Layout.fillWidth: true; mono: true; text: "0" }
-                }
-
-                FormRow {
-                    Layout.fillWidth: true
-                    label: "数量"
-                    AppTextField { id: countField; Layout.fillWidth: true; mono: true; text: "1" }
-                }
-
-                FormRow {
-                    Layout.fillWidth: true
-                    label: "周期 ms"
-                    AppTextField { id: periodField; Layout.fillWidth: true; mono: true; text: "1000" }
-                }
-
-                FormRow {
-                    Layout.fillWidth: true
-                    label: "类型"
-                    AppComboBox {
-                        id: typeCombo
-                        Layout.fillWidth: true
-                        model: ["uint16", "int16", "uint32", "int32", "float32", "bool", "hex"]
-                    }
-                }
-
-                FormRow {
-                    Layout.fillWidth: true
-                    label: "字序"
-                    AppComboBox {
-                        id: orderCombo
-                        Layout.fillWidth: true
-                        model: ["ABCD", "BADC", "CDAB", "DCBA"]
-                    }
-                }
-
-                FormRow {
-                    Layout.fillWidth: true
-                    label: "比例"
-                    AppTextField { id: scaleField; Layout.fillWidth: true; mono: true; text: "1" }
-                }
-
-                FormRow {
-                    Layout.fillWidth: true
-                    label: "单位"
-                    AppTextField { id: unitField; Layout.fillWidth: true; text: "" ; placeholder: "V / A / ℃" }
-                }
-            }
-
-            AppCheckBox {
-                id: enableCheck
-                text: "启用该任务"
-                checked: true
-            }
-
-            Item { Layout.fillHeight: true }
-
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 10
-
-                AppButton {
-                    visible: taskEditor.editIndex >= 0
-                    text: "删除"
-                    variant: "danger"
-                    onClicked: {
-                        ModbusManager.removeTask(taskEditor.editIndex)
-                        taskEditor.close()
-                    }
-                }
-
-                Item { Layout.fillWidth: true }
-
-                AppButton {
-                    text: "取消"
-                    variant: "outlined"
-                    accent: Theme.textSecondary
-                    onClicked: taskEditor.close()
-                }
-
-                AppButton {
-                    text: "保存"
-                    variant: "primary"
-                    onClicked: {
-                        const task = {
-                            name: nameField.text || ("任务 " + (taskEditor.editIndex + 1)),
-                            slave: parseInt(slaveField.text) || 1,
-                            fc: [1, 2, 3, 4][fcCombo.currentIndex],
-                            address: parseInt(addrField.text) || 0,
-                            count: parseInt(countField.text) || 1,
-                            periodMs: parseInt(periodField.text) || 1000,
-                            type: typeCombo.model[typeCombo.currentIndex],
-                            wordOrder: orderCombo.model[orderCombo.currentIndex],
-                            scale: parseFloat(scaleField.text) || 1,
-                            offset: 0,
-                            unit: unitField.text,
-                            enabled: enableCheck.checked
-                        }
-                        if (taskEditor.editIndex >= 0)
-                            ModbusManager.updateTask(taskEditor.editIndex, task)
-                        else
-                            ModbusManager.addTask(task)
-                        taskEditor.close()
-                    }
-                }
-            }
-        }
-    }
-
-    FileDialog {
-        id: taskCsvDialog
-        title: "导入寄存器表 CSV"
-        nameFilters: ["CSV 文件 (*.csv)", "所有文件 (*)"]
-        onAccepted: ModbusManager.importTasksFromCsv(selectedFile)
-    }
 }

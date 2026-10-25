@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt/qml/CommStudio">
+    <file alias="qmldir">F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudio/qmldir</file>
+  </qresource>
+</RCC>
+

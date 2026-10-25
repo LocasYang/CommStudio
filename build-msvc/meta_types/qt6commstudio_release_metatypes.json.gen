@@ -578,12 +578,268 @@
                 "methods": [
                     {
                         "access": "public",
+                        "arguments": [
+                            {
+                                "name": "row",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "readPoint",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "strategy",
+                                "type": "int"
+                            },
+                            {
+                                "name": "maxGap",
+                                "type": "int"
+                            },
+                            {
+                                "name": "maxRegisters",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "createPointTasks",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "strategy",
+                                "type": "int"
+                            },
+                            {
+                                "name": "maxGap",
+                                "type": "int"
+                            }
+                        ],
+                        "isCloned": true,
+                        "name": "createPointTasks",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "strategy",
+                                "type": "int"
+                            }
+                        ],
+                        "isCloned": true,
+                        "name": "createPointTasks",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "isCloned": true,
+                        "name": "createPointTasks",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "resetStatistics",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "first",
+                                "type": "int"
+                            },
+                            {
+                                "name": "last",
+                                "type": "int"
+                            },
+                            {
+                                "name": "fc",
+                                "type": "int"
+                            },
+                            {
+                                "name": "address",
+                                "type": "int"
+                            },
+                            {
+                                "name": "timeoutMs",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "startScan",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "stopScan",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "addDiscoveredDevices",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "request",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "tcp",
+                                "type": "bool"
+                            },
+                            {
+                                "name": "crc",
+                                "type": "bool"
+                            },
+                            {
+                                "name": "count",
+                                "type": "int"
+                            },
+                            {
+                                "name": "intervalMs",
+                                "type": "int"
+                            },
+                            {
+                                "name": "jitterMs",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "startRawLoop",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "request",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "tcp",
+                                "type": "bool"
+                            },
+                            {
+                                "name": "crc",
+                                "type": "bool"
+                            },
+                            {
+                                "name": "count",
+                                "type": "int"
+                            },
+                            {
+                                "name": "intervalMs",
+                                "type": "int"
+                            }
+                        ],
+                        "isCloned": true,
+                        "name": "startRawLoop",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "stopRawLoop",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "name",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "request",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "tcp",
+                                "type": "bool"
+                            },
+                            {
+                                "name": "crc",
+                                "type": "bool"
+                            }
+                        ],
+                        "name": "saveRawTemplate",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "removeRawTemplate",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "key",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "value",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "name": "setChannelOption",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "name": "refreshPorts",
                         "returnType": "void"
                     },
                     {
                         "access": "public",
-                        "name": "open",
+                        "arguments": [
+                            {
+                                "name": "index",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "selectDevice",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "name",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "unitId",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "addDevice",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "removeDevice",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "openConnection",
                         "returnType": "void"
                     },
                     {
@@ -635,6 +891,21 @@
                             }
                         ],
                         "name": "manualWrite",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "row",
+                                "type": "int"
+                            },
+                            {
+                                "name": "valuesText",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "writePoint",
                         "returnType": "void"
                     },
                     {
@@ -831,10 +1102,50 @@
                         "user": false
                     },
                     {
-                        "constant": false,
+                        "constant": true,
                         "designable": true,
                         "final": false,
                         "index": 1,
+                        "name": "devices",
+                        "read": "devices",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "ModbusDeviceModel*",
+                        "user": false
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 2,
+                        "name": "points",
+                        "read": "points",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "ModbusPointModel*",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 3,
+                        "name": "selectedDeviceIndex",
+                        "notify": "selectedDeviceChanged",
+                        "read": "selectedDeviceIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 4,
                         "name": "mode",
                         "notify": "modeChanged",
                         "read": "mode",
@@ -849,7 +1160,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 2,
+                        "index": 5,
                         "name": "open",
                         "notify": "openChanged",
                         "read": "isOpen",
@@ -863,7 +1174,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 3,
+                        "index": 6,
                         "name": "portName",
                         "notify": "portNameChanged",
                         "read": "portName",
@@ -878,7 +1189,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 4,
+                        "index": 7,
                         "name": "baudRate",
                         "notify": "baudRateChanged",
                         "read": "baudRate",
@@ -893,7 +1204,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 5,
+                        "index": 8,
                         "name": "parity",
                         "notify": "parityChanged",
                         "read": "parity",
@@ -908,7 +1219,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 6,
+                        "index": 9,
                         "name": "host",
                         "notify": "hostChanged",
                         "read": "host",
@@ -923,7 +1234,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 7,
+                        "index": 10,
                         "name": "port",
                         "notify": "portChanged",
                         "read": "port",
@@ -938,7 +1249,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 8,
+                        "index": 11,
                         "name": "unitId",
                         "notify": "unitIdChanged",
                         "read": "unitId",
@@ -953,7 +1264,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 9,
+                        "index": 12,
                         "name": "slaveAddress",
                         "notify": "slaveAddressChanged",
                         "read": "slaveAddress",
@@ -968,7 +1279,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 10,
+                        "index": 13,
                         "name": "timeoutMs",
                         "notify": "timeoutMsChanged",
                         "read": "timeoutMs",
@@ -983,7 +1294,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 11,
+                        "index": 14,
                         "name": "retries",
                         "notify": "retriesChanged",
                         "read": "retries",
@@ -998,7 +1309,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 12,
+                        "index": 15,
                         "name": "portInfos",
                         "notify": "portInfosChanged",
                         "read": "portInfos",
@@ -1012,7 +1323,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 13,
+                        "index": 16,
                         "name": "tasks",
                         "notify": "tasksChanged",
                         "read": "tasks",
@@ -1026,7 +1337,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 14,
+                        "index": 17,
                         "name": "polling",
                         "notify": "pollingChanged",
                         "read": "polling",
@@ -1040,7 +1351,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 15,
+                        "index": 18,
                         "name": "registerMap",
                         "notify": "registerMapChanged",
                         "read": "registerMap",
@@ -1054,7 +1365,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 16,
+                        "index": 19,
                         "name": "simulatorRunning",
                         "notify": "simulatorChanged",
                         "read": "simulatorRunning",
@@ -1068,7 +1379,21 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 17,
+                        "index": 20,
+                        "name": "simulatorAreas",
+                        "notify": "simulatorChanged",
+                        "read": "simulatorAreas",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariantMap",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 21,
                         "name": "simulatorRegisters",
                         "notify": "simulatorChanged",
                         "read": "simulatorRegisters",
@@ -1082,7 +1407,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 18,
+                        "index": 22,
                         "name": "rawResult",
                         "notify": "rawResultChanged",
                         "read": "rawResult",
@@ -1096,7 +1421,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 19,
+                        "index": 23,
                         "name": "rawBusy",
                         "notify": "rawResultChanged",
                         "read": "rawBusy",
@@ -1110,7 +1435,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 20,
+                        "index": 24,
                         "name": "txCount",
                         "notify": "statsChanged",
                         "read": "txCount",
@@ -1124,7 +1449,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 21,
+                        "index": 25,
                         "name": "rxCount",
                         "notify": "statsChanged",
                         "read": "rxCount",
@@ -1138,7 +1463,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 22,
+                        "index": 26,
                         "name": "errorCount",
                         "notify": "statsChanged",
                         "read": "errorCount",
@@ -1152,10 +1477,122 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 23,
+                        "index": 27,
                         "name": "lastResponseMs",
                         "notify": "statsChanged",
                         "read": "lastResponseMs",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 28,
+                        "name": "statistics",
+                        "notify": "statsChanged",
+                        "read": "statistics",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariantMap",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 29,
+                        "name": "scanning",
+                        "notify": "scanChanged",
+                        "read": "scanning",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 30,
+                        "name": "scanResults",
+                        "notify": "scanChanged",
+                        "read": "scanResults",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariantList",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 31,
+                        "name": "rawLoopActive",
+                        "notify": "rawLoopChanged",
+                        "read": "rawLoopActive",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 32,
+                        "name": "rawLoopSent",
+                        "notify": "rawLoopChanged",
+                        "read": "rawLoopSent",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 33,
+                        "name": "rawTemplates",
+                        "notify": "rawTemplatesChanged",
+                        "read": "rawTemplates",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariantList",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 34,
+                        "name": "channelOptions",
+                        "notify": "channelOptionsChanged",
+                        "read": "channelOptions",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariantMap",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 35,
+                        "name": "connectionState",
+                        "notify": "openChanged",
+                        "read": "connectionState",
                         "required": false,
                         "scriptable": true,
                         "stored": true,
@@ -1168,6 +1605,11 @@
                     {
                         "access": "public",
                         "name": "modeChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "selectedDeviceChanged",
                         "returnType": "void"
                     },
                     {
@@ -1257,6 +1699,26 @@
                     },
                     {
                         "access": "public",
+                        "name": "scanChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "rawLoopChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "rawTemplatesChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "channelOptionsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
                         "arguments": [
                             {
                                 "name": "text",
@@ -1285,11 +1747,222 @@
     {
         "classes": [
             {
+                "className": "ModbusWorkspace",
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "channelBackend",
+                        "returnType": "QObject*"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "select",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "name",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "add",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "name",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "mode",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "addChannel",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "remove",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index",
+                                "type": "int"
+                            },
+                            {
+                                "name": "name",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "rename",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index",
+                                "type": "int"
+                            },
+                            {
+                                "name": "alias",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "setAlias",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "openChannel",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "closeChannel",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "refreshPorts",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "closeAll",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 0,
+                        "name": "current",
+                        "notify": "currentChanged",
+                        "read": "current",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "ModbusManager*",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 1,
+                        "name": "currentIndex",
+                        "notify": "currentChanged",
+                        "read": "currentIndex",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 2,
+                        "name": "channels",
+                        "notify": "channelsChanged",
+                        "read": "channels",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariantList",
+                        "user": false
+                    }
+                ],
+                "qualifiedClassName": "ModbusWorkspace",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "currentChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "channelsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "message",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "ok",
+                                "type": "bool"
+                            }
+                        ],
+                        "name": "toastRequested",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "modbusworkspace.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
                 "className": "NetworkManager",
                 "methods": [
                     {
                         "access": "public",
-                        "name": "open",
+                        "name": "openConnection",
                         "returnType": "void"
                     },
                     {
@@ -1891,7 +2564,7 @@
                     },
                     {
                         "access": "public",
-                        "name": "open",
+                        "name": "openConnection",
                         "returnType": "void"
                     },
                     {
@@ -2679,10 +3352,25 @@
                         "write": "setStatusMessage"
                     },
                     {
-                        "constant": true,
+                        "constant": false,
                         "designable": true,
                         "final": false,
                         "index": 2,
+                        "name": "language",
+                        "notify": "languageChanged",
+                        "read": "language",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setLanguage"
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 3,
                         "name": "startDark",
                         "read": "startDark",
                         "required": false,
@@ -2695,7 +3383,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 3,
+                        "index": 4,
                         "name": "totalRx",
                         "notify": "totalsChanged",
                         "read": "totalRx",
@@ -2709,7 +3397,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 4,
+                        "index": 5,
                         "name": "totalTx",
                         "notify": "totalsChanged",
                         "read": "totalTx",
@@ -2723,7 +3411,7 @@
                         "constant": false,
                         "designable": true,
                         "final": false,
-                        "index": 5,
+                        "index": 6,
                         "name": "activeConnections",
                         "notify": "totalsChanged",
                         "read": "activeConnections",
@@ -2737,7 +3425,7 @@
                         "constant": true,
                         "designable": true,
                         "final": false,
-                        "index": 6,
+                        "index": 7,
                         "name": "version",
                         "read": "version",
                         "required": false,
@@ -2757,6 +3445,11 @@
                     {
                         "access": "public",
                         "name": "statusMessageChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "languageChanged",
                         "returnType": "void"
                     },
                     {
@@ -2856,6 +3549,444 @@
             }
         ],
         "inputFile": "toolboxmanager.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
+                "className": "ModbusDeviceModel",
+                "enums": [
+                    {
+                        "isClass": false,
+                        "isFlag": false,
+                        "name": "Role",
+                        "values": [
+                            "NameRole",
+                            "UnitIdRole",
+                            "OnlineRole",
+                            "LabelRole",
+                            "IdRole"
+                        ]
+                    }
+                ],
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "definitions",
+                        "returnType": "QVariantList"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "index",
+                                "type": "int"
+                            },
+                            {
+                                "name": "name",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "renameDevice",
+                        "returnType": "bool"
+                    }
+                ],
+                "object": true,
+                "qualifiedClassName": "ModbusDeviceModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "definitionsChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractListModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "modbusdevicemodel.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
+                "className": "ModbusPointModel",
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "row",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "pointAt",
+                        "returnType": "QVariantMap"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "row",
+                                "type": "int"
+                            },
+                            {
+                                "name": "point",
+                                "type": "QVariantMap"
+                            }
+                        ],
+                        "name": "savePoint",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "row",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "removePoint",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "row",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "copyPoint",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url",
+                                "type": "QUrl"
+                            }
+                        ],
+                        "name": "exportFile",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url",
+                                "type": "QUrl"
+                            }
+                        ],
+                        "name": "importFile",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "strategy",
+                                "type": "int"
+                            },
+                            {
+                                "name": "maxGap",
+                                "type": "int"
+                            },
+                            {
+                                "name": "maxRegisters",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "pollingPlans",
+                        "returnType": "QVariantList"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "strategy",
+                                "type": "int"
+                            },
+                            {
+                                "name": "maxGap",
+                                "type": "int"
+                            }
+                        ],
+                        "isCloned": true,
+                        "name": "pollingPlans",
+                        "returnType": "QVariantList"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "strategy",
+                                "type": "int"
+                            }
+                        ],
+                        "isCloned": true,
+                        "name": "pollingPlans",
+                        "returnType": "QVariantList"
+                    },
+                    {
+                        "access": "public",
+                        "isCloned": true,
+                        "name": "pollingPlans",
+                        "returnType": "QVariantList"
+                    },
+                    {
+                        "access": "public",
+                        "name": "pasteClipboard",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "row",
+                                "type": "int"
+                            },
+                            {
+                                "name": "additive",
+                                "type": "bool"
+                            },
+                            {
+                                "name": "range",
+                                "type": "bool"
+                            }
+                        ],
+                        "name": "selectPoint",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "changes",
+                                "type": "QVariantMap"
+                            }
+                        ],
+                        "name": "updateSelected",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "row",
+                                "type": "int"
+                            },
+                            {
+                                "name": "value",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "setWriteValue",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "name": "deleteSelected",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "deviceId",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "copySelectedToDevice",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "from",
+                                "type": "int"
+                            },
+                            {
+                                "name": "to",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "movePoint",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "sortByAddress",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "windowMs",
+                                "type": "int"
+                            }
+                        ],
+                        "name": "trendSeries",
+                        "returnType": "QVariantList"
+                    },
+                    {
+                        "access": "public",
+                        "isCloned": true,
+                        "name": "trendSeries",
+                        "returnType": "QVariantList"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url",
+                                "type": "QUrl"
+                            }
+                        ],
+                        "name": "exportHistory",
+                        "returnType": "bool"
+                    }
+                ],
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 0,
+                        "name": "deviceId",
+                        "notify": "deviceIdChanged",
+                        "read": "deviceId",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setDeviceId"
+                    },
+                    {
+                        "constant": true,
+                        "designable": true,
+                        "final": false,
+                        "index": 1,
+                        "name": "filtered",
+                        "read": "filtered",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QAbstractItemModel*",
+                        "user": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 2,
+                        "name": "search",
+                        "notify": "filterChanged",
+                        "read": "search",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setSearch"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 3,
+                        "name": "area",
+                        "notify": "filterChanged",
+                        "read": "area",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "write": "setArea"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 4,
+                        "name": "groupFilter",
+                        "notify": "filterChanged",
+                        "read": "groupFilter",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "write": "setGroupFilter"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 5,
+                        "name": "groups",
+                        "notify": "groupsChanged",
+                        "read": "groups",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariantList",
+                        "user": false
+                    }
+                ],
+                "qualifiedClassName": "ModbusPointModel",
+                "signals": [
+                    {
+                        "access": "public",
+                        "name": "deviceIdChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "definitionsChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "message",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "validationError",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "filterChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "name": "groupsChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QAbstractTableModel"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "modbuspointmodel.h",
         "outputRevision": 68
     },
     {

@@ -1,0 +1,30 @@
+********* Start testing of CommStudioCoreTest *********
+Config: Using QtTest library 6.6.3, Qt 6.6.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2019), windows 11
+PASS   : CommStudioCoreTest::initTestCase()
+PASS   : CommStudioCoreTest::deviceAndPointPersistence()
+PASS   : CommStudioCoreTest::pointDecodeAndTemplate()
+PASS   : CommStudioCoreTest::pointToolbarWorkflows()
+PASS   : CommStudioCoreTest::pointCellEditing()
+FAIL!  : CommStudioCoreTest::mthingsDeviceTemplate() Compared values are not the same
+   Actual   (actual)  : QMap(("address", QVariant(int, 0))("bitCount", QVariant(int, 16))("bitOffset", QVariant(int, 0))("count", QVariant(int, 1))("decimals", QVariant(int, 1))("displayType", QVariant(QString, "FLOAT"))("enumMap", QVariant(QVariantMap, QMap()))("fc", QVariant(int, 4))("group", QVariant(QString, "测量"))("maxValue", QVariant(double, 250))("minValue", QVariant(double, -10))("name", QVariant(QString, "电压"))("offset", QVariant(QString, "0"))("periodMs", QVariant(int, 1000))("poll", QVariant(bool, true))("retries", QVariant(QString, "1"))("rowVisible", QVariant(bool, true))("scale", QVariant(QString, "0.1"))("timeoutMs", QVariant(QString, "2000"))("type", QVariant(QString, "uint16"))("unit", QVariant(QString, "V"))("wordOrder", QVariant(QString, "ABCD"))("writeValue", QVariant(QString, "")))
+   Expected (expected): QMap(("address", QVariant(int, 0))("bitCount", QVariant(int, 16))("bitOffset", QVariant(int, 0))("count", QVariant(int, 1))("decimals", QVariant(int, 1))("displayType", QVariant(QString, "FLOAT"))("fc", QVariant(int, 4))("group", QVariant(QString, "测量"))("maxValue", QVariant(double, 250))("minValue", QVariant(double, -10))("name", QVariant(QString, "电压"))("offset", QVariant(QString, "0"))("periodMs", QVariant(int, 1000))("poll", QVariant(bool, true))("retries", QVariant(QString, "1"))("rowVisible", QVariant(bool, true))("scale", QVariant(QString, "0.1"))("timeoutMs", QVariant(QString, "2000"))("type", QVariant(QString, "uint16"))("unit", QVariant(QString, "V"))("wordOrder", QVariant(QString, "ABCD"))("writeValue", QVariant(QString, "")))
+F:\mine\code\qt\com_studio\tests\comstudiotests.cpp(196) : failure location
+PASS   : CommStudioCoreTest::pointPollingUsesDeviceAdvancedOptions()
+PASS   : CommStudioCoreTest::queuedRequestsAgainstTcpSimulator()
+PASS   : CommStudioCoreTest::channelIsolation()
+PASS   : CommStudioCoreTest::crossChannelPointCopy()
+PASS   : CommStudioCoreTest::taskValidation()
+PASS   : CommStudioCoreTest::deviceRemovalCascades()
+PASS   : CommStudioCoreTest::crc16ModbusVectors()
+PASS   : CommStudioCoreTest::crcOtherVectors()
+PASS   : CommStudioCoreTest::hexCodecParsing()
+PASS   : CommStudioCoreTest::escapeSequences()
+PASS   : CommStudioCoreTest::lineEndings()
+PASS   : CommStudioCoreTest::pausedTrafficFlushesOnResume()
+PASS   : CommStudioCoreTest::modbusRequestFrames()
+PASS   : CommStudioCoreTest::modbusResponseParsing()
+PASS   : CommStudioCoreTest::wordOrder32()
+PASS   : CommStudioCoreTest::trafficModelRingBuffer()
+PASS   : CommStudioCoreTest::cleanupTestCase()
+Totals: 22 passed, 1 failed, 0 skipped, 0 blacklisted, 1059ms
+********* Finished testing of CommStudioCoreTest *********

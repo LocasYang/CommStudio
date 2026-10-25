@@ -9,7 +9,7 @@ endif()
 
 _qt_internal_deploy_qml_imports_for_target(
     ${__qt_opts}
-    IMPORTS_FILE "J:/mine/code/QT/com_studio/build-msvc/.qt_plugins/Qt6_QmlPlugins_Imports_CommStudio.cmake"
+    IMPORTS_FILE "F:/mine/code/qt/com_studio/build-msvc/.qt_plugins/Qt6_QmlPlugins_Imports_CommStudio.cmake"
     PLUGINS_FOUND __qt_internal_plugins_found
     QML_DIR     "${arg_QML_DIR}"
     PLUGINS_DIR "${arg_PLUGINS_DIR}"

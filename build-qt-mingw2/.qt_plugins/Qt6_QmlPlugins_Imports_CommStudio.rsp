@@ -1,0 +1,14 @@
+-rootPath
+F:/mine/code/qt/com_studio
+-cmake-output
+-output-file
+F:/mine/code/qt/com_studio/build-qt-mingw2/.qt_plugins/Qt6_QmlPlugins_Imports_CommStudio.cmake
+-importPath
+F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudio
+-importPath
+F:/mine/code/qt/com_studio/build-qt-mingw2
+-importPath
+E:/QT/6.6.3/mingw_64/./qml
+-qrcFiles
+F:/mine/code/qt/com_studio/build-qt-mingw2/.rcc/qmake_CommStudio.qrc
+F:/mine/code/qt/com_studio/build-qt-mingw2/.rcc/CommStudio_raw_qml_0.qrc

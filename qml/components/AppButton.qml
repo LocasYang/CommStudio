@@ -28,7 +28,7 @@ Button {
                        ? Theme.alpha(control.accent, Theme.dark ? 0.72 : 0.78)
                        : Theme.dark ? Theme.textTertiary : "#6F788B"
             if (control.variant === "primary" || control.variant === "danger")
-                return "#FFFFFF"
+                return Theme.onAccent
             if (control.variant === "text" || control.variant === "outlined")
                 return control.accent
             return Theme.textPrimary

@@ -3,6 +3,9 @@
 #include "checksumengine.h"
 
 #include <cstring>
+#include <cmath>
+#include <algorithm>
+#include <limits>
 
 namespace {
 
@@ -92,6 +95,18 @@ QByteArray ModbusCodec::buildRtuAdu(quint8 slaveAddress, const QByteArray &pdu)
     return adu;
 }
 
+QByteArray ModbusCodec::buildAsciiAdu(quint8 slaveAddress, const QByteArray &pdu)
+{
+    QByteArray binary;
+    appendByte(binary, slaveAddress);
+    binary += pdu;
+    quint8 sum = 0;
+    for (const char byte : binary) sum = quint8(sum + quint8(byte));
+    const quint8 lrc = quint8(0u - sum);
+    const QByteArray hex = binary.toHex().toUpper() + QByteArray::number(lrc, 16).rightJustified(2, '0').toUpper();
+    return QByteArray(":") + hex + QByteArray("\r\n");
+}
+
 QByteArray ModbusCodec::buildTcpAdu(quint16 transactionId, quint8 unitId, const QByteArray &pdu)
 {
     QByteArray adu;
@@ -154,6 +169,43 @@ ModbusCodec::ParsedResponse ModbusCodec::parseResponse(const QByteArray &adu, bo
             parsed.words.append(readWord(payload, 3 + i));
     }
     parsed.ok = true;
+    return parsed;
+}
+
+ModbusCodec::ParsedResponse ModbusCodec::parseAsciiResponse(const QByteArray &frame)
+{
+    ParsedResponse parsed;
+    QByteArray text = frame.trimmed();
+    if (text.size() < 7 || text.at(0) != ':') {
+        parsed.error = QStringLiteral("ASCII 帧格式无效");
+        return parsed;
+    }
+    text.remove(0, 1);
+    if (text.size() % 2 != 0) {
+        parsed.error = QStringLiteral("ASCII 十六进制长度必须为偶数");
+        return parsed;
+    }
+    QByteArray binary = QByteArray::fromHex(text);
+    if (binary.size() < 3) {
+        parsed.error = QStringLiteral("ASCII 帧长度不足");
+        return parsed;
+    }
+    quint8 sum = 0;
+    for (const char byte : binary) sum = quint8(sum + quint8(byte));
+    parsed.crcOk = sum == 0;
+    parsed.slave = quint8(binary.at(0));
+    parsed.functionCode = quint8(binary.at(1));
+    const QByteArray payload = binary.left(binary.size() - 1);
+    if (parsed.functionCode & 0x80) {
+        parsed.exception = true;
+        parsed.exceptionCode = payload.size() > 2 ? quint8(payload.at(2)) : 0;
+    } else if (parsed.functionCode <= FcReadInputRegisters && payload.size() >= 3) {
+        const quint8 byteCount = quint8(payload.at(2));
+        for (int i = 0; i + 1 < byteCount && 3 + i + 1 < payload.size(); i += 2)
+            parsed.words.append(readWord(payload, 3 + i));
+    }
+    parsed.ok = parsed.crcOk;
+    if (!parsed.crcOk) parsed.error = QStringLiteral("ASCII LRC 校验失败");
     return parsed;
 }
 
@@ -234,6 +286,111 @@ qint32 ModbusCodec::bytesToInt32(const QByteArray &bytes, const QString &wordOrd
            | static_cast<qint32>(static_cast<quint8>(ordered.at(3)));
 }
 
+bool ModbusCodec::encodePointValue(const QVariantMap &point, const QString &text,
+                                   QVector<quint16> &words, QString &error)
+{
+    words.clear(); error.clear();
+    const auto fail = [&error](const QString &message) { error = message; return false; };
+    const QString type = point.value("type", "uint16").toString();
+    const int count = point.value("count", 1).toInt();
+    const int fc = point.value("fc", 3).toInt();
+    const QString order = point.value("wordOrder", "ABCD").toString();
+    if ((fc != 1 && fc != 3) || count < 1 || count > (fc == 1 ? 1 : 123)
+        || !QStringList{"ABCD", "BADC", "CDAB", "DCBA"}.contains(order))
+        return fail(QStringLiteral("数据区、数量或字节序不支持写入"));
+    const int bitCount = point.value("bitCount", 0).toInt();
+    if (fc == 3 && (point.value("bitOffset", 0).toInt() != 0
+                    || (bitCount != 0 && bitCount != count * 16)))
+        return fail(QStringLiteral("暂不支持部分寄存器位写入，已阻止覆盖其他位"));
+
+    QByteArray bytes;
+    if (type == "string" || type == "bytes") {
+        if (fc != 3) return fail(QStringLiteral("线圈仅支持 0 或 1"));
+        if (type == "string") bytes = text.toUtf8();
+        else {
+            QString hex = text.simplified().remove(' ');
+            if (hex.startsWith("0x", Qt::CaseInsensitive)) hex.remove(0, 2);
+            if (hex.isEmpty() || hex.size() % 2 != 0
+                || std::any_of(hex.cbegin(), hex.cend(), [](QChar c) {
+                    return !QStringLiteral("0123456789abcdefABCDEF").contains(c);
+                })) return fail(QStringLiteral("字节数据需要完整的十六进制字节"));
+            bytes = QByteArray::fromHex(hex.toLatin1());
+        }
+        if (bytes.size() > count * 2 || (type == "bytes" && bytes.size() != count * 2))
+            return fail(QStringLiteral("输入长度与数据点数量不匹配"));
+        bytes.append(QByteArray(count * 2 - bytes.size(), '\0'));
+    } else {
+        const int width = type.endsWith("64") ? 4 : type.endsWith("32") ? 2 : 1;
+        const bool bcd = type == "bcd";
+        const bool floating = type == "float32" || type == "float64";
+        const bool signedType = type.startsWith("int");
+        if (!QStringList{"bit", "uint16", "int16", "uint32", "int32", "uint64", "int64", "float32", "float64", "bcd"}.contains(type)
+            || (bcd ? count > 4 : count != width))
+            return fail(QStringLiteral("数据类型与数量不匹配，不能安全编码写入值"));
+        const double scale = point.value("scale", 1).toDouble();
+        const double bias = point.value("offset", 0).toDouble();
+        if (!std::isfinite(scale) || scale == 0 || !std::isfinite(bias))
+            return fail(QStringLiteral("比例系数不能为 0，系数和偏移必须为有限数值"));
+        const QString input = text.trimmed();
+        bool ok = false;
+        quint64 raw = 0;
+        // Preserve exact 64-bit integers instead of passing them through double.
+        if (!floating && scale == 1 && bias == 0) {
+            const int base = input.startsWith("0x", Qt::CaseInsensitive) ? 16 : 10;
+            if (signedType) raw = quint64(input.toLongLong(&ok, base));
+            else if (!input.startsWith('-')) raw = input.toULongLong(&ok, base);
+            if (!ok) return fail(QStringLiteral("请输入该数据类型可表示的整数"));
+        } else {
+            const double value = input.toDouble(&ok);
+            const double unscaled = (value - bias) / scale;
+            if (!ok || !std::isfinite(value) || !std::isfinite(unscaled))
+                return fail(QStringLiteral("写入值无效或超出数值范围"));
+            if (type == "float32") {
+                const float f = float(unscaled);
+                if (!std::isfinite(f)) return fail(QStringLiteral("写入值超出 FLOAT32 范围"));
+                quint32 bits = 0; std::memcpy(&bits, &f, sizeof(f)); raw = bits;
+            } else if (type == "float64") std::memcpy(&raw, &unscaled, sizeof(raw));
+            else {
+                const double rounded = std::round(unscaled);
+                if (signedType) {
+                    if (rounded < -std::ldexp(1.0, 63) || rounded >= std::ldexp(1.0, 63))
+                        return fail(QStringLiteral("写入值超出有符号整数范围"));
+                    raw = quint64(qint64(rounded));
+                } else {
+                    if (rounded < 0 || rounded >= std::ldexp(1.0, 64))
+                        return fail(QStringLiteral("写入值超出无符号整数范围"));
+                    raw = quint64(rounded);
+                }
+            }
+        }
+        if (fc == 1 && (type != "bit" || raw > 1))
+            return fail(QStringLiteral("线圈仅支持 0 或 1"));
+        if (!floating && !bcd && width < 4) {
+            const int bits = width * 16;
+            const qint64 signedRaw = qint64(raw);
+            if (signedType ? (signedRaw < -(qint64(1) << (bits - 1)) || signedRaw >= (qint64(1) << (bits - 1)))
+                           : raw >= (quint64(1) << bits))
+                return fail(QStringLiteral("写入值超出数据类型范围"));
+        }
+        if (bcd) {
+            const QString digits = QString::number(raw);
+            if (digits.size() > count * 4) return fail(QStringLiteral("写入值超出 BCD 容量"));
+            raw = digits.toULongLong(&ok, 16);
+            if (!ok) return fail(QStringLiteral("BCD 编码失败"));
+        }
+        if (fc == 1) { words.append(quint16(raw)); return true; }
+        for (int i = count * 2 - 1; i >= 0; --i) bytes.append(char(raw >> (i * 8)));
+    }
+    QVector<quint16> encoded;
+    for (int i = 0; i < bytes.size(); i += 2) {
+        const quint8 a = quint8(bytes[i]), b = quint8(bytes[i + 1]);
+        encoded.append(order == "BADC" || order == "DCBA" ? quint16(b << 8 | a) : quint16(a << 8 | b));
+    }
+    if (order == "CDAB" || order == "DCBA") std::reverse(encoded.begin(), encoded.end());
+    words = encoded;
+    return true;
+}
+
 QVariantMap ModbusCodec::decodeRegisters(const QVector<quint16> &registers, int offset,
                                          const QString &type, const QString &wordOrder,
                                          double scale, double offsetValue)
@@ -277,7 +434,8 @@ QVariantMap ModbusCodec::decodeRegisters(const QVector<quint16> &registers, int 
                QStringLiteral("%1").arg(rawHex, 8, 16, QLatin1Char('0')).toUpper());
     if (type == QLatin1String("float32")) {
         float value = 0.0f;
-        std::memcpy(&value, bytes.constData(), sizeof(float));
+        // rawHex is the numeric IEEE-754 bit pattern, independent of host byte order.
+        std::memcpy(&value, &rawHex, sizeof(float));
         row.insert(QStringLiteral("value"), static_cast<double>(value) * scale + offsetValue);
     } else if (type == QLatin1String("int32")) {
         row.insert(QStringLiteral("value"),

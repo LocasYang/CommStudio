@@ -1,0 +1,22 @@
+[
+  {
+    "hex": "41540D0A",
+    "tx": true
+  },
+  {
+    "hex": "41540D0A0D0A4552524F520D0A",
+    "tx": false
+  },
+  {
+    "hex": "41540D0A",
+    "tx": true
+  },
+  {
+    "hex": "41540D0A0D0A4F4B0D0A",
+    "tx": false
+  },
+  {
+    "hex": "E6B8A9E5BAA6EFBC9A32352E300D0AE78AB6E68081EFBC9AE6ADA3E5B8B80D0A",
+    "tx": false
+  }
+]

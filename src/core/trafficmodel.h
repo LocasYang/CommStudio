@@ -33,7 +33,9 @@ public:
         DataTextRole,
         PeerRole,
         SizeRole,
-        PlainRole
+        PlainRole,
+        DataAsciiRole,
+        OmittedBytesRole
     };
 
     explicit TrafficModel(QObject *parent = nullptr);
@@ -57,6 +59,9 @@ public:
     // 纯文本信息行（连接成功、异常提示等），按 UTF-8 展示。
     Q_INVOKABLE void appendInfo(const QString &text, bool isError = false);
     Q_INVOKABLE QString rowText(int row) const;
+    Q_INVOKABLE QString payloadText(int row) const;
+    Q_INVOKABLE QString payloadHex(int row) const;
+    Q_INVOKABLE QString payloadAscii(int row) const;
     Q_INVOKABLE bool exportToFile(const QUrl &path) const;
 
     void flushPending();
@@ -79,6 +84,7 @@ private:
     static QString formatTime(qint64 timestampMs);
     static QString toHexText(const QByteArray &payload);
     static QString toAsciiText(const QByteArray &payload);
+    static QString toDisplayText(const QByteArray &payload);
 
     QVector<Row> m_rows;      // 已发布行（仅保留 maxRows）
     QVector<Row> m_pending;   // 待刷新行

@@ -1,0 +1,4790 @@
+  ChangNian (Shanghai) Technology Development Co., Ltd
+
+
+
+
+User Manual for MThings
+
+
+
+
+                                        2024-09 Version: 1.4.0
+                       User Manual for MThings
+
+
+
+
+About This Manual
+
+This manual serves the software of "MThings" which independently
+developed by ChangNian (Shanghai) Technology Development Co., Ltd.
+
+
+
+
+Objective
+
+This manual provides instructions for using the software.
+
+
+
+
+Manual Usage
+
+Please read this manual for instructions on using this product. The
+content of the manual will be updated constantly, but minor
+discrepancies or errors may occur.
+
+Contact us at mthings2023@163.com with any questions.
+
+
+
+
+-2-
+                      User Manual for MThings
+
+
+
+1 Software Overview
+
+MThings is an upper computer software for industrial control operation
+and maintenance, based on MODBUS protocol.
+
+
+
+1.1 Key Features
+
+
+
+
+                             Logic Control
+
+
+
+
+      History Data                                     Gateway
+
+
+
+
+      Configuration                                      Alarm
+
+
+
+
+-3-
+                          User Manual for MThings
+
+
+1.2 Edition Differences
+
+MThings provide two editions: Personal Edition and Commercial Edition.
+Personal Edition is designed for non-commercial use and offers free
+features without technical support. At the same time, the system built by
+users is prohibited from commercial use.
+Commercial Edition is aimed at industrial and commercial users, providing
+comprehensive features that require payment for authorization before use.
+Authorization is one-time and permanently effective, and after-sales
+technical services are provided.
+                         Table 1 Comparison of Editions
+
+           Function                       Personal         Commercial
+             Items                         Edition            Edition
+      System Configuration             Up to 10 chips        Unlimited
+          History Data                Only one device        Unlimited
+          Alarm Data               Up to 3 alarm records     Unlimited
+         Logic Control             NOT VIP Components        Unlimited
+         Data Gateway                  Not supported         Unlimited
+             MQTT                      Not supported         Unlimited
+             Linux                     Not supported       Customization
+      Channel Management
+      Device Management
+       User management
+  Device Data Configuration
+         Master Device
+          Slave Device
+                                        Similar in Every Detail
+      Real-time Data Curve
+            Viewer
+        Custom Request
+        Count Message
+
+
+
+-4-
+                          User Manual for MThings
+
+
+           Assist Tools
+
+
+
+
+2 Installation
+
+2.1 Download
+
+http://gulink.cn/download
+
+
+
+2.2 Install
+
+       2.2.1 Prepare
+
+Personal computer or server.
+
+Display resolution is recommended to be 1920*1080.
+
+Supports Win7 and above versions, compatible with 32/64 bits.
+
+
+       2.2.2 Install
+
+      1.   Download software package MThings_ Pack.exe;
+
+      2.   Double click to start the installation, follow the step prompts
+           and execute them in sequence;
+
+      3.   Double click on the icon to start the software.
+
+
+  NOTICE
+  If it cannot run properly after installation, please enter the
+  installation directory, double-click on the "VC_redist. x86. exe"
+  file, and then reopen MThings.
+
+
+-5-
+                         User Manual for MThings
+
+
+
+
+3 Function Details
+
+3.1 Basic concepts
+
+     3.1.1 device
+
+Devices are communication nodes, and MThings include two types:
+master devices and slave devices.
+
+Master devices: When MThings is used as a master to connect multiple
+slave devices, users need to create a corresponding simulation master
+for each slave device in the software, and different simulation master
+devices are distinguished by device addresses.
+
+Slave devices: When using MThings as slave simulation data, users need
+to create different devices in the software based on different slave
+addresses.
+
+
+     3.1.2 Data
+
+There are four types of data blocks defined in the MODBUS standard:
+
+                     Table 2 MODBUS Data Definition
+
+
+                              Access    Forward
+ Data Block          Size                            Function Code
+                              Type      Num.
+
+ Coil Status         1 Bit    RW        0            0X01、0X05、0X0F
+
+ Discrete Input      1 Bit    RO        1            0X02
+
+ Holding Register    2        RW        4            0X03、0X06、0X10
+
+
+
+                                                                         -6-
+                           User Manual for MThings
+
+                      Bytes
+
+                      2                                 0X04
+ Input Register                 RO         3
+                      Bytes
+
+Based on the size of data blocks, four types of data blocks can be
+divided into two types: BIT data and register (REG) data. Combined with
+read and write attributes, the relationship between data blocks is shown
+in the following figure:
+
+          Figure 1 Relationship between different data block types
+
+                                     BIT
+
+                     Discrete                   Coil
+                      Input                    Status
+            RO                                             RW
+                      Input                Holding
+                     Register              Register
+
+                                     REG
+Data is a specific definition within a data block, and data definitions
+within different data blocks are independent of each other. A data
+definition can contain multiple consecutive BIT/REG data addresses.
+
+The attributes of a piece of data include: membership data block, data
+name, data address, data amount, data type (protocol type), data
+coefficient (involved when floating point data is reshaped for
+transmission), byte order (involved when register data amount is 1, 2, or
+4), and word order (involved when register data amount is 2, or 4).
+
+
+     3.1.3 Transmission type and UI type
+
+MThings provides a user-friendly data visualization method that
+
+
+                                                                          -7-
+                        User Manual for MThings
+
+supports displaying message data in actual business formats.
+
+The transmission type is the type defined in the MODBUS data protocol,
+usually dominated by integers, but often not the actual format of the
+data. Users need to recalculate in order to confirm the correctness of the
+data. Inadequate intuitive debugging data undoubtedly seriously affects
+debugging efficiency and accuracy.
+
+MThings supports users to specify the transmission type and UI type of
+each data item. During debugging, the software automatically converts
+according to the configuration, and the data presented on the interface
+will be the true content of the data.
+
+For example, when the slave reports voltage data of 10.5V, the data
+during register transfer is 0X0069. After MThings receives the data, it
+multiplies the integer data by a coefficient of 0.1, and the interface
+presents the restored data of 10.5V.
+
+  Figure 2 Schematic diagram of intuitive visualization effect of device data
+
+
+
+
+When inputting data configuration, MThings provides parameters
+including four items: transmission type, UI type, coefficient, and unit.
+Their introductions are:
+
+
+
+
+                                                                           -8-
+                         User Manual for MThings
+
+Table 3 Explanation of the introductions of configuration parameters related
+                            to data presentation
+
+  Parameter                            Introduction
+
+                 Signed integer (INT), unsigned integer (UINT),
+ Transmission
+                 floating-point (FLOAT), byte stream (BYTES), bit data
+ Type
+                 (BIT)
+
+                 Decimal integer (INT-DEC), hexadecimal integer (INT-
+ UI Type         HEX), float (FLOAT), byte stream (BYTES), string
+                 (STRING), epoch second (TIME) 、Enum
+
+                 If the data type presented is float and the transfer type
+                 is integer, it needs to be used in conjunction with a
+ Ratio           coefficient (Ratio). The software automatically
+                 multiplies the received data by the coefficient and
+                 converts it into float data for display.
+
+                 Description of the introduction of auxiliary data,
+ Unit
+                 directly presented on the interface
+
+MThings supports conversion of multiple transmission and UI types, with
+the corresponding relationship as follows:
+
+
+
+
+                                                                         -9-
+                               User Manual for MThings
+
+                       Figure 3 Transfer Type and UI Type Conversion
+
+                                Transmission Type                  UI Type
+
+ Register amount:
+                                       INT                         FLOAT
+ 1、2、4
+
+
+                                                                  INT-DEC
+ Register amount:
+                                      UINT
+ 1、2、4
+                                                                  INT-HEX
+
+
+ Register amount:
+                                      FLOAT                        ENUM
+ 2、4
+
+
+                                                                   BYTES
+ Register amount:
+                                      BYTES
+ 1~125
+                                                                  STRING
+
+
+
+         BIT Data: 1                   BIT                             BIT
+
+
+
+
+       3.1.4 Word order/Byte order
+
+Byte order is a common concept in communication debugging, such as
+local byte order and network byte order. The concept of word order also
+exists in the MODBUS protocol.
+Byte order and word order both represent the storage mechanisms of
+data in the message, which are divided into two types: Big Endian and
+Little Endian.
+
+In MODBUS data frames, key fields (such as register addresses) are
+defined as Big Endian, but the definition of the data part may vary
+among different manufacturers, and even the byte order definition for
+different data may not be unified in a certain model of device from the
+same manufacturer.
+
+Based on MODBUS message byte order, Big Endian refers to the data
+with high byte first, low byte last, and Little Endian is opposite. For
+example:
+
+
+
+                                                                             - 10 -
+                       User Manual for MThings
+
+     01 03 04 12 34 56 78 81 07 (Read Hold Register Response Message)
+
+Among them, the length of the reply data is 4 Bytes. For example, the
+original data is 0X12345678. From the message, its byte order is Big
+Endian, and the word order is Big Endian.
+
+However, when transmitting 4-byte floating-point data in MODBUS
+register data, some device manufacturers also provide word order
+requirements and explicitly declare that the word order is Little Endian.
+When the original data is 0X12345678, the byte stream of the
+transmitted message should be as follows:
+
+     01 03 04 56 78 12 34 66 D5
+
+In order to support the definition of data protocols from different
+manufacturers, MThings handles byte order and word order as follows:
+
+     a)    Each data can be independently configured with its byte order
+           and word order.
+
+     b)    When the quantity of registers is 1, 2, and 4, it supports byte
+           order configurable, covering 2, 4, and 8 bytes of data.
+
+     c)    When the quantity of registers is 2 or 4, it supports word
+           order configurable, covering 4 or 8 bytes of data.
+
+     d)    The other quantity of registers, word order and byte order are
+           Big Endian by default.
+
+
+
+
+                                                                        - 11 -
+                        User Manual for MThings
+
+3.2 Usage Flow
+
+            Figure 4 Diagram of general software usage flow
+
+                                   Start
+
+
+
+
+                               New Profile
+
+
+
+
+                  Select COM               New NET Channel
+
+
+
+
+                               Add Device
+
+
+
+                                                               Debug
+                       Add Data Configuration                Maintenance
+
+
+
+
+  Configuration       Alarm           Logic      History Data      Gateway
+  Development      Configuration     Control     Configuration   Configuration
+
+
+
+
+                           Delivery for Use
+
+
+
+
+                                                                             - 12 -
+                      User Manual for MThings
+
+3.3 UI
+
+                   Figure 5 Schematic diagram of UI
+
+
+                  1                                           3
+
+        2                              5
+
+
+                             4
+
+   1.    Main Menu: used to switch to Function Page.
+
+   2.    Device List: assist for "Main Menu", where users can switch to
+         the current active device by clicking on the device name and
+         specify the device to which the new "Function Page" belongs.
+
+   3.    More Menu: serves as the entry point for configuration file
+         operation, channel management, system parameters, user
+         management, license management, and other functions.
+
+   4.    Message Monitor: View and manage communication
+         messages for each link.
+
+   5.    Function Page: corresponding to the "Main Menu", providing a
+         main function operation interface.
+
+
+
+
+                                                                   - 13 -
+      User Manual for MThings
+
+Figure 6 Schematic diagram of More Menu
+
+
+
+
+                                          - 14 -
+                       User Manual for MThings
+
+3.4 Profile Management
+
+     3.4.1 Profile Content
+
+The profile contains complete usage configuration information, mainly
+including: channel list, channel parameters, device list, device advanced
+parameters, and data configuration.
+
+
+     3.4.2 Common Operations
+                  Figure 7 Common Operations for Profile
+
+
+
+
+    1.   New: Used to create a new profile, which can be used for the
+         first time without new profile. MThings will prompt for profile
+         storage before exiting.
+
+    2.   Import: Switch profile through the import function.
+
+    3.   Save As: Export and copy the current profile through the Save
+         As operation, while switching the current profile to a new path.
+
+
+
+                                                                      - 15 -
+                    User Manual for MThings
+
+ 4.   Save: Timely save profile.
+
+
+NOTICE
+When multiple MThings software are opened and pointed to the
+same profile, the configuration will be repeatedly overwritten,
+and the final profile content will be consistent with the content
+of the last save operation.
+
+WARNING
+
+Prohibit placing profile in the software package path to avoid
+accidental deletion during software upgrades!
+
+
+
+
+                                                                  - 16 -
+                       User Manual for MThings
+
+3.5 Channel Management
+
+MThings software supports establishing communication with the target
+machine through serial port, TCP link, and UDP unicast, which are
+collectively referred to as channels.
+Channel is a key attribute of a device, and determining the communication
+method of the device is a prerequisite for creating the device.
+                 Figure 8 Enter Channel Management Page
+
+
+
+
+      3.5.1 Serial port
+
+                       Figure 9 Serial Port Operation
+
+
+
+
+  1      2
+
+                                                  6
+
+                  4       3   5
+
+
+
+
+                                                                    - 17 -
+                         User Manual for MThings
+
+Enter the channel management page through "Channel" in the auxiliary
+menu to view the list of actual serial ports in the current computer. After
+MThings starts, the serial port list is automatically updated once. As shown
+in the above figure, the serial port related operations are as follows:
+    1.    Select the channel types included in the filter channel list, and
+          the interface defaults to all types. After switching to "COM",
+          only the serial channel will be retained in the list.
+
+    2.    After the software is turned on, insert the USB to RS485
+          module and click "Refresh" to add a new serial port to the list.
+          If no new serial port appears, please check the module driver.
+          When invalid serial ports appear in the link list (serial ports do
+          not exist and there are no attached devices), click “Refresh”
+          to remove these serial ports from the data configuration.
+
+    3.    To modify the detailed parameters of the serial port, click the
+          "Modify" button to enter the "COM Parameter Configuration"
+          page.
+
+    4.    Check the channel status, which means that it is closed,
+          connected, or fault.
+
+    5.    Manually turn on or off the serial port. When adding devices,
+          there is no need to manually turn them on. The manual mode
+          can be used to batch control all devices attached to the
+          channel, causing them to start or stop.
+
+    6.    Serial port parameter configuration page.
+
+                  Table 4 Definition of Serial Channel Status
+
+  Channel status                           Introduction
+
+                        The software did not enable the serial port or
+         Closed
+                        was manually turned off
+
+
+
+
+                                                                          - 18 -
+                      User Manual for MThings
+
+                      The software successfully opened and initialized
+   Connected
+                      the serial port
+
+                      The software failed to open the serial port,
+                      possibly due to the serial port being occupied by
+      Fault
+                      other software or the set serial port parameters
+                      being illegal
+
+               Table 5 Definition of Serial Link Parameters
+
+Parameter                               Introduction
+
+ Channel      Operating system allocation information, cannot be
+  Name        modified.
+
+              Used to specify the type of transmission protocol
+ Protocol     currently running on the serial port, which can be
+              selected as "MODBUS-RTU" or "MODBUS-ASCII".
+
+              When the transmission mode is selected as "MODBUS-
+              ASCII", specify whether the protocol characters are in
+Char Type     uppercase or lowercase using this parameter, which
+              defaults to the uppercase method required by the
+              standard protocol.
+
+              Supports 1200, 2400, 4800, 9600, 19200, 38400, 57600,
+Baud Rate     and 115200bps. Setting it to another value will cause the
+              serial port to fail to open.
+
+              Specify the data verification method in the serial port
+  Parity
+              byte
+
+              Specify the number of data bits in the serial port byte
+Data Bits     data. If the MODBUS-ASCII protocol requires a data bit
+              of 7Bit, please modify this parameter.
+
+ Stop Bit     Specify the length of the stop bit in the serial port byte.
+
+
+
+                                                                        - 19 -
+                           User Manual for MThings
+
+      Flow        Default no flow control, modified according to actual
+   Control        application needs.
+
+
+   NOTICE
+   If using a virtual serial port, the master device and slave device
+   should use a pair of serial ports.
+
+
+
+
+       3.5.2 Network Channel
+
+                      Figure 10 Network Channel Operations
+
+
+
+
+  1        2
+                                                     6
+
+                     4      3     5
+
+
+
+Enter the channel management page through "Channels" in the auxiliary
+menu to view the list of network channels. When used for the first time,
+there is no network channel and users need to create it according to their
+needs. As shown in the above figure, the network related operations are
+as follows:
+      1.     Select the channel types included in the filter channel list, and
+             the interface defaults to all types. After switching to "NET", only
+             network channels are retained in the list.
+
+
+
+                                                                           - 20 -
+                       User Manual for MThings
+
+  2.     Click the “Add NET” button to create a new network channel.
+
+  3.     Click “Del NET” to delete the selected network channels from
+         the channel list, which will be synchronized to the profile.
+
+  4.     Click the “Modify” button to modify network channel
+         parameters.
+
+  5.     Check the channel status, which includes: closed, connected,
+         connected, and fault.
+
+  6.     Manually establish or close channels. When adding devices,
+         there is no need to manually turn them on. The manual mode
+         can be used to batch control all devices attached to the
+         channel, causing them to start or stop.
+
+  7.     Network channel parameter configuration page.
+
+
+
+                Table 6 Definition of Network Channel State
+
+Channel Status                          Introduction
+
+                    The software is not enabled for this link;
+
+       Closed       Link disconnected by peer;
+
+                    Link manually closed;
+
+  Connected         The network channel has been successfully linked
+
+                    TCP client: Connecting to server;
+ Connecting
+                    TCP Server: Waiting for client access;
+
+                    TCP server: Local port occupied;
+       Fault
+                    UDP unicast: Local port occupied;
+
+
+
+
+                                                                        - 21 -
+                          User Manual for MThings
+
+               Table 7 Definition of Network Channel Parameters
+
+Parameter                               Introduction
+
+ Channel         MThings are uniformly allocated and cannot be
+  Name           modified
+
+                 Select the link role of MThings in the network layer,
+Link Mode
+                 including TCP client, TCP server, and UDP unicast
+
+                 When the link mode is selected as "TCP client", setting
+                 the rebuild cycle can instruct MThings to rebuild the
+  Relink
+                 chain at a specified time interval, which can simulate
+Period(sec.)
+                 short links. The default cycle is 0, representing long
+                 links.
+
+                 When the link mode is selected as "TCP client" or "TCP
+ Idle-Link
+                 server", after the link is established, if there is no data
+   Hold
+                 interaction within the time specified in the parameter,
+Time(sec.)
+                 MThings will actively close the link.
+
+                 Used to specify the type of transmission protocol
+                 running on the current link, which can be selected from
+ Protocol
+                 "MODBUS-RTU", "MODBUS-ASCII", "MODBUS-TCP
+                 (synchronous)", "MODBUS-TCP (asynchronous)"
+
+                 When the transmission mode is selected as "MODBUS-
+                 ASCII", this parameter specifies whether the protocol
+Char Type        characters should be in uppercase or lowercase, with
+                 the default being the uppercase method required by
+                 the standard protocol.
+
+                 When the link mode is selected as "TCP client" or "UDP
+                 unicast", this parameter specifies the local initiator IP,
+  Local IP
+                 which can be left unconfigured. MThings can
+                 automatically select the best option.
+
+
+
+                                                                           - 22 -
+                      User Manual for MThings
+
+              When the link mode is selected as "TCP server" or "UDP
+              unicast", it is necessary to specify the binding local port.
+
+Local Port    When the link mode is selected as "TCP client", this
+              parameter is read-only data used to present the local
+              initiation port number in the connected state.
+
+              When the link mode is selected as "TCP client", this
+              parameter is used to specify the domain name or IP
+
+  Target      address of the server.
+
+  URL/IP      When the link mode is selected as "UDP unicast", this
+              parameter is used to specify the IP address of the data
+              sending object.
+
+              When the link mode is selected as "TCP client", this
+              parameter is used to specify the binding port number
+              of the peer (server).
+Target Port
+              When the link mode is selected as "UDP unicast", this
+              parameter is used to specify the receive port number of
+              the data sending object.
+
+              When the link mode is selected as "TCP server", this
+              parameter is used to specify the client IP that is allowed
+              to access the current server. Connection requests
+ Client IP
+              initiated by other IP addresses will be filtered and
+              discarded. If no filtering function is required, please set
+              this parameter to "--" or clear it.
+
+              When the link mode is selected as "TCP server", this
+Client Port   parameter is read-only data used to present the
+              connected client’s initiation port number.
+
+   Max.       When the transmission mode is selected as "MODBUS-
+  Async.      TCP (Asynchronous)", this parameter can control the
+
+
+
+                                                                      - 23 -
+                     User Manual for MThings
+
+Requests     scale of asynchronous concurrency and adjust the
+             number of concurrent requests
+
+
+            Figure 11 TCP Client Link Application Method
+
+
+
+
+                                               TCP Server
+                                           (192.168.0.20, 502)
+           MThings
+    Local IP：192.168.0.10
+
+         TCP Client-1
+    Target IP: 192.168.0.20
+       Target Port：502
+         TCP Client-2
+    Target IP: 192.168.0.20
+       Target Port：502
+         TCP Client-3
+    Target IP: 192.168.0.30
+       Target Port：502
+
+
+                                             TCPServer
+                                         (192.168.0.30, 502)
+
+
+
+
+                                                                 - 24 -
+                    User Manual for MThings
+
+          Figure 12 TCP Server Link Application Method
+
+
+
+
+                                          Local IP：192.168.0.20
+
+
+       MThings                                 TCP Client-1
+Local IP：192.168.0.10                     Target IP：192.168.0.10
+                                             Target Port：502
+     TCP Server-1                              TCP Client-2
+   Local Port：502                         Target IP：192.168.0.10
+Client IP: 192.168.0.20                      Target Port：502
+     TCP Server-2
+   Local Port：502
+Client IP: 192.168.0.20
+     TCP Server-3
+   Local Port：502
+Client IP: 192.168.0.30
+     TCP Server-4
+   Local Port：503
+Client IP: 192.168.0.20                    Local IP：192.168.0.30
+
+                                                TCP Client-1
+                                           Target IP：192.168.0.10
+                                              Target Port：502
+                                                TCP Client-2
+                                           Target IP：192.168.0.10
+                                              Target Port：503
+
+
+
+
+                                                                    - 25 -
+                   User Manual for MThings
+
+         Figure 13 UDP Unicast Link Application Method
+
+
+
+
+                                         Local IP：192.168.0.20
+
+                                             UDP Unicast-1
+                                           Receive Port：502
+       MThings
+                                         Target IP: 192.168.0.10
+Local IP：192.168.0.10
+                                            Target Port：502
+    UDP Unicast-1
+  Receive Port：502
+Target IP: 192.168.0.20
+   Target Port：502
+    UDP Unicast-2
+  Receive Port：503
+Target IP: 192.168.0.30
+   Target Port：502                       Local IP：192.168.0.30
+
+                                             UDP Unicast-2
+                                           Receive Port：502
+                                         Target IP: 192.168.0.10
+                                            Target Port：503
+
+
+
+
+                                                                   - 26 -
+                         User Manual for MThings
+
+3.6 System Parameter
+
+System Parameter page provides global control parameters for MThings,
+which users can modify and take effect during runtime. The parameter
+values will be saved locally.
+                       Figure 14 System Parameter Page
+
+
+
+
+                      Table 8 System Parameter Definition
+
+       Parameter                             Introduction
+
+     语言/Language            Change software language.
+
+                            Function switch, used to control whether
+                            MThings automatically starts with the
+      Self-starting
+                            operating system, and is turned off by
+                            default.
+
+      History Data          The auxiliary parameter of the History Data
+
+
+                                                                       - 27 -
+                     User Manual for MThings
+
+  Interval(sec.)       function is used to control the interval time
+                       between historical refresh and storage.
+
+                       The auxiliary parameter of the History Data
+                       function. After the user configures this
+History Data Title     parameter, the header information will be
+                       printed and output together with the
+                       historical data report.
+
+                       Function switch: In order to avoid wasting
+                       CPU computing resources, when users enable
+                       the "System" page for data viewing, they can
+Refresh Data Page
+                       use this switch to turn off data updates on all
+                       device "Data" pages, but it does not affect
+                       the reception, parsing, and storage of data.
+
+                       Support desktop or PAD mode, allowing
+    UI Mode            software to run on different terminals with
+                       better display effects.
+
+
+
+
+                                                                     - 28 -
+                          User Manual for MThings
+
+3.7 Custom Menu
+
+    Custom Menu allows users to customize Main Menu contents and
+order that needs to be displayed. A simple Main Menu is beneficial for
+saving software resource costs.
+              Figure 15    Schematic diagram of Custom Menu
+
+
+
+
+                             1                         2
+                                      3
+
+
+                                     4
+
+
+     1.   Quickly switch between two preset main menus;
+
+     2.   If users need to customize new menu, clear the existing menu
+          firstly;
+
+     3.   Display the selected menu to be displayed;
+
+     4.   Select the menu that needs to be displayed, and the order of
+          clicking will affect the arrangement order of the menu.
+
+
+
+
+                                                                    - 29 -
+                       User Manual for MThings
+
+3.8 User Management
+
+The user management page provides two types of users: Admin User and
+Normal User. Admin User can perform all the functions provided by
+MThings, and Normal User are only allowed to operate some functions
+without displaying debugging functions. It is prohibited for them to
+modify device data, alarms, system configurations, etc.
+                    Table 9 User Permission Allocation
+
+       Page                Admin User                    Normal User
+     System                     ✔                            ✔
+     History                    ✔                            ✔
+      Alarm                     ✔                            ✔
+  Logic Control                 ✔                            ✔
+       Data                     ✔                            ✔
+     Custom                     ✔                            ✘
+      Count                     ✔                            ✘
+       Asist                    ✔                            ✘
+      About                     ✔                            ✔
+
+
+
+
+                                                                       - 30 -
+                        User Manual for MThings
+
+                        Figure 16 User Management
+
+
+
+
+Admin User defaults to no password. MThings is defaults to Admin User
+for the first time, supporting Admin User to modify their own passwords.
+Once Admin User sets a non-empty password, MThings restarts and logs
+in as Normal User. Users need to enter their own Admin User password to
+switch to Admin User.
+
+
+
+
+                                                                   - 31 -
+                             User Manual for MThings
+
+3.9 License Management
+
+For the commercial features in MThings, users need to obtain
+authorization to use them. Before purchasing authorization, users need to
+enter the license management page to generate machine code. After
+obtaining the authorization certificate, enter the license management
+page to import the authorization certificate and activate commercial
+features.
+The authorization certificate is limited to one computer only. If users need
+to extend multiple computers, users should purchase multiple copies in
+advance.
+                            Figure 17 License management
+
+
+
+
+                                   1              2                3
+     1.     After clicking, a unique machine code will be automatically
+            generated, which can be used to purchase authorization
+            certificates;
+
+     2.     Obtain authorization certificate after payment;
+
+     3.     After obtaining the authorization certificate, click this button
+            to import the authorization certificate.
+
+
+
+
+                                                                         - 32 -
+                   User Manual for MThings
+
+WARNING
+
+Reinstallation of the system, disk replacement, and other
+behaviors may cause changes in the key identification information
+of the system, resulting in invalid authorization and the need to
+repurchase the authorization.
+
+The operating system that cannot obtain the key identification
+information of the system normally will not be able to generate
+machine codes and thus cannot obtain authorization.
+
+
+
+
+                                                             - 33 -
+                       User Manual for MThings
+
+3.10      Device Management
+
+Device is the foundation for all MThings functions. Through this device
+integration method, MThings has the ability to debug multiple devices,
+protocols, and channels.
+
+
+     3.10.1 Add device
+
+               Figure 18 Schematic diagram of adding device
+
+
+     1
+
+                                    2
+                           3
+             6
+                           5            4
+
+
+    1.    Add device entry;
+
+    2.    Select the channel where the added device is located;
+
+    3.    Select the device type for adding the device;
+
+    4.    Select the address to adding the device;
+
+    5.    After clicking "Add", the configured devices will be displayed
+          in [06].
+
+    6.    Click the “Add” button.
+
+    7.    The new device will appear in the device list.
+
+
+
+                                                                     - 34 -
+                           User Manual for MThings
+
+The device address range is 0-255, and the starting address should be
+less than or equal to the ending address. By setting the start address and
+end address, it is supported to add multiple devices at once. If the start
+address equals the end address, it means only one device will be added.
+
+If the device addresses to be added are scattered across multiple
+intervals, user can add multiple times.
+
+
+  NOTICE
+  If the new device address already exists in the device list, it will
+  not be created again.
+
+  If one master device already exists in the channel, it is not
+  allowed to add a slave device, and vice versa.
+
+
+     3.10.2 Remove Device
+
+                  Figure 19 Schematic diagram of removing device
+
+
+
+          2
+
+
+
+
+              1
+
+     1.   Check the devices that need to be removed.
+
+     2.   Click the “Remove” button.
+
+
+
+                                                                       - 35 -
+                      User Manual for MThings
+
+WARNING
+
+Removing the device will delete all data configuration under the
+device. Please operate with caution! If the device is accidentally
+removed, please reload the project configuration and remember
+not to save the current profile.
+
+
+  3.10.3 View Device Information
+
+       Figure 20 Schematic diagram for viewing device information
+
+
+
+
+  1.    Click the ">>" button to automatically expand the device list
+        page, displaying the key information such as device type,
+        device ID, channel, and device address.
+
+
+
+
+                                                                    - 36 -
+              User Manual for MThings
+
+     Table 10 Device Name Status Introduction
+
+Device Name Status                           Introduction
+
+                                     The current device is
+              Blue background        selected
+
+                                     The device stops running.
+                                     The channel which device
+             Font red                belongs is disconnected, or
+                                     the device is disabled.
+
+
+         Figure 21 Introduction of Device Status
+
+
+
+
+    1.     Connected, but no data read or write operations;
+
+    2.     Connected, but there are data read and write
+           exceptions;
+
+    3.     Connected, data read and write normal;
+
+    4.     The device is disabled;
+
+    5.     The channel which the device belongs is abnormal.
+
+
+
+
+                                                               - 37 -
+                        User Manual for MThings
+
+After adding a device, MThings assigns a default name with the
+following format description:
+
+           Figure 22 Introduction of Default Device Name Format
+
+
+
+               [M]COM1-001
+
+
+[Device Type]： Channel           Device Addr.
+M:Master
+S:Slave
+
+     3.10.4 Disable Device
+
+If the device needs to temporarily stop working, it can be disabled and
+instructed to stop all business and communication. The disable
+operation is commonly used to pause the simulation slave, which can
+simulate device disconnection.
+
+               Figure 23 Schematic diagram for Disable Device
+
+
+
+           2
+
+
+
+
+           1
+
+
+                                                                    - 38 -
+                   User Manual for MThings
+
+ 1.   Check the devices that need to be disabled.
+
+ 2.   Click the “Disable Device” button. After the device is
+      successfully disabled, the font color of the device name
+      changes to red.
+
+
+
+
+NOTICE
+The disable device operation is only used as a temporary
+measure. If the link to which the device belongs is broken and
+restored during the device disable period, the device will
+automatically recover.
+
+
+
+
+                                                                 - 39 -
+                    User Manual for MThings
+
+  3.10.5 Restore Device
+
+            Figure 24 Schematic diagram of Restore Device
+
+
+
+            2
+
+
+
+
+        1
+
+ 1.    Check the device that needs to be restored.
+
+ 2.    Click the “Restore Device” button. After the device is
+       successfully restored, the font color of the device name is
+       restored to black.
+
+
+
+
+NOTICE
+If the link to the device that needs to be restored has been
+closed, click “Restore” and the device name will remain in red.
+Once the link state to which it belongs is restored to
+“Connected”, the device will also be automatically restored.
+
+
+
+
+                                                                     - 40 -
+                       User Manual for MThings
+
+     3.10.6 Modify Key Parameters of Device
+
+For the devices that have been added, it supports modifying their key
+parameters, including device name, link, and device address.
+
+By modifying the device name, users can name better tags based on
+custom requirements.
+
+By modifying the channel and device address, users can quickly adapt to
+the new running environment. Users can add devices, configure data,
+and debug on local channel in advance. During on-site debugging, they
+can quickly switch to the actual working channel.
+
+    Figure 25 Schematic diagram of modifying key parameters of device
+
+
+
+
+                                          2
+
+
+
+           1
+                               3
+
+
+    1.    Double click on the device row that needs to be modified.
+
+    2.    The "Modify Key Parameters of Device" page pops up, where
+          user can modify the key parameters.
+
+    3.    To synchronize the channel changed to other devices, click the
+          "Copy Channel Config" button, select the device that needs to
+          copy the new channel information, and the software will
+
+
+
+                                                                        - 41 -
+                      User Manual for MThings
+
+         automatically modify the channel of the specified devices.
+
+After the channel and device address are changed, if the device name
+remains the default name assigned by the software, the software will
+automatically replace the channel and address fields in the default name
+without manually modifying the device name.
+
+For example, if the original name of the device is [M] COM1-001, the
+channel is changed to COM2, the address is changed to 2, the device
+name will automatically change to [M] COM2-002 after the device
+parameters modification is completed.
+
+
+  NOTICE
+  The device name cannot be empty and must be globally unique,
+  otherwise it will prompt modification failure.
+
+  If the new affiliation channel already has other device types, it
+  will prompt modification failure.
+
+  If the new device address already exists on the channel, it will
+  prompt modification failure.
+
+  The added device does not support modifying the device type.
+
+  If the device type is incorrect when adding a device, and a large
+  amount of data configuration has been completed, it is
+  recommended to first export the data template under the device,
+  delete the incorrect device, add the correct type of device again,
+  and import the data template.
+
+
+
+
+                                                                      - 42 -
+                       User Manual for MThings
+
+3.11      Configure Device Data
+
+Device data configuration is the process of converting MODBUS data
+protocol definitions into MThings configurations. After completing the
+device data configuration, there is no need for manual packaging and
+data conversion, and simple button operations can quickly initiate
+polling, batch reading and writing, and single reading and writing.
+MThings supports intuitive and visual display of protocol data
+information, which can quickly improve debugging efficiency.
+
+
+
+
+  NOTICE
+  Before configuring device data, please confirm whether the
+  correct device to be configured has been selected in the device
+  list.
+
+
+
+
+                                                                      - 43 -
+                        User Manual for MThings
+
+     3.11.1 Add Data Configuration
+
+Method 1:
+
+          Figure 26 Schematic diagram of adding data configuration
+
+
+
+
+     1.   Click on the “Data” menu.
+
+     2.   Click on the device name and select the device that requires
+          data configuration.
+
+     3.   Click on the “Add” button.
+
+     4.   The "Add Data Configuration" page pops up. By default, one
+          new piece of data is added each time. The starting data
+          address is “data address” + “data quantity” of the last row
+          in the current configuration. Users can modify “Data Count”
+          to assign the number of new configurations.
+
+The new data added by this method will be directly added to the bottom
+of the table.
+
+
+
+                                                                     - 44 -
+                        User Manual for MThings
+
+Method 2:
+
+Users can drag any "Block" cell from existing data configurations in the
+table. The starting row of the drag is the template row, and the new
+configuration will be inserted to the end position of the drag.
+
+
+     3.11.2 Delete Data Configuration
+
+         Figure 27 Schematic diagram of deleting data configuration
+
+
+
+
+    1.    Click on the ID column, select the data configuration that
+          needs to be deleted, and double-click on the header "ID" to
+          select or deselect all.
+
+    2.    Click the “Del Data” button.
+
+  WARNING
+  After deleting the data and clicking “Save” the profile, the data
+  configuration will be lost. Please operate with caution!
+
+
+
+
+                                                                       - 45 -
+                User Manual for MThings
+
+3.11.3 Edit Configuration Item
+
+         Table 11 Instructions of Configuration Item
+
+Items                            Instructions
+
+ ID      Not editable, software assigned in sequence.
+
+         Data name, can be defined arbitrarily and cannot be
+Name
+         empty.
+
+         Not editable, in operation mode, double-click to
+Value
+         trigger a single read operation.
+
+         Double click and start editing. Enter the data for the
+         write command to be issued. If there is no background
+CMD
+         color, it means that the data does not support write
+         commands.
+
+         When in operation mode, double-click triggers to
+Write
+         send write instructions.
+
+Unit     Data unit, can be defined arbitrarily.
+
+         The data value range is used to assist debugging, can
+Range    be defined arbitrarily, and does not participate in the
+         verification process.
+
+         Double click on the cell and select to modify the data
+         block type. The block definition refers to the MODBUS
+Block
+         standard protocol. Modifying the block may cause
+         other fields to be forcibly modified.
+
+         The starting address of the current data, without the
+         forward derivative.
+Addr.
+         Range: 0-65535.
+
+         Note: Combined with the address offset in the
+
+
+
+                                                              - 46 -
+                    User Manual for MThings
+
+             advanced parameters, this address is the protocol
+             address, not the transmission address. If the address
+             offset is -1, the minimum value of this address must be
+             greater than 0, otherwise the address is illegal.
+
+             The number of data addresses continuously occupied
+             by the current data.
+
+             If the data is register, the unit is words (2 bytes).
+
+             If the data is BIT, the quantity is mandatory to be 1 and
+
+ Quanty      cannot be modified.
+
+             Not less than 1.
+
+             If the data is a holding register, it must not exceed 123.
+
+             If the data item is input register, it must not exceed
+             125.
+
+             Used for register data, if a data only occupies a portion
+             of the register’s bits, this configuration is used to
+             specify the starting offset of the occupied bits. If the
+             data does not involve register bits, the default value
+Bit Offset
+             can be used for this configuration.
+
+             Note: The bit offset is based on the completed byte
+             order/word order conversion data, starting from the
+             low bit of the data, with the lowest bit being 0.
+
+             Used for register data, such as data items occupying
+             only a portion of the register’s bits, which are
+             configured to specify the total number of bits
+Bit Num.
+             occupied. If the data does not involve register bits, the
+             default value can be used for this configuration.
+
+             The default value for the number of bits in a register is
+
+
+
+
+                                                                      - 47 -
+                    User Manual for MThings
+
+              the Quantity of Data * 16.
+
+              The number of bits in BIT data is fixed to 1.
+
+              The number of bits can be configured from 1 to 64Bit.
+
+              Used for local conversion of register data, supporting
+              linear operations on received data, such as：
+   Ratio
+              Displayed Data = Received data * Ratio +Offsets.
+
+              Recommended range for Ratio: ± (0.000001~1).
+
+  Offsets     Same description with previous row.
+
+              The master device supports this item. After checking,
+  Polling     this data participates in polling. Otherwise, when start
+              polling request, this data will be ignored.
+
+              The master device supports this item. After checking,
+              this data participates in batch writing. Otherwise, when
+Batch Write   initiating a batch writing request, this data will be
+              ignored. The coil status and hold register data can be
+              checked, and read-only data is not supported.
+
+              After checking, the data is added to the real time data
+              curve page and the value is continuously recorded in
+  Curve       the curve. When the UI type of data is Byte stream
+              (BYTES), String (STRING), or Time, adding it as a curve is
+              not supported.
+              After checking, the current data value will be stored
+   Save       periodically and can be viewed in History Data.
+              Note: This item takes effect after restarting.
+
+              Double click on the cell and select the data type
+Trans. Type   defined in the MODBUS data protocol. Please confirm
+              and keep it consistent with the protocol. Please refer
+
+
+
+
+                                                                      - 48 -
+                      User Manual for MThings
+
+               to the data section for detailed instructions.
+
+               For achieving more user-friendly data visualization,
+               Users can double click on the cell and select the data
+  UI Type      type for display in UI. There are constraints associated
+               with the trans. type. Please refer to the data section for
+               detailed instructions.
+
+               If the UI Type is float, this item takes effect, otherwise
+               it is forced to be 0.
+ Decimal
+               It used to control the number of decimal points in
+               numerical values, with a range of 0 to 9.
+
+               Used for register data, such as when the Quantity of
+               data is 1, 2, or 4, byte order needs to be specified.
+               Please refer to the MODBUS data protocol
+
+Byte Order     requirements. If there are no special requirements,
+               choose the big endian.
+
+               When it comes to other data Quantity, the byte order
+               is assumed to be big Endian.
+
+               Used for register data, such as when the Quantity of
+               data is 2 or 4, word order needs to be specified. Please
+               refer to the MODBUS data protocol requirements. If
+
+Word Order     there are no special requirements, choose the big
+               Endian.
+
+               When it comes to other data Quantity, the word order
+               defaults to the big Endian.
+
+               Used to control the interval time between read and
+Interval(ms)   write requests.
+
+               In master device, this time takes effect after receiving a
+
+
+
+
+                                                                       - 49 -
+                               User Manual for MThings
+
+                     response (or timeout).
+
+                     In slave device, this time takes effect between the
+                     request and response.
+                     If a data is merged with other data into one
+                     request/response, the interval time is taken as the
+                     maximum value among them.
+
+                     Note: When the protocol of master device is
+                     MODBUS-TCP (asynchronous), this item does not take
+                     effect.
+
+                     This item indicates the maximum allowable response
+                     delay for data read and write requests in the master
+                     device. If this time is exceeded, it will be considered a
+
+Timeout(ms)          timeout event and the next request will continue.
+
+                     If a data is merged with other data into one request,
+                     the timeout time is taken as the maximum value
+                     among them.
+
+                     This item indicates whether it is necessary to resend
+                     data and the number of times it should be resend after
+   Retry
+                     the data read and write request times out. When the
+                     default setting is 0, it means no resend.
+
+
+
+                          Figure 28 Example of Bit Offset
+
+                                   4 Reg (8 Bytes)
+                      1 Reg
+
+                     300001       300002    300003      300004
+
+                                               Bit Offset：11
+  High Bit(Bit：63)                                               Low Bit(Bit：0)
+                                               Bit Num.：13
+
+
+
+
+                                                                              - 50 -
+                        User Manual for MThings
+
+  WARNING
+  If too much data is selected with curve, and the data has high-
+  frequency refresh for a long time, it will lead to a continuous
+  increase in computer memory. It is recommended to associate
+  data curve with caution.
+
+
+
+     3.11.4 Batch Edit Configuration
+
+In order to quickly edit the "Name", "Unit", "Addr.", "Quantity", "Bit
+Offset", "Bit Num.", "Ratio", "Offsets", "Range" of data configuration,
+MThings supports users to copy multiple rows of Excel data and paste
+them to the specified location in the data configuration table.
+
+                Figure 29 Example of Batch Fill Configuration
+
+
+
+
+                                                                          - 51 -
+                         User Manual for MThings
+
+     3.11.5 Change Background Color for Data
+
+         Figure 30 Schematic diagram of background color for data
+
+
+
+
+    1.    Long press the "Name" cell that needs to be marked with a
+          background color, and the "Set Background Color" page will
+          pop up.
+
+    2.    Click the “Select Color” button and select a custom
+          background color.
+
+    3.    Click the “Reset Color” button to restore the background to
+          its original color.
+
+    4.    Click the “Copy to Other Data” button to copy the selected
+          background color to other data.
+
+
+     3.11.6 Sort Data by Manual
+
+User can change the row position of the data configuration by dragging
+and dropping the "Addr." cell of the data.
+
+
+
+
+                                                                    - 52 -
+                        User Manual for MThings
+
+
+  NOTICE
+  Supports dragging down or up from any position.
+
+  The data configuration row will be added to the previous row of
+  the drag stop row.
+
+  To drag to the end row, drag the configuration row to the blank
+  space of the table.
+
+
+    3.11.7 Sort Data by One-click
+
+          Figure 31 Schematic diagram of one click data sorting
+
+
+
+
+    1.   Double click on the column header of "Addr." to complete the
+         sorting function.
+
+Rules:
+
+    ➢    Sort the data blocks in order of coil status, discrete input, hold
+         register, and input register.
+
+    ➢    Within the same data block, sort by small to large using the "
+         Addr." as a reference.
+
+    ➢    When the multiple data addresses are the same, it is sorted
+
+
+
+                                                                      - 53 -
+                       User Manual for MThings
+
+          from small to large using "Bit Offset" as a reference.
+
+    ➢     When the multiple Bit Offset is the same, it is sorted from
+          small to large using "Bit Num." as a reference.
+
+
+    3.11.8 Modify Device Advanced Parameters
+
+MThings provides advanced parameters for devices, used to control
+common functions related to device reading and writing.
+
+         Figure 32 Schematic diagram of device advanced parameters
+
+
+
+
+    1.    Click on the "Modify Device Advanced Parameter" icon to
+          enter the page.
+
+    2.    Modify the corresponding parameters on the page.
+
+
+
+
+                                                                        - 54 -
+                          User Manual for MThings
+
+   3.     Click “Copy to Other Devices” to copy all advanced
+          parameters of the current device to the selected device.
+
+   4.     Click the “OK” button to complete and save the advanced
+          parameters.
+
+                Table 12 Definition of Device Advanced Parameters
+
+        Items                               Instructions
+
+                        Message data address = “Addr.” + address offset.
+
+Address Offset          The default is 0. Please carefully confirm the
+                        protocol requirements when making modifications.
+
+                        Used to specify the data address display format,
+                        which can be selected as "DEC" or "HEX". When
+                        selecting "HEX", the address format is XXXXH.
+Display Address
+                        When editing hexadecimal addresses, the suffix
+                        “H” may not be carried, and the software will
+                        automatically complete it.
+
+                        For adapting to non-standard protocols, this
+CRC Byte Order          parameter allows user to specify the CRC byte
+(for RTU)               order in the RTU message, which defaults to little
+                        endian.
+
+                        To adapt to non-standard protocols, this
+                        parameter allows user to specify the packaging
+Coil/Discrete Bit
+                        method of continuous bits during the reading and
+Oder
+                        writing process of the coil/discrete quantity, with
+                        the default being " Left for High Bit".
+
+                        Only valid for the master device, this parameter
+Package Way             indicates how the device packages data from
+                        multiple adjacent addresses when making batch
+
+
+
+
+                                                                           - 55 -
+                      User Manual for MThings
+
+                    read and write requests.
+
+                    The default is "By Line", which means that each
+                    row of data has a separate request for reading and
+                    writing.
+
+                    "By Address" means automatic packet, and
+                    continuous address grouping is performed by
+                    register address from small to large.
+
+                    "By List Order" means automatic packaging, and
+                    consecutive addresses grouping is performed by
+                    the order shown in table.
+
+                    Only valid for the master device, this parameter
+                    indicates the maximum address interval allowed
+Max. Interval for   when performing read BIT data request packet
+Bit Data            grouping.
+
+                    When batch writing BIT data, no address interval is
+                    allowed.
+                    Only valid for the master device, this parameter
+                    indicates the maximum address interval allowed
+Max. Interval for   when performing a read register data request
+Reg. Data           packet.
+
+                    When batch writing REG data, no address interval is
+                    allowed.
+                    Only valid for the master device, and adapting to
+                    special requirements of non-standard devices.
+Write Code for
+Single Reg.         By default, write requests for a single holding
+                    register are requested using the 0X06 function
+                    code according to standard requirements.
+
+Write Code for      Only valid for the master device, and adapting to
+
+
+
+                                                                       - 56 -
+                         User Manual for MThings
+
+Single Coil           special requirements of non-standard devices.
+
+                      By default, write requests for individual coil status
+                      are requested using the 0X05 function code
+                      according to standard requirements.
+
+                      Only valid for the master device, to indicate
+                      whether the current device is a broadcast device. If
+
+Broadcast             selected, all requests issued by the device will not
+
+Device                wait for response messages.
+
+                      Note: Only applicable to the device whose channel
+                      is serial port.
+
+                      Only valid for the slave device, used to indicate the
+                      broadcast address, defaults to 0.
+
+                      Note: When the protocol of the slave is MODBUS-
+                      TCP (synchronous or asynchronous), the broadcast
+                      address represents that all slaves need to process
+Broadcast Addr.
+                      the address request, but do not need to reply
+-1
+                      (replied by the broadcast address device).
+
+                      Note: If the MODBUS-TCP requires the use of the
+                      0 address and does not involve broadcast
+                      requirements, it is recommended to modify the
+                      parameter to a different address.
+
+Broadcast Addr.
+                      Ditto
+-2
+
+                      Only valid for the slave device, to indicate whether
+Poll After            to initiate a single or cyclic batch read operation
+Startup               when the device link is established or the device
+                      resumes.
+
+Batch         Write   Only valid for the slave device, to indicate whether
+
+
+
+                                                                        - 57 -
+                   User Manual for MThings
+
+After Startup    to initiate a single or cyclic batch write operation
+                 when the device link is established or the device
+                 resumes.
+
+
+
+
+ NOTICE
+ Advanced device parameters can be copied to other devices.
+
+
+
+
+                                                                    - 58 -
+                       User Manual for MThings
+
+     3.11.9 Copy Data Configuration
+
+When multiple devices follow the same MODBUS data protocol, if the
+data configuration of one device has been completed, the current device
+data configuration can be fully copied to other selected devices through
+the copy operation.
+
+         Figure 33 Schematic diagram of copying data configuration
+
+
+
+
+    1.    Click the "Copy Configuration to Other Devices" icon button to
+          enter the "Select Device" page.
+
+    2.    If there are many devices, user can click the "Filter Type"
+          button to select the master or slave.
+
+    3.    If there are many devices, user can click the "Filter Chs." button
+          to filter the devices under some channels.
+
+
+
+                                                                        - 59 -
+                        User Manual for MThings
+
+    4.    Select the device that needs to copy data configuration.
+
+
+  NOTICE
+  The master and slave device can copy data configurations from
+  each other.
+
+  WARNING
+
+  Copying data configuration will overwrite the existing
+  configuration of the target device. Please operate with caution!
+
+
+
+
+     3.11.10 Create and Export Data Templates
+
+The workload of data configuration is enormous. In order to facilitate the
+sharing of data configuration, MThings supports creating and exporting
+data templates, which are independent of specific running environments,
+channels, devices, and other differentiated factors. Shared users can
+quickly build their own profile through data templates without
+reconfigure the data.
+
+   Figure 34 Schematic diagram of creating and exporting data templates
+
+
+
+
+                                                                        - 60 -
+                  User Manual for MThings
+
+1.   Click the "Export Data Template" icon button to enter the
+     "Export Device Profile" page.
+
+2.   Input the necessary additional information for the data
+     template.
+
+     Figure 35 Schematic diagram of exported data template
+
+
+
+
+                                                                 - 61 -
+                   User Manual for MThings
+
+  3.11.11 Import Data Template
+
+      Figure 36 Schematic diagram of importing data templates
+
+
+
+
+ 1.   Click the "Import Data Template " icon button to enter the
+      "Select Device Configuration Profile" page.
+
+ 2.   Select a data template file.
+
+
+
+
+NOTICE
+The master and slave can import data templates each other, but
+it is recommended to carefully confirm the differences in data
+configurations between the two device types before operation.
+
+
+
+
+                                                                   - 62 -
+                      User Manual for MThings
+
+3.12     Master Device Data Operations
+
+    3.12.1 Single Data Reading
+
+           Figure 37 Schematic diagram of single data reading
+
+
+
+
+    1.   Double click on the "Value" cell where the data row needs to
+         be read.
+
+    2.   Double click on the column header of "Value" to achieve a
+         single batch reading of all row data.
+
+
+
+
+  NOTICE
+  When the device is disabled or the channel is closed, it will not
+  be able to successfully start a single reading.
+
+  The single operation is not limited to a single register, as the data
+  composed of multiple consecutive registers also supports this
+  operation.
+
+
+
+
+                                                                   - 63 -
+                     User Manual for MThings
+
+  3.12.2 Data Polling
+
+             Figure 38 Schematic diagram of data polling
+
+
+
+
+  1.   Confirm and check the data that needs to be polled;
+
+  2.   Check the devices that need to be polled;
+
+  3.   Click the "Start Polling" button to start polling, and click the
+       button again to stop polling.
+
+
+
+
+NOTICE
+If user want the device to start polling immediately after startup,
+user can modify the " Poll After Startup" option in the device’s
+advanced parameters.
+
+If user need to change the data range for polling, check the
+"Polling" again. After the parameter changed, a restart poll is
+required to take effect.
+
+When the device is disabled or the channel is closed, it will not
+be able to successfully start polling.
+
+
+
+
+                                                                     - 64 -
+                    User Manual for MThings
+
+  3.12.3 Single Data Writing
+
+          Figure 39 Schematic diagram of single data writing
+
+
+
+
+  1.   Double click to trigger the editing of the "CMD" cell and enter
+       the target value for the data to be written;
+
+  2.   Double click the write button to immediately send the write
+       data command;
+
+       If the CMD modification is prepared for batch data writing,
+       step 2 can be ignored.
+
+
+NOTICE
+Only the coil state and hold registers support this operation.
+
+When the device is disabled or the channel is closed, it will not
+be able to successfully start a single writing.
+
+A single operation is not limited to a single register, as the data
+composed of multiple consecutive registers also supports this
+operation.
+
+
+
+
+                                                                  - 65 -
+                        User Manual for MThings
+
+     3.12.4 Batch Data Writing
+
+             Figure 40 Schematic diagram of batch data writing
+
+
+
+
+     1.   Check the data required for batch writing;
+
+     2.   Check the devices required for batch writing;
+
+     3.   Click the "Start Cycle Writing" button to start batch writing,
+          and click the button again to stop writing.
+
+Double click on the "Write" column header (as shown in number 4 in the
+figure), and the software will immediately send a single batch writing
+command for all data.
+
+
+
+
+                                                                       - 66 -
+                    User Manual for MThings
+
+
+NOTICE
+Only the coil state and hold registers support this operation.
+
+If user want the device to start batch writing immediately after
+startup, user can modify the "Batch Write After Startup" option
+in the device’s advanced parameters.
+
+When the device is disabled or the channel is closed, it will not
+be able to successfully start batch writing.
+
+After the parameters related to "Batch Write" of the device
+change, it is necessary to restart the batch data writing operation
+to take effect.
+
+
+
+
+                                                                 - 67 -
+                       User Manual for MThings
+
+     3.12.5 View Data Curves
+
+If the curve item is selected in the data configuration and the data has
+been read for a period of time, user can enter the "Real-time Data Curve
+Viewer" to view the changes in data values.
+
+             Figure 41 Schematic diagram of viewing data curve
+
+
+
+
+  NOTICE
+  If curve data is selected during the polling process, it is
+  necessary to restart the polling, otherwise the data curve cannot
+  be viewed!
+
+
+
+
+                                                                      - 68 -
+                       User Manual for MThings
+
+     3.12.6 Parse Frame
+
+In order to facilitate the analysis of response frame for reading data and
+request frame for writing data, MThings supports mapping BIT and
+register data from the original message to a data table based on existing
+device data configuration, eliminating the work for users to analyze data
+byte by byte, and user can view of the transmission data content.
+
+              Figure 42 Schematic diagram of parsing message
+
+
+
+
+     1.   Click the "Parse Frame" button to open the Parse Message
+          page.
+
+     2.   If the original frame is a read data response frame, the starting
+          data address (transmission address, based on the request
+          frame content) needs to be input, otherwise it can be left
+          blank.
+
+     3.   Enter the original frame PDU, remove the header from the
+          original message, and start with the function code.
+
+
+
+                                                                       - 69 -
+                        User Manual for MThings
+
+     4.   Click the “Submit” button.
+
+     5.   View the parsed data.
+
+                          Figure 43 PDU Definition
+
+
+
+
+     3.12.7 Search Data
+
+When there are many rows in the data table and users need to quickly
+locate a certain data row, they can quickly scroll the table to the
+specified position by searching for the data name.
+
+           Figure 44 Schematic diagram of data search operation
+
+
+
+
+     1.   Enter some keywords in the name of the data to be searched
+          (case sensitive).
+
+     2.   Click the search button.
+
+
+
+
+                                                                      - 70 -
+                           User Manual for MThings
+
+     3.      If there is a match, the table will automatically scroll to the
+             corresponding position, and the data name font will be
+             highlighted in red.
+
+Due to the large amount of information in each row, it is necessary to
+drag the scroll bar horizontally when viewing information. To facilitate
+information viewing, the data row can be raised as follows:
+          Figure 45 Schematic diagram of widening row height operation
+
+
+
+
+     1.      Click in the “Name” cell to increase the current row height.
+
+     2.      Click in the "ID" cell to cancel the current row height.
+
+
+  NOTICE
+  If there are multiple matches, the user can click the search button
+  multiple times, and the search function will continue to traverse
+  other rows of the table and identify the matching items.
+
+  The search scope only includes the “Name” column.
+
+
+
+
+                                                                               - 71 -
+                        User Manual for MThings
+
+     3.12.8 Filter Data
+
+The data page provides multiple filtering methods, making it easier for
+users to focus on key information faster and better.
+
+               Figure 46 Schematic diagram of data filtering
+
+
+
+
+    1.    Click the “Filter Data Blocks” button to hide/show the
+          specified data block type.
+
+    2.    Click the “Filter Rows” button to hide/show the specified
+          table rows.
+
+    3.    Click the “Filter Columns” button to hide/show the specified
+          table columns.
+
+
+
+
+  NOTICE
+  The block filtering operation is only a temporary operation. After
+  restarting the software, all blocks will be redisplayed.
+
+  The filter row and filter column operations will store the
+  configuration file, and after restarting the software, it will
+  maintain the last selected display/hide state.
+
+
+
+
+                                                                    - 72 -
+                          User Manual for MThings
+
+3.13         Slave Device Data Operations
+
+The simulating response of slave device does not need to be manually
+triggered. After receiving a request from the master, the software will
+automatically package and reply. The simulation slave also supports data
+curves and parsing messages, and the operation method can refer to the
+previous chapter.
+
+          Figure 47 Schematic diagram of preset simulation data method
+
+
+
+
+     1.     Double click on the "Value" cell that requires simulation data
+            to open the "Select Method for Simulation Data" page.
+
+     2.     Before configuring simulation data methods, user can refer to
+            different strategy descriptions.
+
+     3.     After configuring the simulation data method, user can refer to
+            the example curve.
+
+     4.     Click “OK” to active the simulation data method.
+
+
+
+
+                                                                         - 73 -
+                        User Manual for MThings
+
+
+ NOTICE
+ User can drag and drop one row of "Value" cells to another row
+ of "Value" cells to quickly copy simulated data configuration.
+
+
+
+           Table 13 Parameter Definition of Simulation Data Method
+
+        Items                               Instructions
+
+                          Define simulation method, default to fixed
+Strategy
+                          value
+
+                          The interval between updates, during which
+Refresh Interval(ms)
+                          the values remain unchanged.
+
+                          Define the origin position of the curve
+Start Time Axis
+                          timeline.
+
+                          Based on the existing values, when a valid
+                          random interval is defined, the random
+Upper/Lower of
+                          numbers within the range are superimposed.
+Random Zone
+                          The upper and lower limits are the same,
+                          indicating no randomness.
+
+                          Based on the existing values, when defining an
+                          effective range, the values will be constrained
+
+Maximum/Minimum           within this range and can generally be used for
+
+Value                     curve peak shaving and valley filling. If the
+                          maximum and minimum values are the same,
+                          it means that the function is turned off.
+
+                  Table 14 Slave Data Strategy Configuration
+
+        Strategy                             Instructions
+
+Fixed Value / Line /       Refer to the instructions in the software.
+
+
+
+                                                                          - 74 -
+                        User Manual for MThings
+
+Parabola / Sine Curve
+/ Square Wave
+
+                          ➢    Each data is separated by a newline
+                               character;
+
+                          ➢    Support copying entire columns of data
+                               from Excel to the data window;
+Preset Data
+                          ➢    When the refresh interval is set to 0,
+                               reply to the master requests row by row;
+
+                          ➢    When the software restarts, the data
+                               reply will reset.
+
+                          Associate any data from other master for
+Bind Mode                 integrating critical information and
+                          forwarding it to northbound devices.
+
+
+
+
+                                                                        - 75 -
+                          User Manual for MThings
+
+3.14      Real-time Data Curve
+
+Real-time data curves are containers for multiple data curves. A curve is
+a legend, and the displayer provides functions such as legend
+customization, data statistics, and export.
+
+
+     3.14.1 View Curve
+
+                  Figure 48 Schematic diagram of curve viewing
+
+
+
+
+The curve view includes a list of data curves (legends) and a legend
+display area. The list of legends on the left contains legends, with the
+background color consistent with the curve color. Legend display area
+can display multiple legends simultaneously. Different legends are
+associated with the left Y-axis by default, and some legends can also be
+associated with the right Y-axis through configuration.
+
+The operation method for viewing is as follows:
+
+     1.   Users can drag the legend display area in any direction by
+          holding down the left mouse button at any position in the
+          legend display area.
+
+     2.   Users can zoom in or out of the legend display area by using
+          the mouse scroll wheel at any position in the legend display
+          area.
+
+     3.   Users can click anywhere in the curve to display detailed
+
+
+
+                                                                       - 76 -
+                   User Manual for MThings
+
+     information about data points in the curve.
+
+4.   Users can click on the axis to zoom in or out with the single
+     axis range.
+
+
+3.14.2 Maintenance Legend
+
+       Figure 49 Schematic diagram of maintenance legend
+
+
+
+
+1.   Click the “Legend” button to open the legend editing page.
+
+2.   Click to control whether the curve legend is displayed.
+
+3.   Double click to modify the current color of the curve legend.
+
+4.   Double click to modify the line width of the curve legend.
+
+5.   Check to associate the legend with the right Y-axis.
+
+6.   Non editable, the curve data statistics result is displayed as the
+     maximum value.
+
+7.   Non editable, the curve data statistics result is displayed as the
+     minimum value.
+
+8.   Non editable, curve data statistics results are displayed as
+     averages.
+
+
+
+
+                                                                    - 77 -
+                          User Manual for MThings
+
+     3.14.3 Axis management
+
+The data curve displayer supports multiple modes to view data curves,
+including normal mode, fixed mode, and oscilloscope mode.
+In normal mode, the timeline length is fixed, the end time is fixed as the
+MThings start time, and the start time is automatically pushed forward
+and backward based on the "Maximum Duration" parameter;
+In fixed mode, the timeline range remains unchanged after being specified
+by the user;
+In the oscilloscope mode, the length of the timeline is specified by the
+user, and the end time is fixed as the current time.
+
+                      Figure 50 Coordinate Axis Parameters
+
+
+
+
+                      Table 15 Definition of Axis Parameters
+
+         Items                                 Instructions
+
+                             Control the refresh interval time of curve
+ Refresh Intv. (ms)
+                             display data.
+
+ Time Axis mode              Switch the timeline display mode.
+
+ Max Duration(hour)          The maximum duration time for all data in
+
+
+                                                                          - 78 -
+                  User Manual for MThings
+
+                    the curve. Over the duration, the curve data
+                    will be automatically removed.
+
+                    Effective in the "oscilloscope" mode of the
+Window              timeline, specify the length of the timeline
+Duration(sec.)      that can be displayed, which should be less
+                    than the " Max Duration(hour)" parameter.
+
+                    Control whether the left Y-axis automatically
+Y1 Adjust
+                    adjusts with the curve data range.
+
+                    Control whether the right Y-axis automatically
+Y2 Adjust
+                    adjusts with the curve data range.
+
+Alarm1 of Y1        The switch for left Y-axis warning line 1
+
+                    Display warning line on the curve display
+SetValue1 of Y1
+                    according to the set values
+
+Alarm2 of Y1        The switch for left Y-axis warning line 2
+
+                    Display warning line on the curve display
+SetValue2 of Y1
+                    according to the set values
+
+Alarm1 of Y2        The switch for right Y-axis warning line 1
+
+                    Display warning line on the curve display
+SetValue1 of Y2
+                    according to the set values
+
+Alarm2 of Y2        The switch for right Y-axis warning line 2
+
+                    Display warning line on the curve display
+SetValue2 of Y2
+                    according to the set values
+
+
+
+
+                                                                   - 79 -
+                   User Manual for MThings
+
+  3.14.4 Export Data
+
+                 Figure 51 Export Data Schematic
+
+
+
+
+ 1.   Click the “Export” button and select the export data storage
+      path.
+
+
+
+
+NOTICE
+The data export file contains all curve data in CSV format and can
+be opened directly using Excel.
+
+
+
+
+                                                              - 80 -
+                        User Manual for MThings
+
+     3.14.5 Filter devices
+
+If there are too many data curves, in order to facilitate viewing all data
+curves under the same device, the device filtering function can be used
+to hide data curves (legends) that do not need to be viewed temporarily.
+
+               Figure 52 Schematic diagram of filtering device
+
+
+
+
+     1.   Click the “Filter” button to open “Select Device” page.
+
+     2.   Select the device whose data curve needs to be displayed.
+
+
+
+
+                                                                        - 81 -
+                      User Manual for MThings
+
+3.15     Message Management
+
+As an important debugging information, MThings provides abundant
+and user-friendly method for message management.
+
+
+    3.15.1 View Messages
+
+            Figure 53 Schematic diagram of viewing messages
+
+
+
+
+    1.   The software does not open the message monitor by default. If
+         "Message" is checked, the message window will be embedded
+         below the software window.
+
+    2.   View the message window.
+
+    3.   Click the “Dock” button, and the message page will pop up
+         as a separate window. It can generally be used in multi-screen
+         scenarios, and debugging operations and message browsing
+         do not affect each other.
+
+
+
+
+                                                                   - 82 -
+                   User Manual for MThings
+
+               Table 16 Definition of Message Colors
+
+  Color                            Introduction
+
+   Blue                     Sending messages normally
+
+  Green                     Receive messages normally
+
+   Red                          Abnormal message
+
+  Purple                           Channel Event
+
+
+
+
+NOTICE
+For the convenience of user identification, if MODBUS-TCP
+message is received, including sending sequence number,
+protocol type, and data length, MBAP will be placed as the
+header in a pair of "[]" when the message is displayed.
+
+
+
+
+                                                             - 83 -
+                  User Manual for MThings
+
+3.15.2 Message Control
+
+         Figure 54 Schematic diagram of message control
+
+
+
+
+1.   The software starts by default and receives all channel
+     messages. After checking "Receive", message reception can be
+     started or closed.
+
+2.   After message reception is enabled, the software defaults to
+     the "timed clear" function. The window will automatically clear
+     every 2000 records in the message window to prevent high-
+     speed messages from occupying too much computer memory.
+     Click “Auto Clear” to turn on or off the timed clear function.
+
+3.   Based on visualization, the software performs partial
+     conversion for MODBUS-ASCII and MODBUS-TCP. If necessary,
+     user can check "Raw Bytes" to view the original binary byte
+     stream message during debugging.
+
+4.   After receiving the message, it is not saved to the disk by
+     default. If user need to store it, user can check "Save" and the
+     software will immediately start creating the message file and
+     starting data storage (with 10 second update period).
+
+5.   The default path for message storage is the desktop. If user
+     need to modify it, click the "File Location" button and select a
+
+
+
+                                                                   - 84 -
+                        User Manual for MThings
+
+           new message file path.
+
+    6.     Click the “Clear” button to clear all messages in the message
+           window.
+
+    7.     Click the "Filter Chs." button to specify some channels to filter
+           messages which are not currently concerned.
+
+
+  NOTICE
+  After filtering the channels, the filtered message will not be
+  saved.
+
+  The clearing operation will not affect the storage of data.
+
+
+
+
+     3.15.3 Capture Serial Port Message
+
+To capture serial port message, user can create master device from the
+target serial port channel, without data configuration. Enter the message
+window to view all data received.
+
+
+  NOTICE
+  It is not recommended to use MThings to capture serial port
+  message. It is recommended to choose the universal serial port
+  tool.
+
+
+
+
+                                                                        - 85 -
+                       User Manual for MThings
+
+3.16      System Page
+
+The system page provides configuration functions, supporting users to
+flexibly and intuitively display data based on existing device data. This
+function needs to be authorized before use.
+               Figure 55 Schematic diagram of System Page
+
+
+
+
+     3.16.1 Start Configuration Editing
+
+       Figure 56 Schematic diagram of starting configuration editing
+
+
+
+
+                                                                       - 86 -
+                       User Manual for MThings
+
+    3.16.2 Exit Configuration Editing
+
+
+
+
+    3.16.3 Configure Pages
+
+After entering editing mode, users can manage page parameters.
+
+                           1
+
+           2                                                  3
+
+
+                                  4
+
+
+
+
+    1.   Click to open "Configure Page Argument" dialog.
+
+    2.   Add a new page.
+
+    3.   Delete the selected page. After selecting all to delete, the first
+         page will be retained.
+
+    4.   Double clicks to modify page parameters.
+
+                   Table 17 Page Parameter Definition
+
+
+
+
+                                                                       - 87 -
+                    User Manual for MThings
+
+Items           Instructions
+
+                If the canvas has no underlay image, user can
+Background
+                double-click this parameter to fill in background
+Color
+                color.
+
+                Control the width of the display area on the canvas.
+Canvas Width
+                Its unit are the same as the display resolution.
+
+                Control the height of the display area on the canvas.
+Canvas Height
+                Its unit are the same as the display resolution.
+
+                Set up a user-defined large background image,
+                double-click the parameter area, and select the
+                image path. The image should be in “. Png”
+Canvas          format.
+Underlay
+                It is recommended that the resolution of the image
+                be consistent with the width and height of the
+                canvas.
+
+
+
+
+                                                                    - 88 -
+                         User Manual for MThings
+
+     3.16.4 Add Chips
+
+                            Figure 57 Adding Chips
+
+
+
+
+Adding chips requires four steps:
+
+The first step is to select the chip type from the left menu bar and drag
+it onto the canvas;
+
+Step 2, set the "basic parameters", including the page to which the
+Affiliated Page, position, size, and Refresh Intv. (sec.);
+
+Step 3, set "extension parameters", which vary for different chips types;
+
+Step 4, add "content data", which means that the chip is associated with
+one or more device data, but some chips do not need to be associated
+with any device data.
+
+
+     3.16.5 Modify Chips
+
+After entering configuration editing, a blue wireframe will appear when
+an existing chip is clicked. Users can quickly modify the size of the chip
+by dragging it with the mouse.
+
+Users can quickly adjust the size, position, alignment, and other aspects
+
+
+
+                                                                       - 89 -
+                         User Manual for MThings
+
+of the chips using the following method.
+
+                     Figure 58 Modifying graphical controls
+
+
+
+
+1. Align Top with selected chips.         9. Make the same width with
+                                              selected chips.
+2. Align Bottom with selected
+   chips.                                 10. Make the same height with
+                                              selected chips.
+3. Align Left with selected chips.
+                                          11. Make the same width and
+4. Align Right with selected
+                                              height with selected chips.
+   chips.
+                                          12. Place the selected chips to the
+5. Align Horizontally with
+                                              top level.
+   selected chips.
+                                          13. Place the selected chips to the
+6. Align Vertically with selected
+                                              bottom level.
+   chips.
+                                          14. Copy the new chips from
+7. Distribution Horizontally with
+                                              selected chips.
+   selected chips.
+                                          15. Delete the selected chips.
+8. Distribution Vertically with
+   selected chips.
+
+
+
+
+                                                                           - 90 -
+                 User Manual for MThings
+
+  3.16.6 Chips Description
+
+  Type         Renderings                 Description
+
+                               ➢ Display data name, value, and
+                                 unit;
+
+ Data Tag                      ➢ After double clicking, edit the
+                                 value and send writing CMD;
+                               ➢ Multiple layout way.
+
+                               ➢ Display static text information;
+ Text Tag
+                               ➢ Font size and color can be set.
+
+
+                               ➢ Display data from multiple
+Data Table
+                                 different devices.
+
+
+                               ➢ Display local time;
+Date Time                      ➢ Support time synchronization
+                                 with devices.
+
+                               ➢ Simultaneous statistic the data
+                                 from multiple devices and
+Sum Label
+                                 calculate their arithmetic sum;
+                               ➢ Redefine data names, units, etc.
+
+                               ➢ Dual color status light;
+                               ➢ Can be associated with bit data
+Status LED                       or register data;
+                               ➢ Flashing after activation and
+                                 specify frequency.
+
+                               ➢ One-click to send fixed
+CMD Button                       commands;
+                               ➢ Customizable styles.
+
+                               ➢ User can switch between different
+Page Label                       page by clicking on different
+                                 page labels.
+
+
+
+                                                                   - 91 -
+            User Manual for MThings
+
+                          ➢ Quickly adjust data value using a
+                            slider;
+ Slider
+                          ➢ Supports float data;
+                          ➢ Customize background and color.
+
+
+ Device                   ➢ Display the communication status
+ Status                     of devices in the device list.
+
+
+                          ➢ Display status data;
+                          ➢ Users can manually trigger the
+ Switch                     switch status;
+                          ➢ Customize status values (non
+                            0/1).
+
+
+
+
+                          ➢ Dividing lines for auxiliary chips
+ Divider
+                            classification display.
+
+
+
+
+                          ➢ Add dynamic flow based on the
+                            underlay image;
+                          ➢ Customize line color and width;
+Flow Line
+                          ➢ Support multiple points;
+                          ➢ Trigger flow or quiescence by
+                            device data.
+
+                          ➢ Display remaining electricity data;
+                          ➢ Customize data range and refresh
+                            step size;
+ Battery
+                          ➢ Customize alert values and
+                            automatically matching alert
+                            colors.
+
+
+
+
+                                                             - 92 -
+              User Manual for MThings
+
+                            ➢ Display status data;
+                            ➢ Multiple switch styles;
+                            ➢ Users can manually trigger the
+Pic. Switch
+                              switch status;
+                            ➢ Customize status values (non
+                              0/1).
+
+
+                            ➢ Display data names, values, and
+                              units;
+Dashboard
+                            ➢ Customize range, display
+                              accuracy, units, value colors.
+
+
+
+                            ➢ Display data names, values, and
+                              units;
+Velocimeter                 ➢ Customize value color, range and
+                              unit;
+                            ➢ Presents data by LCD style.
+
+
+                            ➢ Display the data value and
+                              percentage of data;
+Data Panel
+                            ➢ Customize the data range;
+                            ➢ Support out of range warning.
+
+
+
+
+ Progress                   ➢ Display the percentage of data;
+  Panel                     ➢ Customize the data range.
+
+
+
+
+                            ➢ Display angle data (0-360);
+ Compass
+                            ➢ Supports float data.
+
+
+
+
+                                                               - 93 -
+              User Manual for MThings
+
+
+
+                            ➢ Display temperature data;
+
+Thermomete                  ➢ Customize ranges, scale color;
+
+     r                      ➢ Supports negative temperature;
+                            ➢ Supports float data;
+
+
+
+                            ➢ Used for locally adding image for
+                              display;
+                            ➢ Import images from any local
+ Underlay
+                              path;
+                            ➢ Supports many image file
+                              formats.
+
+                            ➢ Simultaneously display curves for
+                              up to three sets of data;
+ Real Time
+                            ➢ Customize the display time range;
+  Curve
+                            ➢ Display up to 24 hours of data;
+                            ➢ Customize curves and axis colors.
+
+                            ➢ Display one history data curve;
+ Historical                 ➢ Customize the display time range;
+  Curve                     ➢ Display data for up to 180 days;
+                            ➢ Customize curves and axis colors.
+
+
+                            ➢ Display all active alarms in the
+  Alarm
+                              window;
+ Summary
+                            ➢ Dynamic update.
+
+
+
+                            ➢ Display key statistical of active
+  Alarm
+                              alarms;
+ Statistics
+                            ➢ Automatic associate alarm data.
+
+
+
+
+                                                              - 94 -
+                       User Manual for MThings
+
+3.17      History Data
+
+For device data, History Data provides persistent storage, display,
+printing, and export functions, support the daily generation of
+independent data files, and calculate data summary information. This
+function requires authorization before use.
+
+       Figure 59 Schematic diagram of associated device data storage
+
+
+
+
+The operation of History Data is strongly related to device data. Users
+need to check "Save" in the "Data" page for the data to be stored.
+
+To avoid repeated operations during user configuration, user need to
+restart MThings after configuring History Data.
+
+
+  NOTICE
+  To avoid frequent modifications to storage configurations, it is
+  recommended to enable History Data function after stable data
+  configuration.
+
+  Changes in History Data configurations require software restart!
+
+
+
+
+                                                                       - 95 -
+                   User Manual for MThings
+
+           Figure 60 Schematic diagram of History Data
+
+
+
+
+1.   Refresh History Data display table. History Data will not
+     actively update the tables on the page. If user stay on the
+     current page for a long time, user need to manually click the
+     "Refresh" button to view the latest records.
+
+2.   Switch the date of History Data. To avoid loading too much
+     data at the same time, History Data display table only loads
+     data within one day at a time.
+
+3.   Filter the period, the filtering results will affect the data range
+     of "Data Overview", "Print", and "Export".
+
+4.   Filter the data columns that need to be presented.
+
+5.   Calculate the "maximum", "minimum", and "average" of the
+     loaded History Data.
+
+6.   View History Data in a Curve Mode.
+
+7.   Print the loaded History Data, and users can choose print
+     information such as data columns and paper types.
+
+8.   Export the loaded History Data in CSV format.
+
+9.   Display History Data title, if set to blank in system parameters,
+
+
+
+                                                                    - 96 -
+                         User Manual for MThings
+
+           it will not be displayed.
+
+     10.   Flip and jump History Data display table page.
+
+
+
+
+3.18       Logic Control
+
+Logic Control adopts an intuitive visual building block construction
+method, allowing users to easily achieve real-time control tasks such as
+complex data calculation and processing, control algorithm design,
+control algorithm simulation and verification, cross device data
+synchronization, and digital and analog signal processing in industrial
+sites.
+
+     Logic Control simplifies the design process of the control flow
+through component cross-linking diagrams. Under this framework, each
+component is equipped with input and output interfaces, allowing for
+flexible connections between different components through these
+interfaces, achieving smooth transmission of analog and digital signals.
+Users can more intuitively and conveniently build the entire control
+system.
+
+     VIP components require authorization before they can be used.
+
+     The following figure is a simple example:
+
+
+
+
+                                                                       - 97 -
+                                       User Manual for MThings
+
+
+
+
+             The component provides input interfaces (left side) and output
+         interfaces (right side), and the interface types are divided into digital
+         interfaces and analog interfaces. Different types of interfaces cannot be
+         directly connected.
+
+             Global shortcut keys include the following:
+
+             1) Multiple component selection: Shift + mouse drag
+
+             2) Select all components:               Ctrl + A
+
+             3) Cancel previous operation:               Ctrl + Z
+
+             4) Copy component: Ctrl + C
+
+             5) Paste component: Ctrl + V
+
+             6) Quick Copy Component: Ctrl + D
+
+             7) Delete component:             Delete Key
+
+             8) Cancel component selection: Esc Key
+
+             9) Zoom Canvas: Mouse Wheel
+
+             Component Usage Introduction:
+
+Name                          Function                          Interface   Type      Interface Introduction
+
+Analog     Obtain real-time data collected by the device                              Refresh once by One
+                                                            [IN] Trigger    Digital
+Input      and import it into the logical process,                                    Trigger.
+
+
+
+
+                                                                                                 - 98 -
+                                             User Manual for MThings
+
+   Name                             Function                              Interface   Type      Interface Introduction
+
+    (AI)        supporting digital driven refresh                     [OUT] AI        Analog Device Data
+
+                                                                                                Refresh once by One
+                                                                      [IN] Trigger    Digital
+Digital Input                                                                                   Trigger.
+    (DI)
+                                                                      [OUT] DO        Digital Device Data（0、1）
+
+                                                                                                Execute the write
+  Analog                                                              [IN] Switch     Digital command after
+
+  Output        Write device command data in analog/digital                                     enabling.
+
+    (AO)        form.                                                 [IN] Analog               Analog Command for
+                                                                                      Analog
+                                                                      Command                   Device
+
+                                                                                                Execute the write
+   Digital                                                            [IN] Switch     Digital command after
+
+  Output                                                                                        enabling.
+
+   (DO)                                                               [IN] Digital              Digital Command for
+                                                                                      Digital
+                                                                      Command                   Device
+
+                                                                      [IN] SP         Analog Target Value
+
+                Positional PID controller adjusts the control                                   Sample value/feedback
+                output by calculating the current value of the                                  value. It should be
+                                                                      [IN] PV         Analog
+ Positional     error, while an Incremental PID controller                                      connected to an
+    PID         adjusts the control output by calculating the                                   "Analog Input".
+ (PID(Pos))     increment of the error.
+                                                                      [IN] Kp         Analog Proportional Gain
+Incremental
+                                                                      [IN] Ki         Analog Integral Gain
+    PID
+ (PID(Incr))                                                          [IN] Kd         Analog Derivative Gain
+
+                                                                                                Set point. It should be
+                                                                      [OUT] Output    Analog connected to an
+                                                                                                "Analog Output".
+
+                Based on the set analog upper limit, lower            [IN] H          Analog Upper Limit Value
+                limit, and deadband parameters, it determines
+                                                                      [IN] L          Analog Lower Limit Value
+ Over Limit     whether an analog input has exceeded the
+                                                                      [IN] DB         Analog Deadband Value
+   (H/L)        limit. If the limit is exceeded, it outputs a high-
+                level digital quantity (1); otherwise, it outputs                               Analog Data to be
+                                                                      [IN] X          Analog
+                a low-level digital quantity (0).                                               Judged
+
+
+
+
+                                                                                                            - 99 -
+                                        User Manual for MThings
+
+  Name                         Function                           Interface   Type      Interface Introduction
+
+
+
+
+                                                              [OUT] Y         Digital Result
+
+
+
+
+            Determine if the rate of change of an analog      [IN] R          Analog Set the rate of change
+            signal exceeds the set value. The rate of
+                                                                                        Analog Data to be
+            change includes both the rising rate and the      [IN] X          Analog
+                                                                                        Judged
+   Rate     falling rate, with the unit being 1/second.
+  Change
+
+ (RATE-M)                                                                               Yes, output ON (1)
+                                                              [OUT] Y         Digital
+                                                                                        No, output OFF (0)
+
+
+
+
+            By setting the total number of digital inputs N                             Users can specify the
+            and the number of active inputs M, redundant [IN] X1~X6           Digital number of significant
+            control of multiple digital inputs can be                                   digital inputs N
+Redundancy achieved.
+  Control                                                                               When the M channels
+                                                                                        are ON at the same
+  (M/N)
+                                                              [OUT] Y         Digital time, the output is ON,
+                                                                                        otherwise the output is
+                                                                                        OFF.
+
+
+            Control an input analog signal based on the       [IN] H          Analog Set an upper limit
+            set amplitude upper and lower limits to
+                                                              [IN] L          Analog Set the lower limit
+            achieve peak clipping and valley filling in the
+            output data.                                                                Analog Data to be
+                                                              [IN] X          Analog
+                                                                                        Processed
+
+  Limiter
+
+
+
+                                                              [OUT] Y         Analog Processed Analog Data
+
+
+
+
+                                                                                                  - 100 -
+                                         User Manual for MThings
+
+  Name                          Function                           Interface   Type      Interface Introduction
+
+             In order to ensure that the rate of change of                               Analog Data to be
+                                                               [IN] X          Analog
+             the output variable is kept within a                                        Processed
+             predetermined range, the system is protected
+                                                                                         Maximum rise rate
+             from the impact of rapid changes by limiting      [IN] RI         Analog
+                                                                                         (1/sec)
+             the rate of change of the input analog
+  Ramp       quantity to prevent overshoot or instability                                Maximum descent rate
+                                                               [IN] RD         Analog
+Controller   due to rapid changes, so as to ensure the                                   (1/sec)
+
+(RATE-C)     smooth and stable operation of the system.        [IN] sw         Digital Enable Switch
+
+
+
+
+                                                               [OUT] Y         Analog Processed Analog Data
+
+
+
+
+             The component allows for more flexible                                      Analog Data to be
+                                                               [IN] X          Analog
+             adjustment of the output, allowing for more                                 Processed
+             granular and personalized control. The
+             component is predefined to a set of
+             coordinate points (Xn, Yn) for linear mapping.
+             During operation, the component looks for
+             the corresponding Y value in the preset
+ Polyline    polyline according to the input analog X, so as                             The Y value mapped
+   (FX)      to dynamically generate control instructions.                               from the polyline
+                                                               [OUT] Y         Analog
+                                                                                         When X<X1, Y=Y1;
+
+                                                                                         When X>X9, Y=Y9;
+
+
+
+
+             This component can provide the necessary                                    Refresh once by One
+                                                               [IN] Trigger    Digital
+             fixed values to other components, such as                                   Trigger.
+             coefficients, parameters, and so on.
+
+Fixed Data After the user modifies, he needs to click the
+                                                                                         A fixed value from the
+             confirm button to take effect.                    [OUT] Analog    Analog
+                                                                                         user setting.
+             Users can click the "N" button to add the data
+             name.
+
+
+
+                                                                                                    - 101 -
+                                          User Manual for MThings
+
+   Name                          Function                            Interface     Type      Interface Introduction
+
+             This component typically acts as a starting                                     Used for group control
+             point for logic control, providing a trigger        [IN] Switch for             timer;
+                                                                                   Digital
+             signal for a specified period (interval). Setting   Start                       ON (1) is start timer;
+   Timer
+             range: 10ms~600 seconds.
+                                                                                             OFF (0) is stop timer;
+             Units can be switched to milliseconds or
+             seconds                                             [OUT] Trigger     Digital Periodic trigger signals
+
+             This component continuously outputs high or
+   Switch    low digital quantities based on manual              [OUT] Digital     Digital ON/OFF state
+             operation by the user.
+
+             The component provides a user-operated                                          Duration of ON
+             button, which allows the user to manually                                       Unit: ms;
+             trigger a pulse signal (OFF->ON->OFF), and          [IN] T            Analog
+                                                                                             Range: >10ms;
+Pulse Button the duration of ON can be set.                                                  Default: 100 ms.
+  (BTN-P)
+
+
+                                                                 [OUT] Y           Digital Pulse Signal
+
+
+
+
+ Data Tag                                                                                    Receives the analog
+             Receives and displays the value of AI.              [IN] Analog       Analog
+   (TAG)                                                                                     data to be displayed
+
+ End Flow    The display indicates that the current branch is
+                                                                 [IN] END          Analog /
+   (END)     over with no action.
+
+             It supports continuous recording of multi-          [IN] DA           Analog A data, color: white
+             channel analog data, can set the timeline
+                                                                 [IN] DB           Analog B data, color: blue
+             range, and automatically adjust the vertical
+             axis range with the value. It supports to resize [IN] DC              Analog C data, color: yellow
+
+             the window size.
+
+   Meter                                                                                     The span of the
+                                                                                             timeline.
+
+                                                                 [IN] T            Analog Unit: seconds
+                                                                                             Default: 60 seconds
+
+                                                                                             Range: 1~6000 seconds
+
+
+
+  Text Tag   It is used to mark the information that needs       /                    /      /
+
+
+
+
+                                                                                                         - 102 -
+                                          User Manual for MThings
+
+  Name                          Function                          Interface   Type      Interface Introduction
+
+            to be explained in the logical control process,
+            and double-click to modify the content.
+
+            It is used to visualize digital state in the                                ON: in red
+   Alarm                                                      [IN] Trigger    Digital
+            control process.                                                            OFF: Clear red
+
+                                                                                        Analog Data to be
+                                                              [IN] A          Analog
+                                                                                        Processed
+
+            According to the delay time, add a time offset                              Digital Data to be
+                                                              [IN] D          Digital
+            to the input data before outputting.                                        Processed
+
+                                                                                        Offset Time.
+   Delay
+                                                                                        Unit: ms
+                                                              [IN] T          Analog
+                                                                                        Default: 0 ms
+
+                                                                                        Range: 10~6000ms
+
+                                                              [OUT] A         Analog Processed Analog Data
+
+                                                              [OUT] D         Digital Processed Digital Data
+
+            Based on the waiting time, the current                                      Analog Data to be
+                                                              [IN] A          Analog
+            processing process is suspended, and until the                              Processed
+            waiting time is over, the component
+                                                                                        Digital Data to be
+            automatically forwards the input data (latest)    [IN] D          Digital
+                                                                                        Processed
+            to the output interface. This component can
+            be used to sample and filter high-frequency                                 Wait time.
+   Wait                                                                                 Unit: ms
+            data. The wait time should not be close to or
+                                                              [IN] T          Analog
+            greater than the timer period.                                              Default: 0 ms
+
+                                                                                        Range: 10~6000ms
+
+                                                              [OUT]A          Analog Processed Analog Data
+
+                                                              [OUT]D          Digital Processed Digital Data
+
+                                                                                        Regardless of ON/OFF,
+            Counts the number of times the input signal       [IN] Trigger    Digital
+                                                                                        they will be counted.
+Event Count has been triggered and updates the result to
+                                                                                        The number of times it
+            the output interface                              [OUT] Counts    Analog
+                                                                                        was triggered.
+
+            Starting from 0, the data from input interface    [IN] Analog     Analog /
+  Add Up
+            is accumulated.                                   [OUT] Results   Analog /
+
+
+
+                                                                                                   - 103 -
+                                           User Manual for MThings
+
+  Name                             Function                        Interface   Type      Interface Introduction
+
+              Multiple analog data inputs are provided, and
+Data Mux      the most recently triggered analog data is       [IN]/[OUT]      Analog /
+              output.
+
+              Multiple digital data inputs are provided and
+ Bit Mux      the most recently triggered digital data is      [IN]/[OUT]      Digital /
+              output.
+
+                                                                                         Analog data to be
+                                                               [IN] X          Analog
+              Provide analog data caching function, which is                             cached
+Data Buffer
+              updated to the output interface according to
+ (BUFFER)                                                      [IN] sw         Digital Output switch
+              the switch status.
+                                                               [OUT] Y         Analog Output analog data
+
+                                                                                         Digital Data to be
+              Digital-to- Analog conversion, which converts [IN] Digital       Digital
+   DAC                                                                                   Processed
+              digital data into analog data.
+                                                               [OUT] Analog    Analog 0、1
+
+              Continuously recognizes three analog inputs      [IN] X1         Analog /
+              and flushes the maximum value to the output
+                                                               [IN] X2         Analog /
+              interface. There is at least one valid input.
+   High                                                        [IN] X3         Analog /
+
+ Selector
+
+   (>H)
+                                                               [OUT] Y         Analog /
+
+
+
+
+              Three analog inputs are continuously             [IN] X1         Analog /
+              recognized, and the minimum value is flushed
+                                                               [IN] X2         Analog /
+              to the output interface. There is at least one
+              valid input.                                     [IN] X3         Analog /
+   Low
+ Selector
+
+   (>L)
+                                                               [OUT] Y         Analog /
+
+
+
+
+ Median       Three analog inputs are continuously             [IN] X1         Analog /
+
+
+
+                                                                                                   - 104 -
+                                          User Manual for MThings
+
+  Name                          Function                          Interface   Type      Interface Introduction
+
+ Selector   recognized, and the intermediate values are        [IN] X2        Analog /
+  (MED)     flushed to the output interface. All three
+                                                               [IN] X3        Analog /
+            channels must have valid inputs at the same
+            time, otherwise there is no output.
+
+
+
+
+                                                               [OUT] Y        Analog /
+
+
+
+
+                                                               [IN] sw        Digital
+            A digital switch controls two input analog
+ Analog
+            data, and outputs analog data:                     [IN] X1        Analog /
+ Switch
+            sw=0：Y=X1                                          [IN] X2        Analog /
+ (SW_A)
+            sw=1：Y=X2
+                                                               [OUT] Y        Analog /
+
+                                                               [IN] sw        Digital
+            A digital switch controls two digital inputs and
+ Digital
+            outputs:                                           [IN] X1        Digital /
+ Switch
+            sw=0：Y=X1                                          [IN] X2        Digital /
+ (SW_D)
+            sw=1：Y=X2
+                                                               [OUT] Y        Digital /
+
+            Logic gate processing                              [IN] X1        Digital /
+  AND
+            Y = X1 AND X2                                      [IN] X2        Digital /
+   OR
+            Y = X1 OR X2
+  NOT
+            Y = NOT X1                                         [OUT] Y        Digital /
+  XOR
+            Y = X1 XOR X2
+
+            The component responds to the input signal         [IN]S          Digital Set Signal
+            according to a predetermined Set Signal
+                                                               [IN]R          Digital Reset Signal
+            priority rule. Even if a lower priority "reset
+
+   SET      signal" is present at the same time, the
+
+Preference components ensure that the signals are
+           output in order of importance, ensuring the
+  (SET-P)
+                                                               [OUT]Y         Digital Output Signal
+           safety of the process.
+
+                   S                R                 Y
+
+                   0                0               Keep
+
+
+
+                                                                                                   - 105 -
+                                          User Manual for MThings
+
+  Name                          Function                          Interface   Type     Interface Introduction
+
+                   0                1                 0
+
+                   1                0                 1
+
+                   1                1                 1
+
+            The component responds to the input signal         [IN]S          Digital Set Signal
+            according to a predetermined Set Signal
+                                                               [IN]R          Digital Reset Signal
+            priority rule. Even if a lower priority "set
+            signal" is present at the same time, the
+            components ensure that the signals are
+
+  RESET     output in order of importance, ensuring the
+
+Preference safety of the process.
+
+(RESET-P)          S                R                 Y
+                                                               [OUT]Y         Digital Output Signal
+                   0                0               Keep
+
+                   0                1                 0
+
+                   1                0                 1
+
+                   1                1                 0
+
+            Detects the input digital quantity X, identifies                           Delay time.
+            the rising (0->1), and delays the output of the                            Unit: ms
+            rising edge according to the set time T. If the    [IN]T          Analog
+                                                                                       Default: Invalid
+            input digits do not remain high in T time, the
+                                                                                       Range: 0~6000ms
+            rising edge is not output.
+                                                               [IN]X          Digital /
+On Delay
+
+
+
+
+                                                               [OUT]Y         Digital /
+
+
+
+
+                                                                                       Delay time.
+            Detects the input digital X, identifies the
+                                                                                       Unit: ms
+            falling (1->0), and delays the output falling
+                                                               [IN]T          Analog
+Off Delay   edge according to the set time T. If the input                             Default: Invalid
+
+            digits do not remain low in T time, the falling                            Range: 0~6000ms
+            edge is not output.
+                                                               [IN]X          Digital /
+
+
+
+
+                                                                                                  - 106 -
+                                          User Manual for MThings
+
+  Name                           Function                          Interface   Type      Interface Introduction
+
+
+
+
+                                                                [OUT]Y         Digital /
+
+
+
+
+             The input digit X is detected, the rising (0->1)                            Delay time
+             is identified, and the output immediately                                   Unit: ms
+             follows the rising edge. According to the set      [IN]T          Analog
+                                                                                         Default: Invalid
+             time T, the falling edge is output after
+                                                                                         Range: 0~6000ms
+             expiration. If the input signal has a falling
+           edge in T time, the falling edge is immediately [IN]X               Digital
+Wipe Delay output.
+
+
+
+
+                                                                [OUT]Y         Digital
+
+
+
+
+             The input digital X is detected, the rising                                 Pulse duration
+             (0->1) is identified, and the level pulse signal                            Unit: ms
+             is immediately output, and the pulse duration [IN]T               Analog
+                                                                                         Default: Invalid
+             is consistent with the set time T.
+Trigger On                                                                               Range: 0~6000ms
+
+ (RISE-P)                                                       [IN]X          Digital /
+
+
+
+                                                                [OUT]Y         Digital /
+
+
+
+                                                                                         Pulse duration
+
+                                                                                         Unit: ms
+             Detects the input digital X, identifies the        [IN]T          Analog
+Trigger Off falling (1->0), and immediately outputs a level                              Default: Invalid
+
+ (FALL-P)    pulse signal with a pulse duration consistent                               Range: 0~6000ms
+
+             with the set time T.                               [IN]X          Digital /
+
+                                                                [OUT]Y         Digital /
+
+
+
+
+                                                                                                    - 107 -
+                                          User Manual for MThings
+
+  Name                            Function                         Interface   Type    Interface Introduction
+
+
+
+
+              Detects the input digital X, visualizes the ON   [IN]X           Digital /
+              and OFF status of the signal, and gives two
+                                                               [OUT]T          Digital X=1, T=1;
+              digital outputs (T, F).
+ Check Bit
+
+   (BIT)
+                                                               [OUT]F          Digital X=0, F=1;
+
+
+
+
+ Addition                                                      [IN]A           Analog /
+
+Subtraction                                                    [IN]B           Analog /
+              Basic Computing Component
+ Multipl.
+                                                               [OUT]R          Analog /
+ Division
+
+                                                               [IN]A           Analog /
+              Find the remainder operation：
+Mod (INT)                                                      [IN]B           Analog /
+              R=A%B
+                                                               [OUT]R          Analog /
+
+                                                               [IN]A           Analog /
+   Mod        Find the remainder operation：
+                                                               [IN]B           Analog /
+ (FLOAT)      R = mod (A, B)
+                                                               [OUT]R          Analog /
+
+                                                               [IN]x           Analog /
+   ABS        y = abs(x)
+                                                               [OUT]y          Analog /
+
+                                                               [IN]x           Analog /
+ Negative     y = -x
+                                                               [OUT]y          Analog /
+
+  sin(x)                                                       [IN]x           Analog /
+
+  cos(x)      Trigonometric functions, the input is radian
+  tan(x)      data.                                            [OUT]y          Analog /
+  cot(x)
+
+
+
+
+                                                                                                   - 108 -
+                                           User Manual for MThings
+
+  Name                            Function                           Interface   Type   Interface Introduction
+
+                                                                 [IN]x           Analog /
+  sqrt(x)     𝑦 = √𝑥
+                                                                 [OUT]y          Analog /
+
+                                                                 [IN]A           Analog /
+
+ pow (x, y)   𝑅 = 𝐴𝐵                                             [IN]B           Analog /
+
+                                                                 [OUT]R          Analog /
+
+                                                                 [IN]A           Analog /
+
+ log (x, y)   𝑅 = log 𝐴 𝐵                                        [IN]B           Analog /
+
+                                                                 [OUT]R          Analog /
+
+                                                                 [IN]x           Analog /
+ log10(x)     𝑦 = log10 𝑥
+                                                                 [OUT]y          Analog /
+
+                                                                 [IN]x           Analog /
+   ln(x)      𝑦 = log 𝑒 𝑥 或 𝑦 = ln (𝑥)
+                                                                 [OUT]y          Analog /
+
+                                                                 [IN]A           Analog /
+
+Comparator                                                       [IN]B           Analog /
+
+    (>)                                                          [OUT]T          Digital A>B，T=1;
+
+                                                                 [OUT]F          Digital A≤B，F=1;
+
+                                                                 [IN]A           Analog /
+              Compare two analog data and give two digital
+Comparator                                                       [IN]B           Analog /
+              results. It is generally used for branch
+   (>=)                                                          [OUT]T          Digital A≥B，T=1;
+              processing of control streams.
+                                                                 [OUT]F          Digital A<B，F=1;
+
+                                                                 [IN]A           Analog /
+
+Comparator                                                       [IN]B           Analog /
+
+    (=)                                                          [OUT]T          Digital A = B，T=1;
+
+                                                                 [OUT]F          Digital A != B，F=1;
+
+                                                                 [IN]A           Analog /
+              Three analog data are compared, and two
+Comparator
+              digital results are given. It is generally used for [IN]B          Analog /
+(Between)
+              branch processing of control streams.
+                                                                 [IN]C           Analog /
+
+
+
+
+                                                                                                 - 109 -
+                               User Manual for MThings
+
+Name                    Function                  Interface    Type   Interface Introduction
+
+                                               [OUT]T         Digital A ≤ C ≤ B，T=1;
+
+                                               [OUT]F         Digital C < A, C > B，F=1;
+
+
+
+
+       3.19      Data Gateway
+
+       The data gateway function provides protocol conversion and data
+       aggregation, which can achieve bidirectional conversion for different
+       channel types, protocol types, device addresses, register addresses, data
+       blocks, data types, and data lengths. This function requires authorization
+       before use.
+
+       MThings supports two modes for data gateway: transparent mode and
+       cache mode.
+
+       The transparent mode is simple configuration, but the delay is greater in
+       the north direction, which is constrained by the south direction. The
+       cache mode utilizes the polling function to directly respond to
+       northbound requests, decoupling north-south facilities, and achieving
+       more efficient asynchronous communication with northbound monitor.
+
+       By the "Bind Mode" in the slave device, it is possible to aggregate
+       multiple device data into a single slave device, significantly reducing the
+       number of requests for northbound monitor and improving polling
+       efficiency. This mode can achieve a wider range of data conversion
+       capabilities. Refer to Chapter 3.11 for configuration instructions.
+
+       The data flow diagrams in both modes are as follows:
+
+
+
+
+                                                                               - 110 -
+           User Manual for MThings
+
+
+
+Figure 61 Schematic diagram of transparent mode
+
+
+
+
+    Figure 62 Schematic diagram of cache mode
+
+
+
+
+                                                  - 111 -
+                       User Manual for MThings
+
+
+     3.19.1 Transparent Mode
+
+MThings supports the association of two different devices (master and
+salve) through transparent mode to achieve translation for channel,
+protocol, and device address.
+
+    Preparation:
+
+    1)   Create a master device in MThings and connect it to serial port
+         device;
+
+    2)   Create a new network channel in MThings to connect with
+         northbound monitor;
+
+    3)   Add slave device based on the new network channel;
+
+            Figure 63 Device Configuration in Transparent Mode
+
+
+
+
+    1.   Double click on the slave device.
+
+    2.   Double click on the binding mode and select the transparent
+         mode.
+
+    3.   Double click on the bind device.
+
+    4.   Select the bind device.
+
+
+
+                                                                   - 112 -
+                      User Manual for MThings
+
+
+After device association, the remote monitor can use Ethernet to access
+the devices from serial port through MThings.
+
+
+  NOTICE
+  The slave device in transparent mode may not be configured with
+  device data.
+
+
+
+
+                                                                 - 113 -
+                       User Manual for MThings
+
+
+     3.19.2 Cache Mode
+
+MThings supports the association of two different devices (master and
+salve) through cache mode to achieve translation for channel, protocol,
+and device address.
+
+Preparation:
+
+    1)   Create a master device in MThings and connect it to serial port
+         device;
+
+    2)   Create a new network channel in MThings to connect with
+         northbound monitor;
+
+    3)   Add slave device based on the new network channel;
+
+          Figure 64 Cache Mode Configuration and Device Binding
+
+
+
+
+    1.   Double click on the slave device.
+
+    2.   Double click on the bind mode and select the cache mode.
+
+    3.   Double click on the bind device.
+
+    4.   Select the bind device.
+
+
+
+
+                                                                  - 114 -
+                     User Manual for MThings
+
+
+
+NOTICE
+The slave in cache mode may not configure device data, but its
+associated master device should configure valid data and start
+polling.
+
+In cache mode, if the request data of the northbound software
+exceeds the configuration of the southbound device, it will
+automatically fill in 0.
+
+
+
+
+                                                              - 115 -
+                       User Manual for MThings
+
+
+3.20       MQTT Switch
+
+    For the data collection and instruction transmission requirements of
+IoT devices, MQTT Switch provides functions such as multi-link, multi-
+topic, multi-device, long link, multi-version compatibility, JSON
+serialization, custom reporting (interval, data), ZIP compression, and
+dual-channel subscription and publish, so as to realize the efficient
+conversion between MQTT and MODBUS (all types of protocols).
+
+                       Figure 65 MQTT Switch Menu
+
+
+
+
+                   Figure 66 Main Page of MQTT Switch
+
+       1                         8                4                 7
+
+
+       2                                      5       6
+                           3
+
+
+
+
+                                                                        - 116 -
+                  User Manual for MThings
+
+
+1. Add or remove links.
+
+2. List of links, double-click to modify the link name.
+
+3. MQTT link parameters.
+
+4. Add or remove publishing topics.
+
+5. Name of the Publish topic, double-click to modify it.
+
+6. The entry of publishing topic parameters.
+
+7. Add or remove Subscription topics.
+
+8. Start or close the MQTT link.
+
+              Figure 67 Publish topic configuration
+
+
+                             2                            6
+
+       1                3          4         5
+
+
+
+
+1. Modify the key parameters of Publish topic.
+
+2. Add or remove custom fields.
+
+3. Double-click to modify the field type.
+
+4. Double-click to modify the field name.
+
+5. Double-click to modify the field value.
+
+6. Add or remove device data.
+
+    Figure 68 Schematic Format of Publish Data (JSON-Name)
+
+
+
+
+                                                              - 117 -
+                User Manual for MThings
+
+
+
+
+  Figure 69 Schematic Format of Publish Data (JSON-Addr)
+
+
+
+
+Figure 70 Schematic Format of Subscription Data (JSON-Name)
+
+
+
+
+                                                              - 118 -
+               User Manual for MThings
+
+
+
+
+Figure 71 Schematic Format of Subscription Data (JSON-Addr)
+
+
+
+
+              Table 18   Data Type Definitions
+
+      Data Block                  DataType
+
+      Coil Status                      0
+
+     Discrete Input                    1
+
+        Holding
+                                       2
+        Register
+
+     Input Register                    3
+
+
+
+
+                                                              - 119 -
+                       User Manual for MThings
+
+
+3.21      Alarm Data
+
+Alarm Data page provides multiple functions, including alarm
+generation, storage, configuration, display, export, voice prompts, and
+supports the generation across multiple conditions and devices. The
+reference standards include "IEC 62682:2014" and "GB/T 41261-2022
+Process Industrial Alarm System Management". This function requires
+authorization before use.
+
+                Figure 72 Schematic diagram of alarm data
+
+
+
+
+    1.    Switching alarm record types, active alarms are divided into
+          two types: "need to confirm" and "no need to confirm". Active
+          alarm records that need to be confirmed must have been
+          restored and confirmed before they can be converted into
+          history alarms.
+
+    2.    Modify alarm configuration.
+
+    3.    Clear all alarm records with one-click.
+
+
+
+                                                                  - 120 -
+                      User Manual for MThings
+
+
+  4.   Confirm all active alarms that need to be confirmed with one-
+       click.
+
+  5.   Export all alarm records in CSV format.
+
+  6.   After double clicking, confirm a certain active alarm record.
+
+  7.   Flip and jump alarm display table page
+
+           Figure 73 Schematic diagram of alarm configuration
+
+
+
+
+  1.   Add alarm configuration.
+
+  2.   Remove the selected alarm configuration.
+
+  3.   Edit alarm types to classify different alarm configurations.
+
+  4.   Alarm configuration record table.
+
+  5.   Alarm condition configuration dialog box.
+
+        Table 19 Definition of Alarm Configuration Parameter
+
+   Items                              Instructions
+
+Name             Specify the alarm name.
+
+
+
+                                                                 - 121 -
+                         User Manual for MThings
+
+
+                    Select the type of current row based on the pre-
+Type
+                    configured alarm types.
+
+Level               Optional: Major, Minor, Tip.
+
+                    After checking the option, different voice prompts
+Voice
+                    will be issued based on the alarm level.
+
+                    Specify whether the current alarm requires user
+Confirm
+                    confirmation.
+
+                    To prevent alarm jitter, set an alarm trigger delay,
+Trigger Delay       and generate active alarm records only after the
+(sec.)              alarm conditions are established within that time
+                    period.
+
+                    To prevent alarm jitter, set an alarm recovery delay,
+Recovery
+                    the active alarm be marked as recovered, only after
+Delay (sec.)
+                    the alarm condition persists for that time period.
+
+Cond. 1st           Alarm triggering condition 1st.
+
+                    The logical relationship between alarm triggering
+Relation
+                    conditions 1st and 2nd.
+
+Cond. 2nd           Alarm triggering condition 2nd.
+
+Relation            The logical relationship between alarm triggering
+                    conditions 2nd and 3rd.
+Cond. 3rd           Alarm triggering condition 3rd.
+
+
+
+               Table 20 Definition of Alarm Condition Parameter
+
+     Items                               Instructions
+
+Enable              After turning on this switch, enable this trigger
+
+
+                                                                        - 122 -
+                    User Manual for MThings
+
+
+                condition.
+
+Device          Select the associated device for judgment value.
+
+                Select the associated device data for judgment
+Data
+                value.
+
+                Select the trigger type, which can be greater than,
+                greater than or equal to, equal to, not equal to, less
+Trigger Mode
+                than or equal to, less than, between, and not
+                between.
+
+Dynamic         Turn on the switch to select other device data as the
+Threshold       threshold
+
+Des. Device 1   Select device as threshold 1
+
+Des. Data 1     Select data as threshold 1
+
+                Select device as threshold 2
+
+Des. Device 2   Only applies to the "between" and "not between"
+                Trigger Mode.
+
+                Select data as threshold 2
+
+Des. Data 2     Only applies to the "between" and "not between"
+                Trigger Mode.
+
+                The condition threshold matched with the triggering
+Threshold 1
+                method.
+
+                The amplitude of the deviation when the conditions
+                are not met.
+Ret. Diff. 1
+                The Trigger Mode of “equal to” and “not equal
+                to” does not take effect.
+
+Threshold 2     Only applies to the "between" and "not between"
+
+
+                                                                 - 123 -
+                   User Manual for MThings
+
+
+               Trigger Mode.
+
+               Only applies to the "between" and "not between"
+Ret. Diff. 2
+               Trigger Mode.
+
+
+
+
+                                                            - 124 -
+                       User Manual for MThings
+
+
+3.22       Custom Request
+
+MThings supports users to send custom messages based on the master
+device, which must comply with the MODBUS protocol requirements.
+
+Users only need to fill in the PDU section of the message, and MThings
+automatically adapts to the protocol type used by the device, adding the
+beginning and end of the message, and finally sending the complete
+message.
+
+The MThings custom function supports statistical packet request delay
+time and continuous curve monitoring delay time, which can be used to
+observe the performance and reliability of the slave.
+
+
+
+
+  NOTICE
+  The custom request function only serves the master and can use
+  standard or custom function codes.
+
+  Before customizing the request operation, please confirm whether
+  the current device is correct in the device list on the left.
+
+
+
+               Figure 74 Schematic diagram of custom request
+
+
+
+
+    1.     Click on the "Custom" in main menu to enter the custom
+
+                                                                  - 125 -
+                     User Manual for MThings
+
+
+      request page.
+
+2.    Click and select master device.
+
+3.    Click the “Add” button to create a new custom request row.
+
+4.    Click the “Remove” button to delete the selected custom
+      request row.
+
+5.    Click the "Curve" button to open the "Real-time Data Curve
+      Viewer" to view the delay time curve data.
+
+6.    Click the “Send” button to send the selected row of custom
+      request.
+
+7.    If user need to send in a loop, check “Send by Loop”.
+
+8.    Select rows for “Remove”, “Send”.
+
+9.    Name for one row of custom message.
+
+10.   Input PDU of custom message.
+
+11.   Display the delay time between custom requests and
+      responses, which cannot be edited.
+
+12.   The timeout period for custom requests on the current row
+      can be configured, which is the maximum allowed reply time.
+      Exceeding this time will result in a request timeout.
+
+13.   The custom request and response interval for the current line
+      can be configured, and the next request can only be initiated
+      after the interval has ended.
+
+14.   After checking, the software will monitor the delay time of the
+      custom request for this row as a long-term data curve.
+
+
+
+
+                                                               - 126 -
+                      User Manual for MThings
+
+
+3.23     Count Message
+
+MThings supports statistics of message between master and slave
+devices during communication.
+
+    1.   By distinguishing various transmission and reception
+         situations, accurately calculating packet loss rates and
+         segmenting anomaly types.
+
+    2.   Support curve monitoring of packet loss numbers for users to
+         identify packet loss patterns.
+
+    3.   Support count in different way: channel and device. User can
+         view the total data under the channel and the statistical data
+         of each device at the same time.
+
+             Figure 75 Schematic diagram of count message
+
+
+
+
+    1.   Click on the "Count" in main menu to enter the count message
+         page.
+
+    2.   When the software starts, this function is turned off by default,
+         and user need to click the "Start" button to start it.
+
+    3.   Switch the count way, divided into device and channel. When
+
+
+                                                                    - 127 -
+                          User Manual for MThings
+
+
+          selecting device, the data table includes the results of all
+          devices. When selecting channel, the data table includes the
+          results of all channels.
+
+   4.     Click the “Reset” button, all count data will be reset to 0, and
+          a recount will begin.
+
+   5.     Click the "Curve" button to open the " Real-time Data Curve
+          Viewer" to view the loss packets curve.
+
+   6.     Check "Auto Update" to continuously refresh the data in the
+          table. Otherwise, the data in the table will be temporarily
+          refreshed.
+
+   7.     Select the object that requires continuous curve monitoring of
+          loss packets.
+
+                Table 21 Definition of Count Message Table
+
+    Items                               Instructions
+
+Normal Send        Successfully send message.
+
+Normal Recv        Received normal master request or slave reply.
+
+                   Only applicable to master.
+
+Loss Rate          Loss Rate (%) = 100 * (Normal Send - Normal Recv -
+                   Reply Error)/ Normal Send
+
+Failed Send        Due to abnormal channel, data cannot be sent out.
+
+Reply Error        Slave replies abnormal frames (function code+0X80)
+
+Timeout            No normal response frame received from the slave.
+
+Frame Error        The received data cannot be parsed properly.
+
+                   The received message has the following verification
+Check Error
+                   error: CRC, LRC, frame number, protocol type.
+
+                                                                     - 128 -
+                    User Manual for MThings
+
+
+
+
+NOTICE
+There must be device communication messages during the count
+process, and packet capture process are not supported.
+
+If an abnormal message appears in the channel and its device
+address cannot be identified, such abnormal messages will be
+classified as "other" devices.
+
+It is recommended to store the original message during the
+count process for problem analysis.
+
+
+
+
+                                                             - 129 -
+                       User Manual for MThings
+
+
+3.24      Assist
+
+MThings provides multiple tools to assist in advanced data analysis.
+                   Figure 76 Schematic diagram of tools
+
+
+
+
+    1.    Click on the "Assist" in main menu to enter the tools page.
+
+    2.    The conversion between epoch seconds and standard time
+          (UTC) supports individual modifications and automatic
+          synchronization.
+
+    3.    Different types of numerical conversions, support individual
+          modifications and automatic synchronization.
+
+    4.    Input the byte stream or string to be analyzed.
+
+    5.    Click the "String" button to convert the input stream into
+          string format. For example, "31 32 33 34 35 36 37 38 39 30"
+          can be converted to "1234567890".
+
+    6.    Click the "Bytes" button to convert the input string into byte
+          stream. For example, the string "1234567890" can be
+
+                                                                   - 130 -
+                   User Manual for MThings
+
+
+      converted to "31 32 33 34 35 36 37 38 39 30".
+
+7.    Click the "CRC/Size" button to calculate the number of CRC16
+      and bytes number, and the results are displayed below.
+
+8.    Display the calculation results of the byte stream and imported
+      files.
+
+9.    Click the "Import" button to import a binary file. The software
+      will analyze the byte length and total CRC16 of the file, and
+      the results will be displayed above.
+
+10.   Click the "Export" button, and the software will convert the
+      imported file into HEX stream file.
+
+
+
+
+                                                               - 131 -
+                      User Manual for MThings
+
+
+3.25      About
+
+About page provides software version, change records, copyright notices,
+
+and contact information.
+               Figure 77 Schematic diagram of About page
+
+
+
+
+    1.   Click on the "About" in main menu to enter the About page.
+
+    2.   Current version, key information for problem feedback.
+
+    3.   Current version build time, key information for problem
+         feedback.
+
+    4.   Copyright Notice.
+
+    5.   Click the button to view Official Website.
+
+    6.   Click the button to view the records of changes in historical
+         versions.
+
+    7.   If user need to communicate feedback and obtain information
+         as soon as possible, please contact me by Webchat.
+
+
+                                                                   - 132 -
+                      User Manual for MThings
+
+
+
+4 Contact Us
+
+Email: mthings2023@163.com
+Official Website: gulink.cn\en
+ChangNian (Shanghai) Technology Development Co., Ltd
+
+
+
+
+                                                       - 133 -
+                      User Manual for MThings
+
+
+
+5 Copyright Notice
+
+All rights reserved © ChangNian (Shanghai) Technology
+Development Co., Ltd. All rights reserved.
+MThings is independently created by ChangNian (Shanghai)
+Technology Development Co., Ltd.
+We have applied for trademark patents to the State Administration
+of Trademarks, and applied for multiple invention patents and
+software copyrights to the State Intellectual Property Office.
+
+The trademark        and "MThings" trademarks used in this manual
+belong to ChangNian (Shanghai) Technology Development Co., Ltd.
+All other trademarks or registered trademarks mentioned in this
+manual belong to their respective owners.
+
+
+Software Authorization
+Prohibit copying the design of software UI and function.
+Prohibit disassemble, decryption, or other operations that disrupt
+the original program developed by our company.
+
+
+
+
+                                                                 - 134 -
+

@@ -1,0 +1,10 @@
+-I
+F:/mine/code/qt/com_studio/build-qt-mingw2
+-I
+E:/QT/6.6.3/mingw_64/./qml
+--resource
+F:/mine/code/qt/com_studio/build-qt-mingw2/.rcc/qmake_CommStudio.qrc
+--resource
+F:/mine/code/qt/com_studio/build-qt-mingw2/.rcc/CommStudio_raw_qml_0.qrc
+--module
+CommStudio

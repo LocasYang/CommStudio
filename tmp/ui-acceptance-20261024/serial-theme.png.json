@@ -1,0 +1,57 @@
+{
+    "channelOpen": false,
+    "height": 700,
+    "modbusPointDetailsToggle": {
+        "height": 28,
+        "visible": false,
+        "width": 28,
+        "x": 850,
+        "y": 190
+    },
+    "modbusPointPanel": {
+        "height": 0,
+        "visible": false,
+        "width": 87,
+        "x": 380,
+        "y": 131
+    },
+    "modbusPointToolbar": {
+        "height": 49,
+        "visible": false,
+        "width": 85,
+        "x": 381,
+        "y": 180
+    },
+    "modbusTablePane": {
+        "height": 0,
+        "visible": false,
+        "width": 85,
+        "x": 381,
+        "y": 229
+    },
+    "modbusTrafficDock": {
+        "height": 180,
+        "visible": false,
+        "width": 87,
+        "x": 380,
+        "y": 145
+    },
+    "modbusTreePanel": {
+        "height": 194,
+        "visible": false,
+        "width": 272,
+        "x": 94,
+        "y": 131
+    },
+    "navigationCollapsed": true,
+    "navigationRail": {
+        "height": 609,
+        "visible": true,
+        "width": 72,
+        "x": 0,
+        "y": 65
+    },
+    "points": 3,
+    "polling": false,
+    "width": 1100
+}

@@ -1,0 +1,11 @@
+F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudio_autogen/include/../I5UM235HFU/moc_bluetoothmanager.cpp.json
+F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudio_autogen/include/../I5UM235HFU/moc_modbusmanager.cpp.json
+F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudio_autogen/include/../I5UM235HFU/moc_modbusworkspace.cpp.json
+F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudio_autogen/include/../I5UM235HFU/moc_networkmanager.cpp.json
+F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudio_autogen/include/../I5UM235HFU/moc_serialmanager.cpp.json
+F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudio_autogen/include/../I5UM235HFU/moc_studio.cpp.json
+F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudio_autogen/include/../I5UM235HFU/moc_toolboxmanager.cpp.json
+F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudio_autogen/include/../M4YTXQ7V2H/moc_modbusdevicemodel.cpp.json
+F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudio_autogen/include/../M4YTXQ7V2H/moc_modbuspointmodel.cpp.json
+F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudio_autogen/include/../PRMOGMWJPH/moc_trafficmodel.cpp.json
+F:/mine/code/qt/com_studio/build-qt-mingw2/CommStudio_autogen/include/../UVLADIE3JM/moc_windowchrome.cpp.json

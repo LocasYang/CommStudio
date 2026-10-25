@@ -45,7 +45,7 @@ Item {
             spacing: 10
 
             Text {
-                text: "串口调试"
+                text: I18n.t("Serial", "串口调试")
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily
                 font.pixelSize: 19
@@ -53,13 +53,15 @@ Item {
             }
 
             StatusPill {
-                text: SerialManager.reconnecting ? "重连中" : root.connected ? "已连接" : "未连接"
+                text: SerialManager.reconnecting ? I18n.t("Reconnecting", "重连中")
+                                                   : root.connected ? I18n.t("Connected", "已连接") : I18n.t("Disconnected", "未连接")
                 accent: SerialManager.reconnecting ? Theme.warning
                                                     : root.connected ? Theme.success : Theme.textTertiary
             }
 
             StatusPill {
-                text: root.configLocked ? "🔒 配置已锁定" : "🔓 配置可修改"
+                text: root.configLocked ? I18n.t("🔒 Configuration locked", "🔒 配置已锁定")
+                                        : I18n.t("🔓 Configuration editable", "🔓 配置可修改")
                 accent: root.configLocked ? Theme.warning : Theme.textSecondary
                 dot: false
                 scaleFactor: 0.86
@@ -67,7 +69,7 @@ Item {
 
             StatusPill {
                 visible: SerialManager.timerActive
-                text: "定时发送中"
+                text: I18n.t("Timed send active", "定时发送中")
                 accent: Theme.warning
                 dot: false
                 scaleFactor: 0.9
@@ -102,7 +104,7 @@ Item {
                         spacing: 7
 
                     Text {
-                        text: "串口配置"
+                        text: I18n.t("Serial configuration", "串口配置")
                         color: Theme.textPrimary
                         font.family: Theme.fontFamily
                         font.pixelSize: 13
@@ -138,18 +140,18 @@ Item {
                                 for (let i = 0; i < infos.length; ++i)
                                     if (infos[i].name === name)
                                         return i
-                                return infos.length > 0 ? 0 : -1
+                                return -1
                             }
                         }
 
                         AppButton {
                             compact: true
                             textPixelSize: 12
-                            text: "刷新"
+                            text: I18n.t("Refresh", "刷新")
                             enabled: !root.configLocked
                             onClicked: {
                                 SerialManager.refreshPorts()
-                                root.toastRequested("已刷新端口列表（支持热插拔自动检测）", true)
+                                root.toastRequested(I18n.t("Port list refreshed (hot-plug detection supported)", "已刷新端口列表（支持热插拔自动检测）"), true)
                             }
                         }
                     }
@@ -164,13 +166,13 @@ Item {
                     }
 
                     FormRow {
-                        label: "波特率"
+                        label: I18n.t("Baud rate", "波特率")
                         AppComboBox {
                             id: baudCombo
                             enabled: !root.configLocked
                             Layout.fillWidth: true
                             model: ["9600", "19200", "38400", "57600", "115200",
-                                    "230400", "460800", "921600", "自定义"]
+                                    "230400", "460800", "921600", I18n.t("Custom", "自定义")]
                             currentIndex: baudCombo.indexForRate(SerialManager.baudRate)
                             onActivated: (index) => {
                                 if (index === 9)
@@ -188,7 +190,7 @@ Item {
 
                     FormRow {
                         visible: baudCombo.currentIndex === 9
-                        label: "自定义"
+                        label: I18n.t("Custom", "自定义")
                         AppTextField {
                             Layout.fillWidth: true
                             mono: true
@@ -199,7 +201,7 @@ Item {
                     }
 
                     FormRow {
-                        label: "数据位"
+                        label: I18n.t("Data bits", "数据位")
                         AppComboBox {
                             enabled: !root.configLocked
                             Layout.fillWidth: true
@@ -210,11 +212,13 @@ Item {
                     }
 
                     FormRow {
-                        label: "校验位"
+                        label: I18n.t("Parity", "校验位")
                         AppComboBox {
                             enabled: !root.configLocked
                             Layout.fillWidth: true
-                            model: ["无 (None)", "偶 (Even)", "奇 (Odd)", "标记 (Mark)", "空格 (Space)"]
+                            model: [I18n.t("None", "无 (None)"), I18n.t("Even", "偶 (Even)"),
+                                    I18n.t("Odd", "奇 (Odd)"), I18n.t("Mark", "标记 (Mark)"),
+                                    I18n.t("Space", "空格 (Space)")]
                             currentIndex: ["none", "even", "odd", "mark", "space"]
                                             .indexOf(SerialManager.parity)
                             onActivated: (index) => SerialManager.parity =
@@ -223,7 +227,7 @@ Item {
                     }
 
                     FormRow {
-                        label: "停止位"
+                        label: I18n.t("Stop bits", "停止位")
                         AppComboBox {
                             enabled: !root.configLocked
                             Layout.fillWidth: true
@@ -234,11 +238,11 @@ Item {
                     }
 
                     FormRow {
-                        label: "流控"
+                        label: I18n.t("Flow control", "流控")
                         AppComboBox {
                             enabled: !root.configLocked
                             Layout.fillWidth: true
-                            model: ["无", "RTS/CTS", "XON/XOFF"]
+                            model: [I18n.t("None", "无"), "RTS/CTS", "XON/XOFF"]
                             currentIndex: ["none", "rtscts", "xonxoff"].indexOf(SerialManager.flowControl)
                             onActivated: (index) => SerialManager.flowControl =
                                              ["none", "rtscts", "xonxoff"][index]
@@ -246,7 +250,8 @@ Item {
                     }
 
                     AppCheckBox {
-                        text: "断开后自动重连（0.5s → 5s 退避）"
+                        Layout.fillWidth: true
+                        text: I18n.t("Auto reconnect after disconnect (0.5s → 5s backoff)", "断开后自动重连（0.5s → 5s 退避）")
                         checked: SerialManager.autoReconnect
                         onToggled: SerialManager.autoReconnect = checked
                     }
@@ -254,7 +259,7 @@ Item {
                     Text {
                         Layout.fillWidth: true
                         visible: root.configLocked
-                        text: "连接期间通信参数只读，断开后可修改"
+                        text: I18n.t("Communication parameters are read-only while connected.", "连接期间通信参数只读，断开后可修改")
                         color: Theme.warning
                         font.family: Theme.fontFamily
                         font.pixelSize: 10
@@ -263,15 +268,15 @@ Item {
 
                     AppButton {
                         Layout.fillWidth: true
-                        text: root.connected ? "断开连接" : "打开串口"
+                        text: root.connected ? I18n.t("Disconnect", "断开连接") : I18n.t("Open serial port", "打开串口")
                         variant: root.connected ? "danger" : "primary"
-                        onClicked: SerialManager.open()
+                        onClicked: SerialManager.openConnection()
                     }
 
                     Rectangle { Layout.fillWidth: true; height: 1; color: Theme.divider }
 
                     Text {
-                        text: "控制线 / 引脚"
+                        text: I18n.t("Control lines / pins", "控制线 / 引脚")
                         color: Theme.textPrimary
                         font.family: Theme.fontFamily
                         font.pixelSize: 13
@@ -327,7 +332,7 @@ Item {
 
                     Text {
                         Layout.fillWidth: true
-                        text: "发送区支持 HEX/文本与转义序列；文件以 4 KB 分块原始发送。"
+                        text: I18n.t("The send panel supports HEX/text and escape sequences; files are sent as raw 4 KB chunks.", "发送区支持 HEX/文本与转义序列；文件以 4 KB 分块原始发送。")
                         color: Theme.textTertiary
                         font.family: Theme.fontFamily
                         font.pixelSize: 10
@@ -354,14 +359,17 @@ Item {
                         model: SerialManager.traffic
                         emptyHint: root.connected
                                    ? SerialManager.configSummary + "\n\n等待串口数据 · RX 0 B"
-                                   : "尚未连接串口\n\n请选择端口并点击“打开串口”"
+                                   : I18n.t("Serial port is not connected\n\nChoose a port and select Open serial port.", "尚未连接串口\n\n请选择端口并点击“打开串口”")
                         onToastRequested: (text, ok) => root.toastRequested(text, ok)
                     }
                 }
 
                 AppCard {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 154
+                    // SendPanel 在串口页额外显示文件发送行；154 px 只能容纳
+                    // 常规三行布局，第四行会越过卡片底部。
+                    Layout.minimumHeight: 196
+                    Layout.preferredHeight: 196
                     padding: 0
                     cornerRadius: 7
 
@@ -369,8 +377,8 @@ Item {
                         anchors.fill: parent
                         manager: SerialManager
                         showFile: true
-                        sendLabel: root.connected ? "发送" : "发送（未连接）"
-                        hint: "Ctrl+Enter 快速发送 · ↑/↓ 切换历史"
+                        sendLabel: root.connected ? I18n.t("Send", "发送") : I18n.t("Send (offline)", "发送（未连接）")
+                        hint: I18n.t("Ctrl+Enter quick send · ↑/↓ history", "Ctrl+Enter 快速发送 · ↑/↓ 切换历史")
                         onToastRequested: (text, ok) => root.toastRequested(text, ok)
                     }
                 }

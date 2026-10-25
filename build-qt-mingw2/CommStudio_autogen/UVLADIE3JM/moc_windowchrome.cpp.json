@@ -1,0 +1,46 @@
+{
+    "classes": [
+        {
+            "className": "WindowChrome",
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "windowObject",
+                            "type": "QObject*"
+                        },
+                        {
+                            "name": "dark",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "captionColor",
+                            "type": "QColor"
+                        },
+                        {
+                            "name": "textColor",
+                            "type": "QColor"
+                        },
+                        {
+                            "name": "borderColor",
+                            "type": "QColor"
+                        }
+                    ],
+                    "name": "apply",
+                    "returnType": "bool"
+                }
+            ],
+            "object": true,
+            "qualifiedClassName": "WindowChrome",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "windowchrome.h",
+    "outputRevision": 68
+}

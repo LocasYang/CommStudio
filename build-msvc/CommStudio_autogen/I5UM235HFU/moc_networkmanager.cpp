@@ -61,7 +61,7 @@ constexpr auto qt_meta_stringdata_CLASSNetworkManagerENDCLASS = QtMocHelpers::st
     "toastRequested",
     "text",
     "ok",
-    "open",
+    "openConnection",
     "close",
     "send",
     "targetClientId",
@@ -80,6 +80,7 @@ constexpr auto qt_meta_stringdata_CLASSNetworkManagerENDCLASS = QtMocHelpers::st
     "traffic",
     "TrafficModel*",
     "mode",
+    "open",
     "interfaces",
     "bindAddress",
     "remoteHost",
@@ -105,7 +106,7 @@ constexpr auto qt_meta_stringdata_CLASSNetworkManagerENDCLASS = QtMocHelpers::st
 );
 #else  // !QT_MOC_HAS_STRING_DATA
 struct qt_meta_stringdata_CLASSNetworkManagerENDCLASS_t {
-    uint offsetsAndSizes[128];
+    uint offsetsAndSizes[130];
     char stringdata0[15];
     char stringdata1[12];
     char stringdata2[1];
@@ -129,7 +130,7 @@ struct qt_meta_stringdata_CLASSNetworkManagerENDCLASS_t {
     char stringdata20[15];
     char stringdata21[5];
     char stringdata22[3];
-    char stringdata23[5];
+    char stringdata23[15];
     char stringdata24[6];
     char stringdata25[5];
     char stringdata26[15];
@@ -148,28 +149,29 @@ struct qt_meta_stringdata_CLASSNetworkManagerENDCLASS_t {
     char stringdata39[8];
     char stringdata40[14];
     char stringdata41[5];
-    char stringdata42[11];
-    char stringdata43[12];
-    char stringdata44[11];
+    char stringdata42[5];
+    char stringdata43[11];
+    char stringdata44[12];
     char stringdata45[11];
     char stringdata46[11];
-    char stringdata47[14];
-    char stringdata48[13];
-    char stringdata49[10];
-    char stringdata50[15];
-    char stringdata51[16];
-    char stringdata52[8];
+    char stringdata47[11];
+    char stringdata48[14];
+    char stringdata49[13];
+    char stringdata50[10];
+    char stringdata51[15];
+    char stringdata52[16];
     char stringdata53[8];
     char stringdata54[8];
-    char stringdata55[14];
-    char stringdata56[11];
+    char stringdata55[8];
+    char stringdata56[14];
     char stringdata57[11];
-    char stringdata58[8];
+    char stringdata58[11];
     char stringdata59[8];
-    char stringdata60[7];
-    char stringdata61[12];
-    char stringdata62[15];
-    char stringdata63[10];
+    char stringdata60[8];
+    char stringdata61[7];
+    char stringdata62[12];
+    char stringdata63[15];
+    char stringdata64[10];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_CLASSNetworkManagerENDCLASS_t::offsetsAndSizes) + ofs), len 
@@ -198,47 +200,48 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSNetworkManagerENDCLASS_t qt_met
         QT_MOC_LITERAL(321, 14),  // "toastRequested"
         QT_MOC_LITERAL(336, 4),  // "text"
         QT_MOC_LITERAL(341, 2),  // "ok"
-        QT_MOC_LITERAL(344, 4),  // "open"
-        QT_MOC_LITERAL(349, 5),  // "close"
-        QT_MOC_LITERAL(355, 4),  // "send"
-        QT_MOC_LITERAL(360, 14),  // "targetClientId"
-        QT_MOC_LITERAL(375, 6),  // "sendTo"
-        QT_MOC_LITERAL(382, 4),  // "host"
-        QT_MOC_LITERAL(387, 4),  // "port"
-        QT_MOC_LITERAL(392, 16),  // "disconnectClient"
-        QT_MOC_LITERAL(409, 8),  // "clientId"
-        QT_MOC_LITERAL(418, 13),  // "joinMulticast"
-        QT_MOC_LITERAL(432, 5),  // "group"
-        QT_MOC_LITERAL(438, 14),  // "leaveMulticast"
-        QT_MOC_LITERAL(453, 14),  // "startTimerSend"
-        QT_MOC_LITERAL(468, 10),  // "intervalMs"
-        QT_MOC_LITERAL(479, 11),  // "repeatCount"
-        QT_MOC_LITERAL(491, 13),  // "stopTimerSend"
-        QT_MOC_LITERAL(505, 7),  // "traffic"
-        QT_MOC_LITERAL(513, 13),  // "TrafficModel*"
-        QT_MOC_LITERAL(527, 4),  // "mode"
-        QT_MOC_LITERAL(532, 10),  // "interfaces"
-        QT_MOC_LITERAL(543, 11),  // "bindAddress"
-        QT_MOC_LITERAL(555, 10),  // "remoteHost"
-        QT_MOC_LITERAL(566, 10),  // "remotePort"
-        QT_MOC_LITERAL(577, 10),  // "listenPort"
-        QT_MOC_LITERAL(588, 13),  // "autoReconnect"
-        QT_MOC_LITERAL(602, 12),  // "reuseAddress"
-        QT_MOC_LITERAL(615, 9),  // "broadcast"
-        QT_MOC_LITERAL(625, 14),  // "multicastGroup"
-        QT_MOC_LITERAL(640, 15),  // "multicastJoined"
-        QT_MOC_LITERAL(656, 7),  // "clients"
-        QT_MOC_LITERAL(664, 7),  // "framing"
-        QT_MOC_LITERAL(672, 7),  // "hexSend"
-        QT_MOC_LITERAL(680, 13),  // "escapeEnabled"
-        QT_MOC_LITERAL(694, 10),  // "lineEnding"
-        QT_MOC_LITERAL(705, 10),  // "replyRules"
-        QT_MOC_LITERAL(716, 7),  // "rxBytes"
-        QT_MOC_LITERAL(724, 7),  // "txBytes"
-        QT_MOC_LITERAL(732, 6),  // "rxRate"
-        QT_MOC_LITERAL(739, 11),  // "timerActive"
-        QT_MOC_LITERAL(751, 14),  // "timerRemaining"
-        QT_MOC_LITERAL(766, 9)   // "stateText"
+        QT_MOC_LITERAL(344, 14),  // "openConnection"
+        QT_MOC_LITERAL(359, 5),  // "close"
+        QT_MOC_LITERAL(365, 4),  // "send"
+        QT_MOC_LITERAL(370, 14),  // "targetClientId"
+        QT_MOC_LITERAL(385, 6),  // "sendTo"
+        QT_MOC_LITERAL(392, 4),  // "host"
+        QT_MOC_LITERAL(397, 4),  // "port"
+        QT_MOC_LITERAL(402, 16),  // "disconnectClient"
+        QT_MOC_LITERAL(419, 8),  // "clientId"
+        QT_MOC_LITERAL(428, 13),  // "joinMulticast"
+        QT_MOC_LITERAL(442, 5),  // "group"
+        QT_MOC_LITERAL(448, 14),  // "leaveMulticast"
+        QT_MOC_LITERAL(463, 14),  // "startTimerSend"
+        QT_MOC_LITERAL(478, 10),  // "intervalMs"
+        QT_MOC_LITERAL(489, 11),  // "repeatCount"
+        QT_MOC_LITERAL(501, 13),  // "stopTimerSend"
+        QT_MOC_LITERAL(515, 7),  // "traffic"
+        QT_MOC_LITERAL(523, 13),  // "TrafficModel*"
+        QT_MOC_LITERAL(537, 4),  // "mode"
+        QT_MOC_LITERAL(542, 4),  // "open"
+        QT_MOC_LITERAL(547, 10),  // "interfaces"
+        QT_MOC_LITERAL(558, 11),  // "bindAddress"
+        QT_MOC_LITERAL(570, 10),  // "remoteHost"
+        QT_MOC_LITERAL(581, 10),  // "remotePort"
+        QT_MOC_LITERAL(592, 10),  // "listenPort"
+        QT_MOC_LITERAL(603, 13),  // "autoReconnect"
+        QT_MOC_LITERAL(617, 12),  // "reuseAddress"
+        QT_MOC_LITERAL(630, 9),  // "broadcast"
+        QT_MOC_LITERAL(640, 14),  // "multicastGroup"
+        QT_MOC_LITERAL(655, 15),  // "multicastJoined"
+        QT_MOC_LITERAL(671, 7),  // "clients"
+        QT_MOC_LITERAL(679, 7),  // "framing"
+        QT_MOC_LITERAL(687, 7),  // "hexSend"
+        QT_MOC_LITERAL(695, 13),  // "escapeEnabled"
+        QT_MOC_LITERAL(709, 10),  // "lineEnding"
+        QT_MOC_LITERAL(720, 10),  // "replyRules"
+        QT_MOC_LITERAL(731, 7),  // "rxBytes"
+        QT_MOC_LITERAL(739, 7),  // "txBytes"
+        QT_MOC_LITERAL(747, 6),  // "rxRate"
+        QT_MOC_LITERAL(754, 11),  // "timerActive"
+        QT_MOC_LITERAL(766, 14),  // "timerRemaining"
+        QT_MOC_LITERAL(781, 9)   // "stateText"
     },
     "NetworkManager",
     "modeChanged",
@@ -263,7 +266,7 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSNetworkManagerENDCLASS_t qt_met
     "toastRequested",
     "text",
     "ok",
-    "open",
+    "openConnection",
     "close",
     "send",
     "targetClientId",
@@ -282,6 +285,7 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSNetworkManagerENDCLASS_t qt_met
     "traffic",
     "TrafficModel*",
     "mode",
+    "open",
     "interfaces",
     "bindAddress",
     "remoteHost",
@@ -391,29 +395,29 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSNetworkManagerENDCLASS[] = {
  // properties: name, type, flags
       39, 0x80000000 | 40, 0x00015409, uint(-1), 0,
       41, QMetaType::QString, 0x00015103, uint(0), 0,
-      23, QMetaType::Bool, 0x00015001, uint(1), 0,
-      42, QMetaType::QVariantList, 0x00015401, uint(-1), 0,
-      43, QMetaType::QString, 0x00015103, uint(2), 0,
-      44, QMetaType::QString, 0x00015103, uint(3), 0,
-      45, QMetaType::Int, 0x00015103, uint(4), 0,
-      46, QMetaType::Int, 0x00015103, uint(5), 0,
-      47, QMetaType::Bool, 0x00015103, uint(6), 0,
-      48, QMetaType::Bool, 0x00015103, uint(7), 0,
-      49, QMetaType::Bool, 0x00015103, uint(8), 0,
-      50, QMetaType::QString, 0x00015103, uint(9), 0,
-      51, QMetaType::Bool, 0x00015001, uint(1), 0,
-      52, QMetaType::QVariantList, 0x00015001, uint(10), 0,
-      53, QMetaType::QString, 0x00015103, uint(11), 0,
-      54, QMetaType::Bool, 0x00015103, uint(12), 0,
-      55, QMetaType::Bool, 0x00015103, uint(13), 0,
-      56, QMetaType::QString, 0x00015103, uint(14), 0,
-      57, QMetaType::QVariantList, 0x00015103, uint(15), 0,
-      58, QMetaType::LongLong, 0x00015001, uint(16), 0,
+      42, QMetaType::Bool, 0x00015001, uint(1), 0,
+      43, QMetaType::QVariantList, 0x00015401, uint(-1), 0,
+      44, QMetaType::QString, 0x00015103, uint(2), 0,
+      45, QMetaType::QString, 0x00015103, uint(3), 0,
+      46, QMetaType::Int, 0x00015103, uint(4), 0,
+      47, QMetaType::Int, 0x00015103, uint(5), 0,
+      48, QMetaType::Bool, 0x00015103, uint(6), 0,
+      49, QMetaType::Bool, 0x00015103, uint(7), 0,
+      50, QMetaType::Bool, 0x00015103, uint(8), 0,
+      51, QMetaType::QString, 0x00015103, uint(9), 0,
+      52, QMetaType::Bool, 0x00015001, uint(1), 0,
+      53, QMetaType::QVariantList, 0x00015001, uint(10), 0,
+      54, QMetaType::QString, 0x00015103, uint(11), 0,
+      55, QMetaType::Bool, 0x00015103, uint(12), 0,
+      56, QMetaType::Bool, 0x00015103, uint(13), 0,
+      57, QMetaType::QString, 0x00015103, uint(14), 0,
+      58, QMetaType::QVariantList, 0x00015103, uint(15), 0,
       59, QMetaType::LongLong, 0x00015001, uint(16), 0,
       60, QMetaType::LongLong, 0x00015001, uint(16), 0,
-      61, QMetaType::Bool, 0x00015001, uint(17), 0,
-      62, QMetaType::Int, 0x00015001, uint(17), 0,
-      63, QMetaType::QString, 0x00015001, uint(1), 0,
+      61, QMetaType::LongLong, 0x00015001, uint(16), 0,
+      62, QMetaType::Bool, 0x00015001, uint(17), 0,
+      63, QMetaType::Int, 0x00015001, uint(17), 0,
+      64, QMetaType::QString, 0x00015001, uint(1), 0,
 
        0        // eod
 };
@@ -517,7 +521,7 @@ Q_CONSTINIT const QMetaObject NetworkManager::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         QtPrivate::TypeAndForceComplete<bool, std::false_type>,
-        // method 'open'
+        // method 'openConnection'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'close'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
@@ -577,7 +581,7 @@ void NetworkManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 16: _t->statsChanged(); break;
         case 17: _t->timerChanged(); break;
         case 18: _t->toastRequested((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<bool>>(_a[2]))); break;
-        case 19: _t->open(); break;
+        case 19: _t->openConnection(); break;
         case 20: _t->close(); break;
         case 21: { QString _r = _t->send((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<qint64>>(_a[2])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = std::move(_r); }  break;

@@ -1,0 +1,82 @@
+{
+    "classes": [
+        {
+            "className": "ToolboxManager",
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "hexInput",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "checksums",
+                    "returnType": "QVariantMap"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "hexInput",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "analyzeHex",
+                    "returnType": "QVariantMap"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "value",
+                            "type": "double"
+                        },
+                        {
+                            "name": "type",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "endianness",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "encodeNumber",
+                    "returnType": "QVariantMap"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "text",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "textToHex",
+                    "returnType": "QString"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "hexInput",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "hexToText",
+                    "returnType": "QString"
+                }
+            ],
+            "object": true,
+            "qualifiedClassName": "ToolboxManager",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "toolboxmanager.h",
+    "outputRevision": 68
+}

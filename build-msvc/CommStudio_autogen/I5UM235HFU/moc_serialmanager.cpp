@@ -62,7 +62,7 @@ constexpr auto qt_meta_stringdata_CLASSSerialManagerENDCLASS = QtMocHelpers::str
     "text",
     "ok",
     "refreshPorts",
-    "open",
+    "openConnection",
     "close",
     "send",
     "startTimerSend",
@@ -84,6 +84,7 @@ constexpr auto qt_meta_stringdata_CLASSSerialManagerENDCLASS = QtMocHelpers::str
     "parity",
     "stopBits",
     "flowControl",
+    "open",
     "connecting",
     "configLocked",
     "reconnecting",
@@ -110,7 +111,7 @@ constexpr auto qt_meta_stringdata_CLASSSerialManagerENDCLASS = QtMocHelpers::str
 );
 #else  // !QT_MOC_HAS_STRING_DATA
 struct qt_meta_stringdata_CLASSSerialManagerENDCLASS_t {
-    uint offsetsAndSizes[138];
+    uint offsetsAndSizes[140];
     char stringdata0[14];
     char stringdata1[17];
     char stringdata2[1];
@@ -135,7 +136,7 @@ struct qt_meta_stringdata_CLASSSerialManagerENDCLASS_t {
     char stringdata21[5];
     char stringdata22[3];
     char stringdata23[13];
-    char stringdata24[5];
+    char stringdata24[15];
     char stringdata25[6];
     char stringdata26[5];
     char stringdata27[15];
@@ -157,29 +158,30 @@ struct qt_meta_stringdata_CLASSSerialManagerENDCLASS_t {
     char stringdata43[7];
     char stringdata44[9];
     char stringdata45[12];
-    char stringdata46[11];
-    char stringdata47[13];
+    char stringdata46[5];
+    char stringdata47[11];
     char stringdata48[13];
-    char stringdata49[14];
+    char stringdata49[13];
     char stringdata50[14];
-    char stringdata51[8];
-    char stringdata52[14];
-    char stringdata53[11];
-    char stringdata54[4];
+    char stringdata51[14];
+    char stringdata52[8];
+    char stringdata53[14];
+    char stringdata54[11];
     char stringdata55[4];
-    char stringdata56[7];
+    char stringdata56[4];
     char stringdata57[7];
     char stringdata58[7];
-    char stringdata59[6];
-    char stringdata60[8];
+    char stringdata59[7];
+    char stringdata60[6];
     char stringdata61[8];
-    char stringdata62[7];
-    char stringdata63[9];
-    char stringdata64[12];
-    char stringdata65[15];
-    char stringdata66[11];
-    char stringdata67[13];
-    char stringdata68[9];
+    char stringdata62[8];
+    char stringdata63[7];
+    char stringdata64[9];
+    char stringdata65[12];
+    char stringdata66[15];
+    char stringdata67[11];
+    char stringdata68[13];
+    char stringdata69[9];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_CLASSSerialManagerENDCLASS_t::offsetsAndSizes) + ofs), len 
@@ -209,51 +211,52 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSSerialManagerENDCLASS_t qt_meta
         QT_MOC_LITERAL(315, 4),  // "text"
         QT_MOC_LITERAL(320, 2),  // "ok"
         QT_MOC_LITERAL(323, 12),  // "refreshPorts"
-        QT_MOC_LITERAL(336, 4),  // "open"
-        QT_MOC_LITERAL(341, 5),  // "close"
-        QT_MOC_LITERAL(347, 4),  // "send"
-        QT_MOC_LITERAL(352, 14),  // "startTimerSend"
-        QT_MOC_LITERAL(367, 10),  // "intervalMs"
-        QT_MOC_LITERAL(378, 11),  // "repeatCount"
-        QT_MOC_LITERAL(390, 13),  // "stopTimerSend"
-        QT_MOC_LITERAL(404, 8),  // "sendFile"
-        QT_MOC_LITERAL(413, 4),  // "path"
-        QT_MOC_LITERAL(418, 9),  // "chunkSize"
-        QT_MOC_LITERAL(428, 14),  // "cancelFileSend"
-        QT_MOC_LITERAL(443, 9),  // "sendBreak"
-        QT_MOC_LITERAL(453, 10),  // "durationMs"
-        QT_MOC_LITERAL(464, 7),  // "traffic"
-        QT_MOC_LITERAL(472, 13),  // "TrafficModel*"
-        QT_MOC_LITERAL(486, 9),  // "portInfos"
-        QT_MOC_LITERAL(496, 8),  // "portName"
-        QT_MOC_LITERAL(505, 8),  // "baudRate"
-        QT_MOC_LITERAL(514, 8),  // "dataBits"
-        QT_MOC_LITERAL(523, 6),  // "parity"
-        QT_MOC_LITERAL(530, 8),  // "stopBits"
-        QT_MOC_LITERAL(539, 11),  // "flowControl"
-        QT_MOC_LITERAL(551, 10),  // "connecting"
-        QT_MOC_LITERAL(562, 12),  // "configLocked"
-        QT_MOC_LITERAL(575, 12),  // "reconnecting"
-        QT_MOC_LITERAL(588, 13),  // "configSummary"
-        QT_MOC_LITERAL(602, 13),  // "autoReconnect"
-        QT_MOC_LITERAL(616, 7),  // "hexSend"
-        QT_MOC_LITERAL(624, 13),  // "escapeEnabled"
-        QT_MOC_LITERAL(638, 10),  // "lineEnding"
-        QT_MOC_LITERAL(649, 3),  // "dtr"
-        QT_MOC_LITERAL(653, 3),  // "rts"
-        QT_MOC_LITERAL(657, 6),  // "pinCts"
-        QT_MOC_LITERAL(664, 6),  // "pinDsr"
-        QT_MOC_LITERAL(671, 6),  // "pinDcd"
-        QT_MOC_LITERAL(678, 5),  // "pinRi"
-        QT_MOC_LITERAL(684, 7),  // "rxBytes"
-        QT_MOC_LITERAL(692, 7),  // "txBytes"
-        QT_MOC_LITERAL(700, 6),  // "rxRate"
-        QT_MOC_LITERAL(707, 8),  // "peakRate"
-        QT_MOC_LITERAL(716, 11),  // "timerActive"
-        QT_MOC_LITERAL(728, 14),  // "timerRemaining"
-        QT_MOC_LITERAL(743, 10),  // "fileActive"
-        QT_MOC_LITERAL(754, 12),  // "fileProgress"
-        QT_MOC_LITERAL(767, 8)   // "fileRate"
+        QT_MOC_LITERAL(336, 14),  // "openConnection"
+        QT_MOC_LITERAL(351, 5),  // "close"
+        QT_MOC_LITERAL(357, 4),  // "send"
+        QT_MOC_LITERAL(362, 14),  // "startTimerSend"
+        QT_MOC_LITERAL(377, 10),  // "intervalMs"
+        QT_MOC_LITERAL(388, 11),  // "repeatCount"
+        QT_MOC_LITERAL(400, 13),  // "stopTimerSend"
+        QT_MOC_LITERAL(414, 8),  // "sendFile"
+        QT_MOC_LITERAL(423, 4),  // "path"
+        QT_MOC_LITERAL(428, 9),  // "chunkSize"
+        QT_MOC_LITERAL(438, 14),  // "cancelFileSend"
+        QT_MOC_LITERAL(453, 9),  // "sendBreak"
+        QT_MOC_LITERAL(463, 10),  // "durationMs"
+        QT_MOC_LITERAL(474, 7),  // "traffic"
+        QT_MOC_LITERAL(482, 13),  // "TrafficModel*"
+        QT_MOC_LITERAL(496, 9),  // "portInfos"
+        QT_MOC_LITERAL(506, 8),  // "portName"
+        QT_MOC_LITERAL(515, 8),  // "baudRate"
+        QT_MOC_LITERAL(524, 8),  // "dataBits"
+        QT_MOC_LITERAL(533, 6),  // "parity"
+        QT_MOC_LITERAL(540, 8),  // "stopBits"
+        QT_MOC_LITERAL(549, 11),  // "flowControl"
+        QT_MOC_LITERAL(561, 4),  // "open"
+        QT_MOC_LITERAL(566, 10),  // "connecting"
+        QT_MOC_LITERAL(577, 12),  // "configLocked"
+        QT_MOC_LITERAL(590, 12),  // "reconnecting"
+        QT_MOC_LITERAL(603, 13),  // "configSummary"
+        QT_MOC_LITERAL(617, 13),  // "autoReconnect"
+        QT_MOC_LITERAL(631, 7),  // "hexSend"
+        QT_MOC_LITERAL(639, 13),  // "escapeEnabled"
+        QT_MOC_LITERAL(653, 10),  // "lineEnding"
+        QT_MOC_LITERAL(664, 3),  // "dtr"
+        QT_MOC_LITERAL(668, 3),  // "rts"
+        QT_MOC_LITERAL(672, 6),  // "pinCts"
+        QT_MOC_LITERAL(679, 6),  // "pinDsr"
+        QT_MOC_LITERAL(686, 6),  // "pinDcd"
+        QT_MOC_LITERAL(693, 5),  // "pinRi"
+        QT_MOC_LITERAL(699, 7),  // "rxBytes"
+        QT_MOC_LITERAL(707, 7),  // "txBytes"
+        QT_MOC_LITERAL(715, 6),  // "rxRate"
+        QT_MOC_LITERAL(722, 8),  // "peakRate"
+        QT_MOC_LITERAL(731, 11),  // "timerActive"
+        QT_MOC_LITERAL(743, 14),  // "timerRemaining"
+        QT_MOC_LITERAL(758, 10),  // "fileActive"
+        QT_MOC_LITERAL(769, 12),  // "fileProgress"
+        QT_MOC_LITERAL(782, 8)   // "fileRate"
     },
     "SerialManager",
     "portInfosChanged",
@@ -279,7 +282,7 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSSerialManagerENDCLASS_t qt_meta
     "text",
     "ok",
     "refreshPorts",
-    "open",
+    "openConnection",
     "close",
     "send",
     "startTimerSend",
@@ -301,6 +304,7 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSSerialManagerENDCLASS_t qt_meta
     "parity",
     "stopBits",
     "flowControl",
+    "open",
     "connecting",
     "configLocked",
     "reconnecting",
@@ -417,30 +421,30 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSSerialManagerENDCLASS[] = {
       43, QMetaType::QString, 0x00015103, uint(4), 0,
       44, QMetaType::Double, 0x00015103, uint(5), 0,
       45, QMetaType::QString, 0x00015103, uint(6), 0,
-      24, QMetaType::Bool, 0x00015001, uint(7), 0,
       46, QMetaType::Bool, 0x00015001, uint(7), 0,
       47, QMetaType::Bool, 0x00015001, uint(7), 0,
-      48, QMetaType::Bool, 0x00015001, uint(8), 0,
-      49, QMetaType::QString, 0x00015001, uint(9), 0,
-      50, QMetaType::Bool, 0x00015103, uint(10), 0,
-      51, QMetaType::Bool, 0x00015103, uint(11), 0,
-      52, QMetaType::Bool, 0x00015103, uint(12), 0,
-      53, QMetaType::QString, 0x00015103, uint(13), 0,
-      54, QMetaType::Bool, 0x00015103, uint(14), 0,
+      48, QMetaType::Bool, 0x00015001, uint(7), 0,
+      49, QMetaType::Bool, 0x00015001, uint(8), 0,
+      50, QMetaType::QString, 0x00015001, uint(9), 0,
+      51, QMetaType::Bool, 0x00015103, uint(10), 0,
+      52, QMetaType::Bool, 0x00015103, uint(11), 0,
+      53, QMetaType::Bool, 0x00015103, uint(12), 0,
+      54, QMetaType::QString, 0x00015103, uint(13), 0,
       55, QMetaType::Bool, 0x00015103, uint(14), 0,
-      56, QMetaType::Bool, 0x00015001, uint(14), 0,
+      56, QMetaType::Bool, 0x00015103, uint(14), 0,
       57, QMetaType::Bool, 0x00015001, uint(14), 0,
       58, QMetaType::Bool, 0x00015001, uint(14), 0,
       59, QMetaType::Bool, 0x00015001, uint(14), 0,
-      60, QMetaType::LongLong, 0x00015001, uint(15), 0,
+      60, QMetaType::Bool, 0x00015001, uint(14), 0,
       61, QMetaType::LongLong, 0x00015001, uint(15), 0,
       62, QMetaType::LongLong, 0x00015001, uint(15), 0,
       63, QMetaType::LongLong, 0x00015001, uint(15), 0,
-      64, QMetaType::Bool, 0x00015001, uint(16), 0,
-      65, QMetaType::Int, 0x00015001, uint(16), 0,
-      66, QMetaType::Bool, 0x00015001, uint(17), 0,
-      67, QMetaType::Int, 0x00015001, uint(17), 0,
-      68, QMetaType::QString, 0x00015001, uint(17), 0,
+      64, QMetaType::LongLong, 0x00015001, uint(15), 0,
+      65, QMetaType::Bool, 0x00015001, uint(16), 0,
+      66, QMetaType::Int, 0x00015001, uint(16), 0,
+      67, QMetaType::Bool, 0x00015001, uint(17), 0,
+      68, QMetaType::Int, 0x00015001, uint(17), 0,
+      69, QMetaType::QString, 0x00015001, uint(17), 0,
 
        0        // eod
 };
@@ -560,7 +564,7 @@ Q_CONSTINIT const QMetaObject SerialManager::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<bool, std::false_type>,
         // method 'refreshPorts'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'open'
+        // method 'openConnection'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'close'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
@@ -616,7 +620,7 @@ void SerialManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 17: _t->fileChanged(); break;
         case 18: _t->toastRequested((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<bool>>(_a[2]))); break;
         case 19: _t->refreshPorts(); break;
-        case 20: _t->open(); break;
+        case 20: _t->openConnection(); break;
         case 21: _t->close(); break;
         case 22: { QString _r = _t->send((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = std::move(_r); }  break;

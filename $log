@@ -1,0 +1,24 @@
+********* Start testing of CommStudioCoreTest *********
+Config: Using QtTest library 6.6.3, Qt 6.6.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2019), windows 11
+PASS   : CommStudioCoreTest::initTestCase()
+PASS   : CommStudioCoreTest::deviceAndPointPersistence()
+PASS   : CommStudioCoreTest::pointDecodeAndTemplate()
+PASS   : CommStudioCoreTest::queuedRequestsAgainstTcpSimulator()
+FAIL!  : CommStudioCoreTest::channelIsolation() Compared QObject pointers are not the same
+   Actual   (workspace.channelBackend(0))  : ModbusManager/0000027386D25780
+   Expected (static_cast<QObject *>(first)): ModbusManager/0000027386D56CD0
+F:\mine\code\qt\com_studio\tests\comstudiotests.cpp(51) : failure location
+PASS   : CommStudioCoreTest::taskValidation()
+PASS   : CommStudioCoreTest::crc16ModbusVectors()
+PASS   : CommStudioCoreTest::crcOtherVectors()
+PASS   : CommStudioCoreTest::hexCodecParsing()
+PASS   : CommStudioCoreTest::escapeSequences()
+PASS   : CommStudioCoreTest::lineEndings()
+PASS   : CommStudioCoreTest::pausedTrafficFlushesOnResume()
+PASS   : CommStudioCoreTest::modbusRequestFrames()
+PASS   : CommStudioCoreTest::modbusResponseParsing()
+PASS   : CommStudioCoreTest::wordOrder32()
+PASS   : CommStudioCoreTest::trafficModelRingBuffer()
+PASS   : CommStudioCoreTest::cleanupTestCase()
+Totals: 16 passed, 1 failed, 0 skipped, 0 blacklisted, 569ms
+********* Finished testing of CommStudioCoreTest *********

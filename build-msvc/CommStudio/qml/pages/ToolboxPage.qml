@@ -19,7 +19,7 @@ Item {
             spacing: 12
 
             Text {
-                text: "工具箱"
+                text: I18n.t("Tools", "工具箱")
                 color: Theme.textPrimary
                 font.family: Theme.fontFamily
                 font.pixelSize: 22
@@ -41,7 +41,7 @@ Item {
                         Layout.fillWidth: true
 
                         Text {
-                            text: "校验计算器"
+                            text: I18n.t("Checksum calculator", "校验计算器")
                             color: Theme.textPrimary
                             font.family: Theme.fontFamily
                             font.pixelSize: 15
@@ -71,7 +71,7 @@ Item {
                         }
 
                         AppButton {
-                            text: "计算"
+                            text: I18n.t("Calculate", "计算")
                             variant: "primary"
                             onClicked: checksumOutput.text = root.computeChecksums()
                         }
@@ -80,7 +80,7 @@ Item {
                     Text {
                         id: checksumOutput
                         Layout.fillWidth: true
-                        text: "输入字节序列后点击「计算」"
+                        text: I18n.t("Enter a byte sequence and select Calculate", "输入字节序列后点击「计算」")
                         color: Theme.textSecondary
                         font.family: "Consolas"
                         font.pixelSize: 12
@@ -102,7 +102,7 @@ Item {
                     spacing: 10
 
                     Text {
-                        text: "HEX 解析（多类型 / 多字节序 / 编码）"
+                        text: I18n.t("HEX parser (types / byte orders / encoding)", "HEX 解析（多类型 / 多字节序 / 编码）")
                         color: Theme.textPrimary
                         font.family: Theme.fontFamily
                         font.pixelSize: 15
@@ -122,7 +122,7 @@ Item {
                         }
 
                         AppButton {
-                            text: "解析"
+                            text: I18n.t("Parse", "解析")
                             variant: "primary"
                             accent: Theme.cyan
                             onClicked: analyzeOutput.text = root.formatAnalyze(ToolboxManager.analyzeHex(analyzeInput.text))
@@ -132,7 +132,7 @@ Item {
                     Text {
                         id: analyzeOutput
                         Layout.fillWidth: true
-                        text: "输入 HEX 后点击「解析」"
+                        text: I18n.t("Enter HEX and select Parse", "输入 HEX 后点击「解析」")
                         color: Theme.textSecondary
                         font.family: "Consolas"
                         font.pixelSize: 12
@@ -154,7 +154,7 @@ Item {
                     spacing: 10
 
                     Text {
-                        text: "数值编码（工程值 → 寄存器 HEX）"
+                        text: I18n.t("Value encoding (engineering value → register HEX)", "数值编码（工程值 → 寄存器 HEX）")
                         color: Theme.textPrimary
                         font.family: Theme.fontFamily
                         font.pixelSize: 15
@@ -166,7 +166,7 @@ Item {
                         spacing: 8
 
                         Text {
-                            text: "数值"
+                            text: I18n.t("Value", "数值")
                             color: Theme.textSecondary
                             font.family: Theme.fontFamily
                             font.pixelSize: 12
@@ -198,7 +198,7 @@ Item {
                         }
 
                         AppButton {
-                            text: "编码"
+                            text: I18n.t("Encode", "编码")
                             variant: "primary"
                             accent: Theme.purple
                             onClicked: {
@@ -236,7 +236,7 @@ Item {
                     spacing: 10
 
                     Text {
-                        text: "文本 ↔ HEX（UTF-8）"
+                        text: I18n.t("Text ↔ HEX (UTF-8)", "文本 ↔ HEX（UTF-8）")
                         color: Theme.textPrimary
                         font.family: Theme.fontFamily
                         font.pixelSize: 15
@@ -283,7 +283,7 @@ Item {
                     Text {
                         id: textConvertOutput
                         Layout.fillWidth: true
-                        text: "转换结果显示在这里"
+                        text: I18n.t("Conversion result appears here", "转换结果显示在这里")
                         color: Theme.textSecondary
                         font.family: "Consolas"
                         font.pixelSize: 12

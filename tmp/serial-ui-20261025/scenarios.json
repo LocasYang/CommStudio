@@ -1,0 +1,39 @@
+[
+  {
+    "name": "zh-text",
+    "flags": [],
+    "size": "1460x900"
+  },
+  {
+    "name": "zh-menu-min",
+    "flags": [
+      "NAV_EXPANDED",
+      "ENDING_MENU"
+    ],
+    "size": "1100x700"
+  },
+  {
+    "name": "en-menu-min",
+    "flags": [
+      "NAV_EXPANDED",
+      "ENDING_MENU",
+      "ENGLISH"
+    ],
+    "size": "1100x700"
+  },
+  {
+    "name": "zh-hex",
+    "flags": [
+      "SERIAL_HEX"
+    ],
+    "size": "1460x900"
+  },
+  {
+    "name": "zh-light-min",
+    "flags": [
+      "NAV_EXPANDED",
+      "LIGHT"
+    ],
+    "size": "1100x700"
+  }
+]
